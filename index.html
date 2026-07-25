@@ -229,6 +229,9 @@
       <div class="privacy-notice">
         🛡️ <strong>SaaS Lisanslama & Yetkilendirme:</strong> Buradan yeni eklediğiniz müşteriler mobil uygulamayı indirdiğinde Google ile giriş yaparak sistemi kullanmaya başlayabilir. Paket seçeneklerini (Görsel AI, Uzman AI, Limit) istediğiniz zaman değiştirebilirsiniz.
       </div>
+      <div style="margin-bottom:16px;">
+        <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Müşteri ara (İsim, E-posta, Şehir, Meslek)..." oninput="filterUsers()" style="max-width:400px;" />
+      </div>
       <div id="users-list"></div>
     </div>
 
@@ -400,68 +403,23 @@ async function loadUsers() {
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
-    let usersList = [];
+    let allUsersList = [];
     let countAi = 0, countVision = 0;
 
     snap.forEach(ds => {
       // Admini listede gösterme
       if (ds.id.toLowerCase() !== SUPER_ADMIN_EMAIL) {
         const d = ds.data();
-        usersList.push({ id: ds.id, ...d });
+        allUsersList.push({ id: ds.id, ...d });
         if (d.uzmanAi !== false) countAi++;
         if (d.resimAi === true) countVision++;
       }
     });
 
-    document.getElementById("stat-users").textContent = usersList.length;
+    document.getElementById("stat-users").textContent = allUsersList.length;
     document.getElementById("stat-ai-users").textContent = countAi;
     document.getElementById("stat-vision-users").textContent = countVision;
 
-    if (usersList.length === 0) {
-      c.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Henüz tanımlı müşteri yok.<br>Sağ üstten "+ Müşteri Ekle" butonunu kullanın.</p></div>`;
-      return;
-    }
-
-    c.innerHTML = "";
-    usersList.forEach(u => {
-      const email = u.id;
-      const ad = u.adSoyad || "İsimsiz Uzman";
-      const meslek = u.meslek || "İSG Uzmanı";
-      const sehir = u.sehir || "Belirtilmedi";
-      const aktif = u.aktif !== false;
-      const resimAi = u.resimAi === true;
-      const uzmanAi = u.uzmanAi !== false;
-      const sesliAi = u.sesliAi !== false;
-      const limit = u.aiSorguLimiti ?? -1;
-      const kullanilan = u.kullanilanSorgu ?? 0;
-      const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
-
-      c.innerHTML += `
-        <div class="user-card-item">
-          <div class="user-card-header">
-            <div class="user-main-info">
-              <div class="user-avatar-lg">${ad.charAt(0).toUpperCase()}</div>
-              <div>
-                <div class="user-name-text">${esc(ad)}</div>
-                <div class="user-meta-text">✉️ ${esc(email)} • 🏢 ${esc(meslek)} (${esc(sehir)})</div>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span class="badge ${aktif ? "badge-success" : "badge-danger"}">${aktif ? "✓ Erişimi Açık" : "✗ Pasif"}</span>
-              <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
-            </div>
-          </div>
-          <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-            <div class="tier-badges">
-              ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
-              ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
-              ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
-            </div>
-            <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
-          </div>
-        </div>`;
-    });
   } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
 }
 
