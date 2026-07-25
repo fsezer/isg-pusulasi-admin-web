@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İSG Pusulası — Admin Paneli</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e1a; --surface: #111827; --surface2: #1c2536; --border: rgba(255,255,255,0.08);
+      --accent: #f59e0b; --accent2: #10b981; --danger: #ef4444;
+      --text: #f1f5f9; --text2: #94a3b8; --radius: 14px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.12) 0%, transparent 70%), var(--bg); gap: 32px; }
+    .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 48px 40px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 0 80px rgba(245,158,11,0.08); }
+    .login-logo { width: 72px; height: 72px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(245,158,11,0.3); }
+    .login-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: var(--text2); margin-bottom: 32px; }
+    .btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px 20px; background: white; color: #1a1a1a; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+    .btn-google:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,255,255,0.15); }
+    .btn-google svg { width: 20px; height: 20px; }
+    .login-denied { color: var(--danger); font-size: 13px; margin-top: 14px; display: none; }
+
+    /* LAYOUT */
+    #app { display: none; min-height: 100vh; }
+    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .sidebar-logo { width: 38px; height: 38px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .sidebar-brand { font-size: 14px; font-weight: 700; line-height: 1.2; }
+    .sidebar-brand span { display: block; font-size: 11px; font-weight: 400; color: var(--text2); }
+    .sidebar-nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text2); user-select: none; }
+    .nav-item:hover { background: var(--surface2); color: var(--text); }
+    .nav-item.active { background: rgba(245,158,11,0.15); color: var(--accent); }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-footer { padding: 12px 8px; border-top: 1px solid var(--border); }
+    .user-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface2); }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #d97706); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-email-small { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn-signout { background: none; border: none; color: var(--text2); cursor: pointer; padding: 4px; border-radius: 6px; font-size: 14px; transition: all 0.15s; }
+    .btn-signout:hover { color: var(--danger); }
+    .main { margin-left: 240px; padding: 28px 32px; min-height: 100vh; }
+    .page-header { margin-bottom: 28px; }
+    .page-title { font-size: 22px; font-weight: 700; }
+    .page-subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+    .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+
+    /* TABS */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* CARDS */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .card-title { font-size: 15px; font-weight: 600; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .btn-primary { background: var(--accent); color: #0a0e1a; }
+    .btn-primary:hover { background: #d97706; transform: translateY(-1px); }
+    .btn-success { background: var(--accent2); color: white; }
+    .btn-success:hover { background: #059669; }
+    .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+    .btn-ghost { background: var(--surface2); color: var(--text); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* FORM */
+    .form-group { margin-bottom: 14px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
+    .form-control { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 13.5px; font-family: inherit; transition: border-color 0.15s; }
+    .form-control:focus { outline: none; border-color: rgba(245,158,11,0.5); }
+    textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .form-hint { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+    /* TOGGLE */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; }
+    .toggle-label { font-size: 13px; }
+    .toggle { position: relative; width: 40px; height: 22px; background: var(--surface2); border-radius: 11px; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+    .toggle.on { background: var(--accent2); }
+    .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.2s; }
+    .toggle.on::after { transform: translateX(18px); }
+
+    /* ITEMS */
+    .rule-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; transition: border-color 0.15s; }
+    .rule-item:hover { border-color: rgba(245,158,11,0.3); }
+    .rule-item-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .rule-item-title { flex: 1; font-size: 13.5px; font-weight: 600; }
+    .rule-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .tag { background: rgba(245,158,11,0.12); color: var(--accent); border: 1px solid rgba(245,158,11,0.25); border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
+    .rule-response { font-size: 12px; color: var(--text2); background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; max-height: 80px; overflow: hidden; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
+    .badge-success { background: rgba(16,185,129,0.15); color: var(--accent2); }
+    .badge-gray { background: rgba(255,255,255,0.06); color: var(--text2); }
+    .user-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; }
+    .user-item-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #4f46e5); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+    .user-item-info { flex: 1; min-width: 0; }
+    .user-item-email { font-size: 13px; font-weight: 600; }
+    .user-item-meta { font-size: 11px; color: var(--text2); }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .stat-icon { font-size: 24px; margin-bottom: 4px; }
+    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-label { font-size: 12px; color: var(--text2); }
+
+    /* MODAL */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-bg.open { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+
+    .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; animation: slideIn 0.3s ease; max-width: 300px; }
+    .toast-success { background: rgba(16,185,129,0.9); color: white; }
+    .toast-error { background: rgba(239,68,68,0.9); color: white; }
+    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); }
+    .empty-icon { font-size: 40px; margin-bottom: 10px; }
+    .empty-state p { font-size: 13px; }
+    .quick-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .info-list p { font-size: 13px; color: var(--text2); line-height: 1.8; }
+    .info-list p strong { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <div class="login-title">İSG Pusulası Admin</div>
+    <div class="login-sub">Yönetim paneline erişmek için Google hesabınızla giriş yapın</div>
+    <button class="btn-google" onclick="doSignIn()">
+      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <div class="login-denied" id="login-denied">⛔ Bu hesap admin değil. Erişim reddedildi.</div>
+  </div>
+  <div style="font-size:12px;color:#475569;">İSG Pusulası Admin Portal v1.0</div>
+</div>
+
+<div id="app">
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🛡️</div>
+      <div class="sidebar-brand">İSG Pusulası <span>Admin Paneli</span></div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> AI Kuralları</div>
+      <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Yetkili Kullanıcılar</div>
+      <div class="nav-item" onclick="showTab('firmalar')" id="nav-firmalar"><span class="icon">🏢</span> Firmalar</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">...</div>
+          <div class="user-email-small" id="user-email-small">admin</div>
+        </div>
+        <button class="btn-signout" onclick="doSignOut()" title="Çıkış">🚪</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="page-header">
+        <div class="page-title">Dashboard</div>
+        <div class="page-subtitle">İSG Pusulası sistem durumu ve hızlı işlemler</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-value" id="stat-rules">-</div><div class="stat-label">AI Kuralı</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-value" id="stat-users">-</div><div class="stat-label">Yetkili Kullanıcı</div></div>
+        <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-value" id="stat-firms">-</div><div class="stat-label">Kayıtlı Firma</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">🚀 Hızlı İşlemler</div></div>
+        <div class="quick-btns">
+          <button class="btn btn-primary" onclick="showTab('rules');openRuleModal()">+ Yeni AI Kuralı</button>
+          <button class="btn btn-success" onclick="showTab('users');openUserModal()">+ Kullanıcı Ekle</button>
+          <button class="btn btn-ghost" onclick="showTab('firmalar');openFirmaModal()">+ Firma Ekle</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">ℹ️ Build Almadan AI Eğitimi Nasıl Çalışır?</div></div>
+        <div class="info-list">
+          <p>• <strong>AI Kuralları</strong> — Kullanıcı hangi kelimeleri söylediğinde ne yapılacağını tanımlayın. Uygulama build almadan anında güncellenir.</p>
+          <p>• <strong>Tetikleyiciler</strong> — "uygunsuzluk, ihlal, baret yok" gibi anahtar kelimeler. Bunlardan biri söylenince kural devreye girer.</p>
+          <p>• <strong>Otomatik Kayıt</strong> — "Oto Denetim" açıksa, kural tetiklendiğinde Firestore'a otomatik Saha Denetimi kaydı oluşturulur.</p>
+          <p>• <strong>{firma}</strong> — Yanıt metninde bu kısım otomatik olarak aktif firma adına dönüşür.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI KURALLARI -->
+    <div class="tab-content" id="tab-rules">
+      <div class="page-header-row">
+        <div><div class="page-title">🤖 AI Kuralları</div><div class="page-subtitle">Mobil uygulamayı build almadan eğitin</div></div>
+        <button class="btn btn-primary" onclick="openRuleModal()">+ Yeni Kural</button>
+      </div>
+      <div id="rules-list"></div>
+    </div>
+
+    <!-- YETKİLİ KULLANICILAR -->
+    <div class="tab-content" id="tab-users">
+      <div class="page-header-row">
+        <div><div class="page-title">👤 Yetkili Kullanıcılar</div><div class="page-subtitle">Uygulamaya giriş izni verilen kullanıcılar</div></div>
+        <button class="btn btn-primary" onclick="openUserModal()">+ Kullanıcı Ekle</button>
+      </div>
+      <div id="users-list"></div>
+    </div>
+
+    <!-- FİRMALAR -->
+    <div class="tab-content" id="tab-firmalar">
+      <div class="page-header-row">
+        <div><div class="page-title">🏢 Firmalar</div><div class="page-subtitle">Sistemde kayıtlı müşteri firmaları</div></div>
+        <button class="btn btn-primary" onclick="openFirmaModal()">+ Firma Ekle</button>
+      </div>
+      <div id="firmalar-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- RULE MODAL -->
+<div class="modal-bg" id="rule-modal">
+  <div class="modal">
+    <div class="modal-title" id="rule-modal-title">Yeni AI Kuralı</div>
+    <div class="form-group"><label class="form-label">Kural Adı (not amaçlı)</label><input type="text" class="form-control" id="rule-name" placeholder="ör: Yangın Tüpü Uygunsuzluk" /></div>
+    <div class="form-group"><label class="form-label">Tetikleyici Kelimeler</label><input type="text" class="form-control" id="rule-keywords" placeholder="kelime1, kelime2, kelime3" /><div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural devreye girer.</div></div>
+    <div class="form-group"><label class="form-label">Yanıt Metni</label><textarea class="form-control" id="rule-response" placeholder="Kullanıcıya gösterilecek cevap. {firma} firma adına dönüşür."></textarea></div>
+    <div class="form-group">
+      <div class="toggle-row"><span class="toggle-label">⚡ Otomatik Saha Denetimi Kaydı Oluştur</span><div class="toggle" id="toggle-auto" onclick="this.classList.toggle('on')"></div></div>
+      <div class="form-hint" style="margin-top:6px;">Açıksa, kural tetiklendiğinde Firestore'a otomatik kayıt eklenir.</div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-ghost" onclick="closeModal('rule-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveRule()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-bg" id="user-modal">
+  <div class="modal">
+    <div class="modal-title">Yetkili Kullanıcı Ekle</div>
+    <div class="form-group"><label class="form-label">Gmail Adresi</label><input type="email" class="form-control" id="user-email-input" placeholder="kullanici@gmail.com" /></div>
+    <div class="form-group"><label class="form-label">Not (opsiyonel)</label><input type="text" class="form-control" id="user-note" placeholder="ör: Emre — Saha İSG Uzmanı" /></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal('user-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveUser()">Ekle</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIRMA MODAL -->
+<div class="modal-bg" id="firma-modal">
+  <div class="modal">
+    <div class="modal-title">Firma Ekle</div>
+    <div class="form-group"><label class="form-label">Firma Adı</label><input type="text" class="form-control" id="firma-unvan" placeholder="ör: Demir Çelik Sanayi A.Ş." /></div>
+    <div class="form-group"><label class="form-label">Sektör</label><input type="text" class="form-control" id="firma-sektor" placeholder="ör: İnşaat, Metal, Tekstil" /></div>
+    <div class="form-group"><label class="form-label">İletişim E-postası</label><input type="email" class="form-control" id="firma-email-input" placeholder="info@firma.com" /></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal('firma-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveFirma()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB0-AXpS6ZLv5p303lW1-73r9_f4yTUPHQ",
+  authDomain: "isg-pusulasi.firebaseapp.com",
+  projectId: "isg-pusulasi",
+  storageBucket: "isg-pusulasi.firebasestorage.app",
+  messagingSenderId: "585271991526",
+  appId: "1:585271991526:android:0b03b6e79b4bd277fbaf27"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_EMAILS = ["fsezer.mail@gmail.com", "admin@istiklalyazilim.com"];
+let editingRuleId = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const email = (user.email || "").toLowerCase();
+    if (!ADMIN_EMAILS.includes(email)) {
+      await fbSignOut(auth);
+      document.getElementById("login-denied").style.display = "block";
+      return;
+    }
+    showApp(user); loadAll();
+  } else { showLogin(); }
+});
+
+window.doSignIn = async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch (e) { toast("Giriş başarısız: " + e.message, "error"); }
+};
+window.doSignOut = async () => { await fbSignOut(auth); showLogin(); };
+
+function showApp(user) {
+  document.getElementById("login-screen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("user-name").textContent = user.displayName || "Admin";
+  document.getElementById("user-email-small").textContent = user.email;
+  const av = document.getElementById("user-avatar");
+  if (user.photoURL) av.innerHTML = `<img src="${user.photoURL}" />`;
+  else av.textContent = (user.displayName || "A").charAt(0).toUpperCase();
+}
+function showLogin() {
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+}
+
+window.showTab = (tab) => {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.getElementById("tab-" + tab).classList.add("active");
+  document.getElementById("nav-" + tab).classList.add("active");
+};
+
+async function loadAll() { await Promise.all([loadRules(), loadUsers(), loadFirmalar()]); }
+
+/* ── AI KURALLARI ── */
+async function loadRules() {
+  const c = document.getElementById("rules-list");
+  c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
+  try {
+    const snap = await getDocs(collection(db, "UzmanKurallar"));
+    document.getElementById("stat-rules").textContent = snap.size;
+    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz AI kuralı eklenmedi.</p></div>`; return; }
+    c.innerHTML = "";
+    snap.forEach(ds => {
+      const d = ds.data();
+      const kw = (d.tetikleyiciler || []);
+      const auto = d.oto_denetim === true;
+      c.innerHTML += `<div class="rule-item">
+        <div class="rule-item-header">
+          <div class="rule-item-title">${esc(d.kural_adi || "Kural")}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            ${auto ? '<span class="badge badge-success">⚡ Oto Denetim</span>' : '<span class="badge badge-gray">📝 Sadece Yanıt</span>'}
+            <button class="btn btn-ghost btn-sm" onclick="editRule('${ds.id}')">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteRule('${ds.id}')">🗑️</button>
+          </div>
+        </div>
+        <div class="rule-tags">${kw.map(k=>`<span class="tag">${esc(k)}</span>`).join("")}</div>
+        <div class="rule-response">${esc(d.yanit || "")}</div>
+      </div>`;
+    });
+  } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
+}
+
+window.openRuleModal = () => {
+  editingRuleId = null;
+  document.getElementById("rule-modal-title").textContent = "Yeni AI Kuralı";
+  ["rule-name","rule-keywords","rule-response"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("toggle-auto").classList.remove("on");
+  document.getElementById("rule-modal").classList.add("open");
+};
+window.editRule = async (id) => {
+  try {
+    const ds = await getDoc(doc(db, "UzmanKurallar", id));
+    if (!ds.exists()) return;
+    const d = ds.data(); editingRuleId = id;
+    document.getElementById("rule-modal-title").textContent = "Kuralı Düzenle";
+    document.getElementById("rule-name").value = d.kural_adi || "";
+    document.getElementById("rule-keywords").value = (d.tetikleyiciler || []).join(", ");
+    document.getElementById("rule-response").value = d.yanit || "";
+    const tog = document.getElementById("toggle-auto");
+    d.oto_denetim ? tog.classList.add("on") : tog.classList.remove("on");
+    document.getElementById("rule-modal").classList.add("open");
+  } catch(e) { toast(e.message,"error"); }
+};
+window.saveRule = async () => {
+  const name = document.getElementById("rule-name").value.trim();
+  const kwRaw = document.getElementById("rule-keywords").value;
+  const response = document.getElementById("rule-response").value.trim();
+  const auto = document.getElementById("toggle-auto").classList.contains("on");
+  if (!name || !kwRaw || !response) { toast("Tüm alanları doldurun.","error"); return; }
+  const keywords = kwRaw.split(",").map(k=>k.trim().toLowerCase()).filter(Boolean);
+  const data = { kural_adi: name, tetikleyiciler: keywords, yanit: response, oto_denetim: auto, guncelleme: serverTimestamp() };
+  try {
+    if (editingRuleId) { await setDoc(doc(db,"UzmanKurallar",editingRuleId), data, {merge:true}); toast("Kural güncellendi! ✅"); }
+    else { await addDoc(collection(db,"UzmanKurallar"), data); toast("Yeni kural eklendi! 🎉"); }
+    closeModal("rule-modal"); loadRules();
+  } catch(e) { toast(e.message,"error"); }
+};
+window.deleteRule = async (id) => {
+  if (!confirm("Bu kuralı silmek istiyor musunuz?")) return;
+  try { await deleteDoc(doc(db,"UzmanKurallar",id)); toast("Kural silindi."); loadRules(); }
+  catch(e) { toast(e.message,"error"); }
+};
+
+/* ── KULLANICILAR ── */
+async function loadUsers() {
+  const c = document.getElementById("users-list");
+  c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
+  try {
+    const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
+    document.getElementById("stat-users").textContent = snap.size;
+    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Kayıtlı yetkili kullanıcı yok.</p></div>`; return; }
+    c.innerHTML = "";
+    snap.forEach(ds => {
+      const d = ds.data(); const email = ds.id;
+      const aktif = d.aktif !== false;
+      c.innerHTML += `<div class="user-item">
+        <div class="user-item-avatar">${email.charAt(0).toUpperCase()}</div>
+        <div class="user-item-info"><div class="user-item-email">${esc(email)}</div>${d.not?`<div class="user-item-meta">${esc(d.not)}</div>`:""}</div>
+        <span class="badge ${aktif?"badge-success":"badge-gray"}">${aktif?"Aktif":"Pasif"}</span>
+        <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
+      </div>`;
+    });
+  } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
+}
+window.openUserModal = () => {
+  ["user-email-input","user-note"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("user-modal").classList.add("open");
+};
+window.saveUser = async () => {
+  const email = document.getElementById("user-email-input").value.trim().toLowerCase();
+  const note = document.getElementById("user-note").value.trim();
+  if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.","error"); return; }
+  try {
+    await setDoc(doc(db,"yetkili_kullanicilar",email), { email, aktif:true, not:note, eklenme:serverTimestamp() });
+    toast("Kullanıcı eklendi! ✅"); closeModal("user-modal"); loadUsers();
+  } catch(e) { toast(e.message,"error"); }
+};
+window.deleteUser = async (email) => {
+  if (!confirm(`${email} kullanıcısını silmek istiyor musunuz?`)) return;
+  try { await deleteDoc(doc(db,"yetkili_kullanicilar",email)); toast("Kullanıcı silindi."); loadUsers(); }
+  catch(e) { toast(e.message,"error"); }
+};
+
+/* ── FİRMALAR ── */
+async function loadFirmalar() {
+  const c = document.getElementById("firmalar-list");
+  c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
+  try {
+    const snap = await getDocs(collection(db,"Firmalar"));
+    document.getElementById("stat-firms").textContent = snap.size;
+    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🏢</div><p>Kayıtlı firma yok.</p></div>`; return; }
+    c.innerHTML = "";
+    snap.forEach(ds => {
+      const d = ds.data();
+      c.innerHTML += `<div class="user-item">
+        <div class="user-item-avatar" style="background:linear-gradient(135deg,#10b981,#059669);border-radius:10px;">🏢</div>
+        <div class="user-item-info"><div class="user-item-email">${esc(d.firma_unvan||"İsimsiz")}</div><div class="user-item-meta">${[d.sektor,d.email].filter(Boolean).map(s=>esc(s)).join(" • ")}</div></div>
+        <button class="btn btn-danger btn-sm" onclick="deleteFirma('${ds.id}')">🗑️</button>
+      </div>`;
+    });
+  } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
+}
+window.openFirmaModal = () => {
+  ["firma-unvan","firma-sektor","firma-email-input"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("firma-modal").classList.add("open");
+};
+window.saveFirma = async () => {
+  const unvan = document.getElementById("firma-unvan").value.trim();
+  if (!unvan) { toast("Firma adı zorunludur.","error"); return; }
+  const sektor = document.getElementById("firma-sektor").value.trim();
+  const email = document.getElementById("firma-email-input").value.trim().toLowerCase();
+  try {
+    const ref = await addDoc(collection(db,"Firmalar"), { firma_unvan:unvan, sektor, email, kayit_tarih:serverTimestamp() });
+    await setDoc(doc(db,"Firmalar",ref.id), {id_PK:ref.id}, {merge:true});
+    toast("Firma eklendi! 🏢"); closeModal("firma-modal"); loadFirmalar();
+  } catch(e) { toast(e.message,"error"); }
+};
+window.deleteFirma = async (id) => {
+  if (!confirm("Bu firmayı silmek istiyor musunuz?")) return;
+  try { await deleteDoc(doc(db,"Firmalar",id)); toast("Firma silindi."); loadFirmalar(); }
+  catch(e) { toast(e.message,"error"); }
+};
+
+/* ── HELPERS ── */
+window.closeModal = (id) => document.getElementById(id).classList.remove("open");
+document.querySelectorAll(".modal-bg").forEach(bg => bg.addEventListener("click", e => { if(e.target===bg) bg.classList.remove("open"); }));
+function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function toast(msg, type="success") {
+  const c = document.getElementById("toast-container");
+  const t = document.createElement("div");
+  t.className = `toast toast-${type}`; t.textContent = msg;
+  c.appendChild(t); setTimeout(()=>t.remove(), 3500);
+}
+</script>
+</body>
+</html>
