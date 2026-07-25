@@ -400,6 +400,7 @@ async function loadAll() { await Promise.all([loadUsers(), loadRules()]); }
 /* ── MÜŞTERİ & KULLANICI YÖNETİMİ ── */
 async function loadUsers() {
   const c = document.getElementById("users-list");
+  if (!c) return;
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
@@ -407,7 +408,6 @@ async function loadUsers() {
     let countAi = 0, countVision = 0;
 
     snap.forEach(ds => {
-      // Admini listede gösterme
       if (ds.id.toLowerCase() !== SUPER_ADMIN_EMAIL) {
         const d = ds.data();
         allUsersList.push({ id: ds.id, ...d });
@@ -416,10 +416,84 @@ async function loadUsers() {
       }
     });
 
-    document.getElementById("stat-users").textContent = allUsersList.length;
-    document.getElementById("stat-ai-users").textContent = countAi;
-    document.getElementById("stat-vision-users").textContent = countVision;
+    const statU = document.getElementById("stat-users");
+    const statA = document.getElementById("stat-ai-users");
+    const statV = document.getElementById("stat-vision-users");
+    if (statU) statU.textContent = allUsersList.length;
+    if (statA) statA.textContent = countAi;
+    if (statV) statV.textContent = countVision;
 
+    window.renderUserCards = (list) => {
+      if (list.length === 0) {
+        c.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Henüz tanımlı müşteri yok veya arama kriterine uymuyor.<br>Sağ üstten "+ Müşteri Ekle" butonunu kullanın.</p></div>`;
+        return;
+      }
+      c.innerHTML = "";
+      list.forEach(u => {
+        const email = u.id;
+        const ad = u.adSoyad || "İsimsiz Uzman";
+        const meslek = u.meslek || "İSG Uzmanı";
+        const sehir = u.sehir || "Belirtilmedi";
+        const aktif = u.aktif !== false;
+        const resimAi = u.resimAi === true;
+        const uzmanAi = u.uzmanAi !== false;
+        const sesliAi = u.sesliAi !== false;
+        const limit = u.aiSorguLimiti ?? -1;
+        const kullanilan = u.kullanilanSorgu ?? 0;
+        const bitis = u.lisansBitisTarihi || "Süresiz";
+        const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
+
+        c.innerHTML += `
+          <div class="user-card-item">
+            <div class="user-card-header">
+              <div class="user-main-info">
+                <div class="user-avatar-lg">${ad.charAt(0).toUpperCase()}</div>
+                <div>
+                  <div class="user-name-text">${esc(ad)}</div>
+                  <div class="user-meta-text">✉️ ${esc(email)} • 🏢 ${esc(meslek)} (${esc(sehir)})</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <span class="badge ${aktif ? "badge-success" : "badge-danger"}">${aktif ? "✓ Erişimi Açık" : "✗ Pasif"}</span>
+                <button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')" title="Sorgu Sayacını Sıfırla">🔄 Sayacı Sıfırla</button>
+                <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div class="tier-badges">
+                ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
+                ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
+                ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
+                <span class="badge badge-gray">📅 Lisans: ${esc(bitis)}</span>
+              </div>
+              <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
+            </div>
+          </div>`;
+      });
+    };
+
+    window.filterUsers = () => {
+      const q = (document.getElementById("user-search-input")?.value || "").toLowerCase();
+      const filtered = allUsersList.filter(u => 
+        (u.adSoyad || "").toLowerCase().includes(q) ||
+        (u.id || "").toLowerCase().includes(q) ||
+        (u.sehir || "").toLowerCase().includes(q) ||
+        (u.meslek || "").toLowerCase().includes(q)
+      );
+      window.renderUserCards(filtered);
+    };
+
+    window.resetUsageCount = async (email) => {
+      if (!confirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`)) return;
+      try {
+        await updateDoc(doc(db,"yetkili_kullanicilar",email), { kullanilanSorgu: 0 });
+        toast("Sorgu sayacı sıfırlandı! 🔄");
+        loadUsers();
+      } catch(e) { toast(e.message, "error"); }
+    };
+
+    window.renderUserCards(allUsersList);
   } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
 }
 
