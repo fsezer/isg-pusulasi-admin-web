@@ -3,14 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>İSG Pusulası — Admin Paneli</title>
+  <title>İSG Pusulası — Admin SaaS Yönetim Portalı</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0a0e1a; --surface: #111827; --surface2: #1c2536; --border: rgba(255,255,255,0.08);
-      --accent: #f59e0b; --accent2: #10b981; --danger: #ef4444;
-      --text: #f1f5f9; --text2: #94a3b8; --radius: 14px;
+      --bg: #090d16;
+      --surface: #111827;
+      --surface2: #1e293b;
+      --border: rgba(255,255,255,0.08);
+      --accent: #f59e0b;
+      --accent-glow: rgba(245,158,11,0.18);
+      --accent2: #10b981;
+      --danger: #ef4444;
+      --primary: #3b82f6;
+      --text: #f8fafc;
+      --text2: #94a3b8;
+      --radius: 14px;
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
@@ -23,43 +32,44 @@
     .btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px 20px; background: white; color: #1a1a1a; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
     .btn-google:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255,255,255,0.15); }
     .btn-google svg { width: 20px; height: 20px; }
-    .login-denied { color: var(--danger); font-size: 13px; margin-top: 14px; display: none; }
+    .login-denied { color: var(--danger); font-size: 13px; margin-top: 14px; display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); padding: 10px; border-radius: 10px; }
 
     /* LAYOUT */
     #app { display: none; min-height: 100vh; }
-    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
-    .sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-    .sidebar-logo { width: 38px; height: 38px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 250px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; }
+    .sidebar-header { padding: 22px 20px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .sidebar-logo { width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
     .sidebar-brand { font-size: 14px; font-weight: 700; line-height: 1.2; }
-    .sidebar-brand span { display: block; font-size: 11px; font-weight: 400; color: var(--text2); }
-    .sidebar-nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
-    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text2); user-select: none; }
+    .sidebar-brand span { display: block; font-size: 11px; font-weight: 400; color: var(--text2); margin-top: 2px; }
+    .sidebar-nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text2); user-select: none; }
     .nav-item:hover { background: var(--surface2); color: var(--text); }
-    .nav-item.active { background: rgba(245,158,11,0.15); color: var(--accent); }
-    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-    .sidebar-footer { padding: 12px 8px; border-top: 1px solid var(--border); }
-    .user-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; background: var(--surface2); }
-    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #d97706); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+    .nav-item.active { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
+    .nav-item .icon { font-size: 18px; width: 22px; text-align: center; }
+    .sidebar-footer { padding: 14px 10px; border-top: 1px solid var(--border); }
+    .user-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--surface2); }
+    .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #d97706); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
     .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .user-email-small { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .btn-signout { background: none; border: none; color: var(--text2); cursor: pointer; padding: 4px; border-radius: 6px; font-size: 14px; transition: all 0.15s; }
-    .btn-signout:hover { color: var(--danger); }
-    .main { margin-left: 240px; padding: 28px 32px; min-height: 100vh; }
+    .btn-signout { background: none; border: none; color: var(--text2); cursor: pointer; padding: 6px; border-radius: 8px; font-size: 15px; transition: all 0.15s; }
+    .btn-signout:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+    
+    .main { margin-left: 250px; padding: 32px 36px; min-height: 100vh; }
     .page-header { margin-bottom: 28px; }
-    .page-title { font-size: 22px; font-weight: 700; }
-    .page-subtitle { font-size: 13px; color: var(--text2); margin-top: 4px; }
+    .page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .page-subtitle { font-size: 13.5px; color: var(--text2); margin-top: 4px; }
     .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .card-title { font-size: 15px; font-weight: 600; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 20px; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .card-title { font-size: 16px; font-weight: 700; }
 
-    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; }
     .btn-primary { background: var(--accent); color: #0a0e1a; }
     .btn-primary:hover { background: #d97706; transform: translateY(-1px); }
     .btn-success { background: var(--accent2); color: white; }
@@ -67,76 +77,77 @@
     .btn-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
     .btn-danger:hover { background: rgba(239,68,68,0.25); }
     .btn-ghost { background: var(--surface2); color: var(--text); }
-    .btn-ghost:hover { background: rgba(255,255,255,0.06); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.08); }
     .btn-sm { padding: 6px 12px; font-size: 12px; }
-    .btn-warning { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
-    .btn-warning:hover { background: rgba(245,158,11,0.25); }
 
-    .form-group { margin-bottom: 14px; }
+    .form-group { margin-bottom: 16px; }
     .form-label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
-    .form-control { width: 100%; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; color: var(--text); font-size: 13.5px; font-family: inherit; transition: border-color 0.15s; }
+    .form-control { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 13.5px; font-family: inherit; transition: border-color 0.15s; }
     .form-control:focus { outline: none; border-color: rgba(245,158,11,0.5); }
     textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.5; }
-    .form-hint { font-size: 11px; color: var(--text2); margin-top: 4px; }
+    .form-hint { font-size: 11px; color: var(--text2); margin-top: 5px; }
 
-    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; }
-    .toggle-label { font-size: 13px; }
-    .toggle { position: relative; width: 40px; height: 22px; background: var(--surface2); border-radius: 11px; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
-    .toggle.on { background: var(--accent2); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+    /* TOGGLE OPTION */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 13px; font-weight: 500; }
+    .toggle-sub { font-size: 11px; color: var(--text2); display: block; margin-top: 2px; }
+    .toggle { position: relative; width: 44px; height: 24px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: background 0.2s; flex-shrink: 0; }
+    .toggle.on { background: var(--accent2); border-color: var(--accent2); }
     .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.2s; }
-    .toggle.on::after { transform: translateX(18px); }
+    .toggle.on::after { transform: translateX(20px); }
 
-    .rule-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; transition: border-color 0.15s; }
-    .rule-item:hover { border-color: rgba(245,158,11,0.3); }
-    .rule-item-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-    .rule-item-title { flex: 1; font-size: 13.5px; font-weight: 600; }
-    .rule-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
-    .tag { background: rgba(245,158,11,0.12); color: var(--accent); border: 1px solid rgba(245,158,11,0.25); border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; }
-    .rule-response { font-size: 12px; color: var(--text2); background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; max-height: 80px; overflow: hidden; }
+    /* USER & RULE ITEMS */
+    .user-card-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s; }
+    .user-card-item:hover { border-color: rgba(245,158,11,0.3); }
+    .user-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .user-main-info { display: flex; align-items: center; gap: 14px; }
+    .user-avatar-lg { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+    .user-name-text { font-size: 15px; font-weight: 700; }
+    .user-meta-text { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    
+    .tier-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
+    .badge-success { background: rgba(16,185,129,0.15); color: var(--accent2); border: 1px solid rgba(16,185,129,0.3); }
+    .badge-primary { background: rgba(59,130,246,0.15); color: var(--primary); border: 1px solid rgba(59,130,246,0.3); }
+    .badge-warning { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+    .badge-gray { background: rgba(255,255,255,0.06); color: var(--text2); border: 1px solid var(--border); }
 
-    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; }
-    .badge-success { background: rgba(16,185,129,0.15); color: var(--accent2); }
-    .badge-warning { background: rgba(245,158,11,0.15); color: var(--accent); }
-    .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); }
-    .badge-gray { background: rgba(255,255,255,0.06); color: var(--text2); }
+    .rule-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+    .rule-item-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .rule-item-title { font-size: 14px; font-weight: 700; }
+    .rule-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+    .tag { background: rgba(245,158,11,0.12); color: var(--accent); border: 1px solid rgba(245,158,11,0.25); border-radius: 6px; padding: 3px 9px; font-size: 11px; font-weight: 600; }
+    .rule-response { font-size: 12px; color: var(--text2); background: rgba(0,0,0,0.25); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; }
 
-    /* Kullanıcı item — daha zengin */
-    .user-item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; transition: border-color 0.15s; }
-    .user-item:hover { border-color: rgba(99,102,241,0.3); }
-    .user-item-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #4f46e5); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
-    .user-item-info { flex: 1; min-width: 0; }
-    .user-item-email { font-size: 13px; font-weight: 600; }
-    .user-item-meta { font-size: 11px; color: var(--text2); margin-top: 2px; }
-    .user-item-actions { display: flex; gap: 6px; align-items: center; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px; }
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
     .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-    .stat-icon { font-size: 24px; margin-bottom: 4px; }
-    .stat-value { font-size: 28px; font-weight: 800; }
-    .stat-label { font-size: 12px; color: var(--text2); }
+    .stat-icon { font-size: 24px; margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 800; }
+    .stat-label { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
-    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    /* MODAL */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .modal-bg.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
-    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+    .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
 
-    .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+    .spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; animation: slideIn 0.3s ease; max-width: 300px; }
-    .toast-success { background: rgba(16,185,129,0.9); color: white; }
-    .toast-error { background: rgba(239,68,68,0.9); color: white; }
+    .toast { padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; animation: slideIn 0.3s ease; max-width: 320px; }
+    .toast-success { background: rgba(16,185,129,0.95); color: white; }
+    .toast-error { background: rgba(239,68,68,0.95); color: white; }
     @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); }
-    .empty-icon { font-size: 40px; margin-bottom: 10px; }
-    .empty-state p { font-size: 13px; }
-    .quick-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-    .info-list p { font-size: 13px; color: var(--text2); line-height: 1.8; }
-    .info-list p strong { color: var(--text); }
-
-    .privacy-notice { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #fca5a5; margin-bottom: 16px; display: flex; gap: 8px; align-items: flex-start; }
+    .empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .privacy-notice { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #93c5fd; margin-bottom: 20px; line-height: 1.6; }
   </style>
 </head>
 <body>
@@ -144,34 +155,34 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">🛡️</div>
-    <div class="login-title">İSG Pusulası Admin</div>
-    <div class="login-sub">Yönetim paneline erişmek için Google hesabınızla giriş yapın</div>
+    <div class="login-title">İSG Pusulası SaaS Admin</div>
+    <div class="login-sub">Yönetici portalına erişmek için yetkili admin hesabınızla giriş yapın</div>
     <button class="btn-google" onclick="doSignIn()">
       <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Google ile Giriş Yap
     </button>
-    <div class="login-denied" id="login-denied">⛔ Bu hesap admin değil. Erişim reddedildi.</div>
+    <div class="login-denied" id="login-denied">⛔ Bu hesabın admin yetkisi yoktur. Erişim reddedildi.</div>
   </div>
-  <div style="font-size:12px;color:#475569;">İSG Pusulası Admin Portal v1.0</div>
+  <div style="font-size:12px;color:#475569;">İSG Pusulası SaaS Admin Portal v2.0</div>
 </div>
 
 <div id="app">
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">🛡️</div>
-      <div class="sidebar-brand">İSG Pusulası <span>Admin Paneli</span></div>
+      <div class="sidebar-brand">İSG Pusulası <span>SaaS Admin Portal</span></div>
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetki Yönetimi</div>
       <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> AI Kuralları</div>
-      <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Kayıtlı Kullanıcılar</div>
     </div>
     <div class="sidebar-footer">
       <div class="user-card">
         <div class="user-avatar" id="user-avatar">?</div>
         <div class="user-info">
-          <div class="user-name" id="user-name">...</div>
-          <div class="user-email-small" id="user-email-small">admin</div>
+          <div class="user-name" id="user-name">Admin</div>
+          <div class="user-email-small" id="user-email-small">fsezer.mail@gmail.com</div>
         </div>
         <button class="btn-signout" onclick="doSignOut()" title="Çıkış">🚪</button>
       </div>
@@ -182,88 +193,137 @@
     <!-- DASHBOARD -->
     <div class="tab-content active" id="tab-dashboard">
       <div class="page-header">
-        <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">İSG Pusulası yönetim merkezi</div>
+        <div class="page-title">SaaS Yönetim Paneli</div>
+        <div class="page-subtitle">İSG Pusulası müşteri erişimleri, paket yetkileri ve yapay zeka kural yönetimi</div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-value" id="stat-rules">-</div><div class="stat-label">AI Kuralı</div></div>
-        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-value" id="stat-users">-</div><div class="stat-label">Kayıtlı Kullanıcı</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="stat-users">-</div><div class="stat-label">Kayıtlı Müşteri</div></div>
+        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-value" id="stat-ai-users">-</div><div class="stat-label">Uzman AI Paketli</div></div>
+        <div class="stat-card"><div class="stat-icon">📸</div><div class="stat-value" id="stat-vision-users">-</div><div class="stat-label">Görsel AI Paketli</div></div>
+        <div class="stat-card"><div class="stat-icon">📜</div><div class="stat-value" id="stat-rules">-</div><div class="stat-label">Aktif AI Kuralı</div></div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">🚀 Hızlı İşlemler</div></div>
-        <div class="quick-btns">
-          <button class="btn btn-primary" onclick="showTab('rules');openRuleModal()">+ Yeni AI Kuralı</button>
-          <button class="btn btn-success" onclick="showTab('users');openUserModal()">+ Kullanıcı Ekle</button>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="showTab('users');openUserModal()">+ Yeni Müşteri / Kullanıcı Ekle</button>
+          <button class="btn btn-success" onclick="showTab('rules');openRuleModal()">+ Yeni AI Kuralı Oluştur</button>
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">ℹ️ Build Almadan AI Eğitimi</div></div>
-        <div class="info-list">
-          <p>• <strong>AI Kuralları</strong> — Kullanıcı hangi kelimeleri söylediğinde ne yapılacağını tanımlayın. Uygulama anında güncellenir, build almaya gerek yok.</p>
-          <p>• <strong>Tetikleyiciler</strong> — "uygunsuzluk, ihlal, baret yok" gibi anahtar kelimeler. Bunlardan biri söylenince kural devreye girer.</p>
-          <p>• <strong>Otomatik Kayıt</strong> — "Oto Denetim" açıksa kural tetiklendiğinde Firestore'a otomatik Saha Denetimi kaydı oluşturulur.</p>
-          <p>• <strong>{firma}</strong> — Yanıt metninde bu kısım otomatik olarak aktif firma adına dönüşür.</p>
+        <div class="card-header"><div class="card-title">🔒 Multi-Tenant Veri İzolasyon Güvencesi</div></div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7;">
+          <p>• <strong>Sadece Yetkili Admin:</strong> Admin panele yalnızca <code>fsezer.mail@gmail.com</code> hesabı giriş yapabilir.</p>
+          <p>• <strong>Kullanıcı Paket Yönetimi:</strong> Uygulamayı indiren kullanıcıların Ad-Soyad, Meslek ve Şehir bilgilerini kaydedebilir; Uzman AI, Görsel AI (Resim Okuma) ve Sorgu Limitlerini dinamik olarak tanımlayabilirsiniz.</p>
+          <p>• <strong>Sıfır APK Build Zorunluluğu:</strong> Mobil uygulamaya kod yazmaya gerek kalmadan, yeni müşteri erişimleri ve AI kuralları anında Firestore üzerinden aktifleştirilir.</p>
+          <p>• <strong>Kullanıcı Gizliliği:</strong> Kullanıcıların saha kayıtları ve firma verileri tamamen kendilerine özeldir, başka kullanıcılar tarafından görüntülenemez.</p>
         </div>
       </div>
+    </div>
+
+    <!-- MÜŞTERİ YÖNETİMİ -->
+    <div class="tab-content" id="tab-users">
+      <div class="page-header-row">
+        <div><div class="page-title">👤 Müşteri & Paket Yönetimi</div><div class="page-subtitle">Uygulamaya erişim izni verilen İSG Uzmanları ve paket tanımları</div></div>
+        <button class="btn btn-primary" onclick="openUserModal()">+ Müşteri Ekle</button>
+      </div>
+      <div class="privacy-notice">
+        🛡️ <strong>SaaS Lisanslama & Yetkilendirme:</strong> Buradan yeni eklediğiniz müşteriler mobil uygulamayı indirdiğinde Google ile giriş yaparak sistemi kullanmaya başlayabilir. Paket seçeneklerini (Görsel AI, Uzman AI, Limit) istediğiniz zaman değiştirebilirsiniz.
+      </div>
+      <div id="users-list"></div>
     </div>
 
     <!-- AI KURALLARI -->
     <div class="tab-content" id="tab-rules">
       <div class="page-header-row">
-        <div><div class="page-title">🤖 AI Kuralları</div><div class="page-subtitle">Mobil uygulamayı build almadan eğitin</div></div>
+        <div><div class="page-title">🤖 AI Kural Motoru</div><div class="page-subtitle">Yapay zekanın komutlara nasıl tepki vereceğini dinamik olarak eğitin</div></div>
         <button class="btn btn-primary" onclick="openRuleModal()">+ Yeni Kural</button>
+      </div>
+      <div class="privacy-notice">
+        💡 <strong>Kural Türleri Rehberi:</strong><br>
+        • <strong>⚡ Aksiyon Kuralları:</strong> Kullanıcı 'denetim aç', 'ihlal kaydet' dediğinde Firestore'a otomatik Saha Denetim Formu oluşturur.<br>
+        • <strong>⛔ Engelleme Kuralları:</strong> 'siyaset', 'netten bak' gibi konularda dış arama yapmayı kısıtlar ve uyarı verir.<br>
+        • <strong>📚 Mevzuat Kuralları:</strong> Yöneticinin panelden yazdığı özel 6331 İSG kanunu ve yönetmelik metinlerini söyler.
       </div>
       <div id="rules-list"></div>
     </div>
 
-    <!-- KULLANICILAR -->
-    <div class="tab-content" id="tab-users">
-      <div class="page-header-row">
-        <div><div class="page-title">👤 Kayıtlı Kullanıcılar</div><div class="page-subtitle">Uygulamaya giriş izni verilen kullanıcılar — sadece erişim yönetimi</div></div>
-        <button class="btn btn-primary" onclick="openUserModal()">+ Kullanıcı Ekle</button>
-      </div>
-      <div class="privacy-notice">
-        🔒 <span><strong>Gizlilik Notu:</strong> Bu ekranda yalnızca kullanıcıların e-posta adresi ve erişim durumu görünmektedir. Kullanıcılara ait firma bilgileri, denetim kayıtları veya kişisel veriler admin panelinde görüntülenmez ve gösterilmez.</span>
-      </div>
-      <div id="users-list"></div>
-    </div>
   </main>
+</div>
+
+<!-- USER MODAL -->
+<div class="modal-bg" id="user-modal">
+  <div class="modal">
+    <div class="modal-title" id="user-modal-title">Müşteri / Kullanıcı Tanımla</div>
+    <div class="form-group"><label class="form-label">Gmail Adresi (Zorunlu)</label><input type="email" class="form-control" id="user-email-input" placeholder="uzman@gmail.com" /></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" /></div>
+      <div class="form-group"><label class="form-label">Şehir</label><input type="text" class="form-control" id="user-sehir" placeholder="İstanbul" /></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Meslek / Unvan</label>
+      <select class="form-control" id="user-meslek">
+        <option value="A Sınıfı İSG Uzmanı">A Sınıfı İSG Uzmanı</option>
+        <option value="B Sınıfı İSG Uzmanı">B Sınıfı İSG Uzmanı</option>
+        <option value="C Sınıfı İSG Uzmanı">C Sınıfı İSG Uzmanı</option>
+        <option value="İş Yeri Hekimi">İş Yeri Hekimi</option>
+        <option value="Diğer Sağlık Personeli">Diğer Sağlık Personeli</option>
+        <option value="Saha İSG Yöneticisi">Saha İSG Yöneticisi</option>
+      </select>
+    </div>
+    
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;">🎁 Paket & Modül İzinleri</div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">🟢 Uygulama Erişim İzni</span><span class="toggle-sub">Giriş yapabilir mi?</span></div>
+        <div class="toggle on" id="tog-aktif" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">🤖 Uzman AI Sohbeti</span><span class="toggle-sub">6331 Mevzuat asistanı</span></div>
+        <div class="toggle on" id="tog-uzman" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">📸 Görsel AI (Resim Okuma)</span><span class="toggle-sub">Fotoğraftan İSG analizi</span></div>
+        <div class="toggle on" id="tog-resim" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">🎙️ Sesli AI Komutları</span><span class="toggle-sub">Mikrofonla sesli kayıt</span></div>
+        <div class="toggle on" id="tog-sesli" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">AI Sorgu Limiti</label>
+      <input type="number" class="form-control" id="user-limit" placeholder="-1 (Sınırsız) veya ör: 50" value="-1" />
+      <div class="form-hint">-1 girerseniz sınırsız hak verilir. Sayı girerseniz sorgu sayısı o limite ulaşınca durur.</div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal('user-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveUser()">Kaydet & İzin Ver</button>
+    </div>
+  </div>
 </div>
 
 <!-- RULE MODAL -->
 <div class="modal-bg" id="rule-modal">
   <div class="modal">
     <div class="modal-title" id="rule-modal-title">Yeni AI Kuralı</div>
-    <div class="form-group"><label class="form-label">Kural Adı (not amaçlı)</label><input type="text" class="form-control" id="rule-name" placeholder="ör: Yangın Tüpü Uygunsuzluk" /></div>
+    <div class="form-group"><label class="form-label">Kural Tanımı (Not Amaçlı)</label><input type="text" class="form-control" id="rule-name" placeholder="ör: Baret İhlali Otomatik Saha Kaydı" /></div>
     <div class="form-group">
-      <label class="form-label">Tetikleyici Kelimeler</label>
-      <input type="text" class="form-control" id="rule-keywords" placeholder="kelime1, kelime2, kelime3" />
-      <div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural devreye girer.</div>
+      <label class="form-label">Tetikleyici Anahtar Kelimeler</label>
+      <input type="text" class="form-control" id="rule-keywords" placeholder="baret yok, kkd eksik, ihlal var" />
+      <div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural çalışır.</div>
     </div>
-    <div class="form-group"><label class="form-label">Yanıt Metni</label><textarea class="form-control" id="rule-response" placeholder="Kullanıcıya gösterilecek cevap. {firma} yazarsanız firma adına dönüşür."></textarea></div>
+    <div class="form-group"><label class="form-label">Yanıt / Şablon Metni</label><textarea class="form-control" id="rule-response" placeholder="Kullanıcıya verilecek cevap. {firma} otomatik firma adıyla değiştirilir."></textarea></div>
     <div class="form-group">
-      <div class="toggle-row"><span class="toggle-label">⚡ Otomatik Saha Denetimi Kaydı Oluştur</span><div class="toggle" id="toggle-auto" onclick="this.classList.toggle('on')"></div></div>
-      <div class="form-hint" style="margin-top:6px;">Açıksa, kural tetiklendiğinde Firestore'a otomatik kayıt eklenir.</div>
+      <div class="toggle-row">
+        <div><span class="toggle-label">⚡ Otomatik Saha Denetim Kaydı Aç</span><span class="toggle-sub">Kural tetiklenince Firestore'a Saha Kaydı doldurur</span></div>
+        <div class="toggle" id="rule-toggle-auto" onclick="this.classList.toggle('on')"></div>
+      </div>
     </div>
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
-      <button class="btn btn-ghost" onclick="closeModal('rule-modal')">İptal</button>
-      <button class="btn btn-primary" onclick="saveRule()">Kaydet</button>
-    </div>
-  </div>
-</div>
-
-<!-- USER MODAL -->
-<div class="modal-bg" id="user-modal">
-  <div class="modal">
-    <div class="modal-title">Kullanıcı Ekle / Erişim Ver</div>
-    <div class="privacy-notice" style="margin-bottom:16px;">
-      🔒 <span>Sadece giriş izni tanımlanır. Kullanıcının kendi verileri (firma, kayıt vb.) yalnızca o kullanıcıya aittir.</span>
-    </div>
-    <div class="form-group"><label class="form-label">Gmail Adresi</label><input type="email" class="form-control" id="user-email-input" placeholder="kullanici@gmail.com" /></div>
-    <div class="form-group"><label class="form-label">Not (opsiyonel)</label><input type="text" class="form-control" id="user-note" placeholder="ör: Emre — Saha İSG Uzmanı" /></div>
     <div style="display:flex;gap:10px;justify-content:flex-end;">
-      <button class="btn btn-ghost" onclick="closeModal('user-modal')">İptal</button>
-      <button class="btn btn-primary" onclick="saveUser()">Erişim Ver</button>
+      <button class="btn btn-ghost" onclick="closeModal('rule-modal')">İptal</button>
+      <button class="btn btn-primary" onclick="saveRule()">Kuralı Kaydet</button>
     </div>
   </div>
 </div>
@@ -275,7 +335,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Firebase Web App Config (isg-pusulasi projesi — Web uygulaması)
 const firebaseConfig = {
   apiKey: "AIzaSyB0-AXpS6ZLv5p303lW1-73r9_f4yTUPHQ",
   authDomain: "isg-pusulasi.firebaseapp.com",
@@ -290,13 +349,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const ADMIN_EMAILS = ["fsezer.mail@gmail.com", "fsezer.com@gmail.com", "admin@istiklalyazilim.com"];
+// Sadece TEK SÜPER ADMİN!
+const SUPER_ADMIN_EMAIL = "fsezer.mail@gmail.com";
 let editingRuleId = null;
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = (user.email || "").toLowerCase();
-    if (!ADMIN_EMAILS.includes(email)) {
+    if (email !== SUPER_ADMIN_EMAIL) {
       await fbSignOut(auth);
       document.getElementById("login-denied").style.display = "block";
       return;
@@ -314,11 +374,11 @@ window.doSignOut = async () => { await fbSignOut(auth); showLogin(); };
 function showApp(user) {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("app").style.display = "block";
-  document.getElementById("user-name").textContent = user.displayName || "Admin";
+  document.getElementById("user-name").textContent = user.displayName || "Fatih Sezer";
   document.getElementById("user-email-small").textContent = user.email;
   const av = document.getElementById("user-avatar");
   if (user.photoURL) av.innerHTML = `<img src="${user.photoURL}" />`;
-  else av.textContent = (user.displayName || "A").charAt(0).toUpperCase();
+  else av.textContent = "A";
 }
 function showLogin() {
   document.getElementById("login-screen").style.display = "flex";
@@ -332,33 +392,177 @@ window.showTab = (tab) => {
   document.getElementById("nav-" + tab).classList.add("active");
 };
 
-async function loadAll() { await Promise.all([loadRules(), loadUsers()]); }
+async function loadAll() { await Promise.all([loadUsers(), loadRules()]); }
+
+/* ── MÜŞTERİ & KULLANICI YÖNETİMİ ── */
+async function loadUsers() {
+  const c = document.getElementById("users-list");
+  c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
+  try {
+    const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
+    let usersList = [];
+    let countAi = 0, countVision = 0;
+
+    snap.forEach(ds => {
+      // Admini listede gösterme
+      if (ds.id.toLowerCase() !== SUPER_ADMIN_EMAIL) {
+        const d = ds.data();
+        usersList.push({ id: ds.id, ...d });
+        if (d.uzmanAi !== false) countAi++;
+        if (d.resimAi === true) countVision++;
+      }
+    });
+
+    document.getElementById("stat-users").textContent = usersList.length;
+    document.getElementById("stat-ai-users").textContent = countAi;
+    document.getElementById("stat-vision-users").textContent = countVision;
+
+    if (usersList.length === 0) {
+      c.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Henüz tanımlı müşteri yok.<br>Sağ üstten "+ Müşteri Ekle" butonunu kullanın.</p></div>`;
+      return;
+    }
+
+    c.innerHTML = "";
+    usersList.forEach(u => {
+      const email = u.id;
+      const ad = u.adSoyad || "İsimsiz Uzman";
+      const meslek = u.meslek || "İSG Uzmanı";
+      const sehir = u.sehir || "Belirtilmedi";
+      const aktif = u.aktif !== false;
+      const resimAi = u.resimAi === true;
+      const uzmanAi = u.uzmanAi !== false;
+      const sesliAi = u.sesliAi !== false;
+      const limit = u.aiSorguLimiti ?? -1;
+      const kullanilan = u.kullanilanSorgu ?? 0;
+      const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
+
+      c.innerHTML += `
+        <div class="user-card-item">
+          <div class="user-card-header">
+            <div class="user-main-info">
+              <div class="user-avatar-lg">${ad.charAt(0).toUpperCase()}</div>
+              <div>
+                <div class="user-name-text">${esc(ad)}</div>
+                <div class="user-meta-text">✉️ ${esc(email)} • 🏢 ${esc(meslek)} (${esc(sehir)})</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="badge ${aktif ? "badge-success" : "badge-danger"}">${aktif ? "✓ Erişimi Açık" : "✗ Pasif"}</span>
+              <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div class="tier-badges">
+              ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
+              ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
+              ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
+            </div>
+            <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
+          </div>
+        </div>`;
+    });
+  } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
+}
+
+window.openUserModal = () => {
+  document.getElementById("user-modal-title").textContent = "Müşteri / Kullanıcı Tanımla";
+  document.getElementById("user-email-input").disabled = false;
+  ["user-email-input","user-adsoyad","user-sehir"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("user-meslek").selectedIndex = 0;
+  document.getElementById("user-limit").value = "-1";
+  ["tog-aktif","tog-uzman","tog-resim","tog-sesli"].forEach(id => document.getElementById(id).classList.add("on"));
+  document.getElementById("user-modal").classList.add("open");
+};
+
+window.editUser = async (email) => {
+  try {
+    const ds = await getDoc(doc(db,"yetkili_kullanicilar",email));
+    if (!ds.exists()) return;
+    const d = ds.data();
+    document.getElementById("user-modal-title").textContent = "Müşteri Paketini Düzenle";
+    const emInput = document.getElementById("user-email-input");
+    emInput.value = email;
+    emInput.disabled = true;
+
+    document.getElementById("user-adsoyad").value = d.adSoyad || "";
+    document.getElementById("user-sehir").value = d.sehir || "";
+    if (d.meslek) document.getElementById("user-meslek").value = d.meslek;
+    document.getElementById("user-limit").value = d.aiSorguLimiti ?? -1;
+
+    setTog("tog-aktif", d.aktif !== false);
+    setTog("tog-uzman", d.uzmanAi !== false);
+    setTog("tog-resim", d.resimAi === true);
+    setTog("tog-sesli", d.sesliAi !== false);
+
+    document.getElementById("user-modal").classList.add("open");
+  } catch(e) { toast(e.message,"error"); }
+};
+
+function setTog(id, val) {
+  const el = document.getElementById(id);
+  if (val) el.classList.add("on"); else el.classList.remove("on");
+}
+
+window.saveUser = async () => {
+  const email = document.getElementById("user-email-input").value.trim().toLowerCase();
+  if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.","error"); return; }
+
+  const ad = document.getElementById("user-adsoyad").value.trim();
+  const sehir = document.getElementById("user-sehir").value.trim();
+  const meslek = document.getElementById("user-meslek").value;
+  const limit = parseInt(document.getElementById("user-limit").value) || -1;
+
+  const data = {
+    email,
+    adSoyad: ad,
+    sehir,
+    meslek,
+    aktif: document.getElementById("tog-aktif").classList.contains("on"),
+    uzmanAi: document.getElementById("tog-uzman").classList.contains("on"),
+    resimAi: document.getElementById("tog-resim").classList.contains("on"),
+    sesliAi: document.getElementById("tog-sesli").classList.contains("on"),
+    aiSorguLimiti: limit,
+    guncelleme: serverTimestamp()
+  };
+
+  try {
+    await setDoc(doc(db,"yetkili_kullanicilar",email), data, { merge: true });
+    toast("Müşteri hesabı ve paket izinleri güncellendi! ✅");
+    closeModal("user-modal"); loadUsers();
+  } catch(e) { toast(e.message,"error"); }
+};
+
+window.deleteUser = async (email) => {
+  if (!confirm(`${email} müşterisinin erişimini kaldırmak istiyor musunuz?`)) return;
+  try { await deleteDoc(doc(db,"yetkili_kullanicilar",email)); toast("Müşteri silindi."); loadUsers(); }
+  catch(e) { toast(e.message,"error"); }
+};
 
 /* ── AI KURALLARI ── */
 async function loadRules() {
   const c = document.getElementById("rules-list");
-  c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
+  c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
-    const snap = await getDocs(collection(db, "UzmanKurallar"));
+    const snap = await getDocs(collection(db,"UzmanKurallar"));
     document.getElementById("stat-rules").textContent = snap.size;
-    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz AI kuralı eklenmedi.<br>Sağ üstten "Yeni Kural" ekleyin.</p></div>`; return; }
+    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok.</p></div>`; return; }
     c.innerHTML = "";
     snap.forEach(ds => {
-      const d = ds.data();
-      const kw = (d.tetikleyiciler || []);
-      const auto = d.oto_denetim === true;
-      c.innerHTML += `<div class="rule-item">
-        <div class="rule-item-header">
-          <div class="rule-item-title">${esc(d.kural_adi || "Kural")}</div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            ${auto ? '<span class="badge badge-success">⚡ Oto Denetim</span>' : '<span class="badge badge-gray">📝 Sadece Yanıt</span>'}
-            <button class="btn btn-ghost btn-sm" onclick="editRule('${ds.id}')">✏️</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteRule('${ds.id}')">🗑️</button>
+      const d = ds.data(); const kw = d.tetikleyiciler || []; const auto = d.oto_denetim === true;
+      c.innerHTML += `
+        <div class="rule-item">
+          <div class="rule-item-header">
+            <div class="rule-item-title">${esc(d.kural_adi || "Kural")}</div>
+            <div style="display:flex;gap:6px;align-items:center;">
+              ${auto ? '<span class="badge badge-success">⚡ Oto Saha Denetim Kaydı</span>' : '<span class="badge badge-gray">📚 Mevzuat / Şablon Yanıt</span>'}
+              <button class="btn btn-ghost btn-sm" onclick="editRule('${ds.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteRule('${ds.id}')">🗑️</button>
+            </div>
           </div>
-        </div>
-        <div class="rule-tags">${kw.map(k=>`<span class="tag">${esc(k)}</span>`).join("")}</div>
-        <div class="rule-response">${esc(d.yanit || "")}</div>
-      </div>`;
+          <div class="rule-tags">${kw.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div>
+          <div class="rule-response">${esc(d.yanit || "")}</div>
+        </div>`;
     });
   } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
 }
@@ -367,105 +571,49 @@ window.openRuleModal = () => {
   editingRuleId = null;
   document.getElementById("rule-modal-title").textContent = "Yeni AI Kuralı";
   ["rule-name","rule-keywords","rule-response"].forEach(id => document.getElementById(id).value = "");
-  document.getElementById("toggle-auto").classList.remove("on");
+  document.getElementById("rule-toggle-auto").classList.remove("on");
   document.getElementById("rule-modal").classList.add("open");
 };
+
 window.editRule = async (id) => {
   try {
-    const ds = await getDoc(doc(db, "UzmanKurallar", id));
+    const ds = await getDoc(doc(db,"UzmanKurallar",id));
     if (!ds.exists()) return;
     const d = ds.data(); editingRuleId = id;
-    document.getElementById("rule-modal-title").textContent = "Kuralı Düzenle";
+    document.getElementById("rule-modal-title").textContent = "AI Kuralını Düzenle";
     document.getElementById("rule-name").value = d.kural_adi || "";
     document.getElementById("rule-keywords").value = (d.tetikleyiciler || []).join(", ");
     document.getElementById("rule-response").value = d.yanit || "";
-    const tog = document.getElementById("toggle-auto");
-    d.oto_denetim ? tog.classList.add("on") : tog.classList.remove("on");
+    setTog("rule-toggle-auto", d.oto_denetim === true);
     document.getElementById("rule-modal").classList.add("open");
   } catch(e) { toast(e.message,"error"); }
 };
+
 window.saveRule = async () => {
   const name = document.getElementById("rule-name").value.trim();
   const kwRaw = document.getElementById("rule-keywords").value;
   const response = document.getElementById("rule-response").value.trim();
-  const auto = document.getElementById("toggle-auto").classList.contains("on");
-  if (!name || !kwRaw || !response) { toast("Tüm alanları doldurun.","error"); return; }
-  const keywords = kwRaw.split(",").map(k=>k.trim().toLowerCase()).filter(Boolean);
+  const auto = document.getElementById("rule-toggle-auto").classList.contains("on");
+  if (!name || !kwRaw || !response) { toast("Lütfen tüm alanları doldurun.","error"); return; }
+
+  const keywords = kwRaw.split(",").map(k => k.trim().toLowerCase()).filter(Boolean);
   const data = { kural_adi: name, tetikleyiciler: keywords, yanit: response, oto_denetim: auto, guncelleme: serverTimestamp() };
+
   try {
-    if (editingRuleId) { await setDoc(doc(db,"UzmanKurallar",editingRuleId), data, {merge:true}); toast("Kural güncellendi! ✅"); }
-    else { await addDoc(collection(db,"UzmanKurallar"), data); toast("Yeni kural eklendi! 🎉"); }
+    if (editingRuleId) {
+      await setDoc(doc(db,"UzmanKurallar",editingRuleId), data, { merge: true });
+      toast("AI Kuralı güncellendi! ✅");
+    } else {
+      await addDoc(collection(db,"UzmanKurallar"), data);
+      toast("Yeni AI Kuralı eklendi! 🎉");
+    }
     closeModal("rule-modal"); loadRules();
   } catch(e) { toast(e.message,"error"); }
 };
+
 window.deleteRule = async (id) => {
-  if (!confirm("Bu kuralı silmek istiyor musunuz?")) return;
+  if (!confirm("Bu AI kuralını silmek istiyor musunuz?")) return;
   try { await deleteDoc(doc(db,"UzmanKurallar",id)); toast("Kural silindi."); loadRules(); }
-  catch(e) { toast(e.message,"error"); }
-};
-
-/* ── KAYITLI KULLANICILAR — Admin emailler hariç, sadece uygulama kullanıcıları ── */
-async function loadUsers() {
-  const c = document.getElementById("users-list");
-  c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
-  try {
-    const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
-    // Admin emaillerini filtrele — bunlar zaten yetkili, listede görünmesin
-    const kullanicilar = [];
-    snap.forEach(ds => {
-      if (!ADMIN_EMAILS.includes(ds.id.toLowerCase())) {
-        kullanicilar.push(ds);
-      }
-    });
-    document.getElementById("stat-users").textContent = kullanicilar.length;
-    if (kullanicilar.length === 0) {
-      c.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Kayıtlı uygulama kullanıcısı yok.<br>"Kullanıcı Ekle" ile başlayın.</p></div>`;
-      return;
-    }
-    c.innerHTML = "";
-    kullanicilar.forEach(ds => {
-      const d = ds.data(); const email = ds.id;
-      const aktif = d.aktif !== false;
-      const note = d.not || "";
-      c.innerHTML += `<div class="user-item">
-        <div class="user-item-avatar">${email.charAt(0).toUpperCase()}</div>
-        <div class="user-item-info">
-          <div class="user-item-email">${esc(email)}</div>
-          ${note ? `<div class="user-item-meta">${esc(note)}</div>` : ""}
-        </div>
-        <div class="user-item-actions">
-          <span class="badge ${aktif ? "badge-success" : "badge-danger"}">${aktif ? "✓ Aktif" : "✗ Pasif"}</span>
-          <button class="btn btn-warning btn-sm" onclick="toggleUserStatus('${esc(email)}', ${aktif})">${aktif ? "Pasifleştir" : "Aktifleştir"}</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
-        </div>
-      </div>`;
-    });
-  } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
-}
-
-window.openUserModal = () => {
-  ["user-email-input","user-note"].forEach(id=>document.getElementById(id).value="");
-  document.getElementById("user-modal").classList.add("open");
-};
-window.saveUser = async () => {
-  const email = document.getElementById("user-email-input").value.trim().toLowerCase();
-  const note = document.getElementById("user-note").value.trim();
-  if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.","error"); return; }
-  try {
-    await setDoc(doc(db,"yetkili_kullanicilar",email), { email, aktif:true, not:note, eklenme:serverTimestamp() });
-    toast("Kullanıcı eklendi, erişim verildi ✅"); closeModal("user-modal"); loadUsers();
-  } catch(e) { toast(e.message,"error"); }
-};
-window.toggleUserStatus = async (email, isCurrentlyActive) => {
-  try {
-    await setDoc(doc(db,"yetkili_kullanicilar",email), { aktif: !isCurrentlyActive }, {merge:true});
-    toast(isCurrentlyActive ? "Kullanıcı pasifleştirildi." : "Kullanıcı aktifleştirildi. ✅");
-    loadUsers();
-  } catch(e) { toast(e.message,"error"); }
-};
-window.deleteUser = async (email) => {
-  if (!confirm(`${email} kullanıcısının erişimini tamamen kaldırmak istiyor musunuz?`)) return;
-  try { await deleteDoc(doc(db,"yetkili_kullanicilar",email)); toast("Kullanıcı silindi."); loadUsers(); }
   catch(e) { toast(e.message,"error"); }
 };
 
