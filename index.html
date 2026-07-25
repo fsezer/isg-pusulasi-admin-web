@@ -290,7 +290,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const ADMIN_EMAILS = ["fsezer.mail@gmail.com", "admin@istiklalyazilim.com"];
+const ADMIN_EMAILS = ["fsezer.mail@gmail.com", "fsezer.com@gmail.com", "admin@istiklalyazilim.com"];
 let editingRuleId = null;
 
 onAuthStateChanged(auth, async (user) => {
@@ -404,16 +404,26 @@ window.deleteRule = async (id) => {
   catch(e) { toast(e.message,"error"); }
 };
 
-/* ── KAYITLI KULLANICILAR — Sadece email + erişim durumu ── */
+/* ── KAYITLI KULLANICILAR — Admin emailler hariç, sadece uygulama kullanıcıları ── */
 async function loadUsers() {
   const c = document.getElementById("users-list");
   c.innerHTML = `<div style="text-align:center;padding:20px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
-    document.getElementById("stat-users").textContent = snap.size;
-    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Kayıtlı kullanıcı yok.</p></div>`; return; }
-    c.innerHTML = "";
+    // Admin emaillerini filtrele — bunlar zaten yetkili, listede görünmesin
+    const kullanicilar = [];
     snap.forEach(ds => {
+      if (!ADMIN_EMAILS.includes(ds.id.toLowerCase())) {
+        kullanicilar.push(ds);
+      }
+    });
+    document.getElementById("stat-users").textContent = kullanicilar.length;
+    if (kullanicilar.length === 0) {
+      c.innerHTML = `<div class="empty-state"><div class="empty-icon">👤</div><p>Kayıtlı uygulama kullanıcısı yok.<br>"Kullanıcı Ekle" ile başlayın.</p></div>`;
+      return;
+    }
+    c.innerHTML = "";
+    kullanicilar.forEach(ds => {
       const d = ds.data(); const email = ds.id;
       const aktif = d.aktif !== false;
       const note = d.not || "";
