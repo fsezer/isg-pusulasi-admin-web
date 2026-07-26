@@ -175,7 +175,9 @@
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
       <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetki Yönetimi</div>
-      <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> AI Kuralları</div>
+      <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> AI Kural Motoru</div>
+      <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span> AI Kullanım Analitiği</div>
+      <div class="nav-item" onclick="showTab('settings')" id="nav-settings"><span class="icon">⚙️</span> Sistem Ayarları</div>
     </div>
     <div class="sidebar-footer">
       <div class="user-card">
@@ -212,7 +214,7 @@
       <div class="card">
         <div class="card-header"><div class="card-title">🔒 Multi-Tenant Veri İzolasyon Güvencesi</div></div>
         <div style="font-size:13px;color:var(--text2);line-height:1.7;">
-          <p>• <strong>Sadece Yetkili Admin:</strong> Admin panele yalnızca <code>fsezer.mail@gmail.com</code> hesabı giriş yapabilir.</p>
+          <p>• <strong>Sadece Yetkili Admin:</strong> Admin panele yalnızca Sistem Ayarlarında tanımlı SuperAdmin hesapları giriş yapabilir.</p>
           <p>• <strong>Kullanıcı Paket Yönetimi:</strong> Uygulamayı indiren kullanıcıların Ad-Soyad, Meslek ve Şehir bilgilerini kaydedebilir; Uzman AI, Görsel AI (Resim Okuma) ve Sorgu Limitlerini dinamik olarak tanımlayabilirsiniz.</p>
           <p>• <strong>Sıfır APK Build Zorunluluğu:</strong> Mobil uygulamaya kod yazmaya gerek kalmadan, yeni müşteri erişimleri ve AI kuralları anında Firestore üzerinden aktifleştirilir.</p>
           <p>• <strong>Kullanıcı Gizliliği:</strong> Kullanıcıların saha kayıtları ve firma verileri tamamen kendilerine özeldir, başka kullanıcılar tarafından görüntülenemez.</p>
@@ -238,9 +240,45 @@
     <!-- AI KURALLARI -->
     <div class="tab-content" id="tab-rules">
       <div class="page-header-row">
-        <div><div class="page-title">🤖 AI Kural Motoru</div><div class="page-subtitle">Yapay zekanın komutlara nasıl tepki vereceğini dinamik olarak eğitin</div></div>
+        <div><div class="page-title">🤖 AI Kural & Davranış Motoru</div><div class="page-subtitle">Yapay zekanın üslubunu, görsel yükleme politikasını ve komut tepkilerini tam kontrol edin</div></div>
         <button class="btn btn-primary" onclick="openRuleModal()">+ Yeni Kural</button>
       </div>
+
+      <!-- GENEL AI DAVRANIŞ & AKIŞ KONTROL KARTI -->
+      <div class="card" style="border: 1px solid rgba(245,158,11,0.3); background: rgba(17,24,39,0.95);">
+        <div class="card-header"><div class="card-title" style="color:var(--accent);">🎛️ Genel AI Davranış & Orkestrasyon Ayarları</div></div>
+        
+        <div class="form-group">
+          <label class="form-label">🧠 Genel AI Sistem Promptu (Persona & Üslup Talimatı)</label>
+          <textarea class="form-control" id="ai-global-prompt" placeholder="Sen UZMAN İSG Danışmanısın..."></textarea>
+          <div class="form-hint">Bu talimat mobil uygulamadaki UZMAN yapay zekasının ana rolünü ve üslubunu belirler.</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">📸 Görsel Yükleme Davranış Politikası</label>
+            <select class="form-control" id="ai-image-policy">
+              <option value="teyit_sor">❓ Önce Teyit Sor ("Görsel alındı. Ne yapmamı istersiniz?")</option>
+              <option value="direkt_analiz">⚡ Direkt Otomatik Analiz Et</option>
+            </select>
+            <div class="form-hint">Kullanıcı fotoğraf yüklediğinde sistemin vereceği varsayılan tepki.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">⚡ Otomatik Saha Kaydı Onay Politikası</label>
+            <select class="form-control" id="ai-action-policy">
+              <option value="onay_iste">✋ Önce Teyit / Kullanıcı Onayı İste</option>
+              <option value="direkt_kaydet">🚀 Direkt Otomatik Veritabanına Kaydet</option>
+            </select>
+            <div class="form-hint">"Saha kaydet" dendiğinde direkt mi kaydetsin yoksa onay mı istesin?</div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="btn btn-success" onclick="saveAiSettings()">💾 AI Orkestrasyon Ayarlarını Kaydet</button>
+        </div>
+      </div>
+
       <div class="privacy-notice">
         💡 <strong>Kural Türleri Rehberi:</strong><br>
         • <strong>⚡ Aksiyon Kuralları:</strong> Kullanıcı 'denetim aç', 'ihlal kaydet' dediğinde Firestore'a otomatik Saha Denetim Formu oluşturur.<br>
@@ -248,6 +286,46 @@
         • <strong>📚 Mevzuat Kuralları:</strong> Yöneticinin panelden yazdığı özel 6331 İSG kanunu ve yönetmelik metinlerini söyler.
       </div>
       <div id="rules-list"></div>
+    </div>
+
+    <!-- AI KULLANIM ANALİTİĞİ -->
+    <div class="tab-content" id="tab-analytics">
+      <div class="page-header-row">
+        <div><div class="page-title">📈 AI Kullanım & Sorgu Analitiği</div><div class="page-subtitle">Müşterilerin canlı AI kullanım istatistikleri, sorgu kotaları ve modül performans raporları</div></div>
+        <button class="btn btn-ghost" onclick="loadAnalytics()">🔄 İstatistikleri Yenile</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="stat-total-queries">0</div><div class="stat-label">Toplam İşlenen AI Sorgusu</div></div>
+        <div class="stat-card"><div class="stat-icon">♾️</div><div class="stat-value" id="stat-unlimited-users">0</div><div class="stat-label">Sınırsız Paketli Müşteriler</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-limited-users">0</div><div class="stat-label">Kotaya Bağlı Müşteriler</div></div>
+        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="stat-quota-exceeded">0</div><div class="stat-label">Kotası Dolan Müşteriler</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">📊 Müşteri AI Sorgu & Kota Kullanım Detayları</div></div>
+        <div id="analytics-table-container"></div>
+      </div>
+    </div>
+
+    <!-- SİSTEM AYARLARI -->
+    <div class="tab-content" id="tab-settings">
+      <div class="page-header">
+        <div class="page-title">⚙️ Sistem Ayarları</div>
+        <div class="page-subtitle">SuperAdmin hesap yönetimi. En az 1 SuperAdmin zorunludur.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">👑 SuperAdmin Hesapları</div></div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Bu listedeki e-posta adresleri admin paneline giriş yapabilir. En az 1 SuperAdmin her zaman zorunludur.</div>
+        <div id="superadmin-list" style="margin-bottom:16px;"></div>
+        <div style="display:flex;gap:10px;align-items:flex-end;">
+          <div class="form-group" style="flex:1;margin-bottom:0;">
+            <label class="form-label">Yeni SuperAdmin E-posta Adresi</label>
+            <input type="email" id="new-superadmin-email" class="form-control" placeholder="admin@gmail.com" />
+          </div>
+          <button class="btn btn-primary" onclick="addSuperAdmin()">+ Ekle</button>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -310,20 +388,53 @@
 <!-- RULE MODAL -->
 <div class="modal-bg" id="rule-modal">
   <div class="modal">
-    <div class="modal-title" id="rule-modal-title">Yeni AI Kuralı</div>
-    <div class="form-group"><label class="form-label">Kural Tanımı (Not Amaçlı)</label><input type="text" class="form-control" id="rule-name" placeholder="ör: Baret İhlali Otomatik Saha Kaydı" /></div>
-    <div class="form-group">
-      <label class="form-label">Tetikleyici Anahtar Kelimeler</label>
-      <input type="text" class="form-control" id="rule-keywords" placeholder="baret yok, kkd eksik, ihlal var" />
-      <div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural çalışır.</div>
-    </div>
-    <div class="form-group"><label class="form-label">Yanıt / Şablon Metni</label><textarea class="form-control" id="rule-response" placeholder="Kullanıcıya verilecek cevap. {firma} otomatik firma adıyla değiştirilir."></textarea></div>
-    <div class="form-group">
-      <div class="toggle-row">
-        <div><span class="toggle-label">⚡ Otomatik Saha Denetim Kaydı Aç</span><span class="toggle-sub">Kural tetiklenince Firestore'a Saha Kaydı doldurur</span></div>
-        <div class="toggle" id="rule-toggle-auto" onclick="this.classList.toggle('on')"></div>
+    <div class="modal-title" id="rule-modal-title">Yeni AI Kuralı & Niyet Yönlendirmesi</div>
+    
+    <!-- HIZLI ÖRNEK ŞABLONLAR -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">💡 Hızlı Hazır Kural Şablonları (Tek Tıkla Doldur):</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm" type="button" onclick="fillRuleTemplate('ihlal')">⚡ Oto İhlal Kaydı</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="fillRuleTemplate('teyit')">❓ Teyitli Soru Sorma</button>
+        <button class="btn btn-ghost btn-sm" type="button" onclick="fillRuleTemplate('mevzuat')">📚 6331 Mevzuat Yanıtı</button>
       </div>
     </div>
+
+    <div class="form-group">
+      <label class="form-label">Kural Tanımı / Başlığı</label>
+      <input type="text" class="form-control" id="rule-name" placeholder="ör: Baret Eksikliği Denetim Kaydı" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tetikleyici Anahtar Kelimeler</label>
+      <input type="text" class="form-control" id="rule-keywords" placeholder="baret yok, kkd eksik, ihlal var, baret takmamış" />
+      <div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural çalışır.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Aksiyon & Tepki Türü</label>
+        <select class="form-control" id="rule-action-type">
+          <option value="otomatik_kaydet">⚡ Direkt Otomatik Saha Kaydı Aç</option>
+          <option value="teyit_sor">❓ Kullanıcıya Önce Teyit Sor</option>
+          <option value="ozel_yanit">📚 Sadece Özel Mevzuat/Şablon Yanıtı Ver</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Görsel Şartı</label>
+        <select class="form-control" id="rule-image-req">
+          <option value="farketsmez">📷 Fark Etmez (Resimli / Resimsiz)</option>
+          <option value="resim_zorunlu">🖼️ Sadece Fotoğraf Yüklendiğinde Çalışsın</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Yapay Zeka Yanıt / Şablon Metni</label>
+      <textarea class="form-control" id="rule-response" placeholder="Kullanıcıya verilecek cevap metni veya teyit sorusu. {firma} otomatik firma adı ile değiştirilir."></textarea>
+    </div>
+
     <div style="display:flex;gap:10px;justify-content:flex-end;">
       <button class="btn btn-ghost" onclick="closeModal('rule-modal')">İptal</button>
       <button class="btn btn-primary" onclick="saveRule()">Kuralı Kaydet</button>
@@ -352,14 +463,38 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Sadece TEK SÜPER ADMİN!
-const SUPER_ADMIN_EMAIL = "fsezer.mail@gmail.com";
 let editingRuleId = null;
+let superAdminList = [];
+
+async function loadSuperAdmins() {
+  try {
+    const snap = await getDoc(doc(db, "sistem_ayarlari", "superAdminlar"));
+    if (snap.exists()) {
+      superAdminList = snap.data().liste || [];
+    } else {
+      // İlk kurulum: mevcut giriş yapan kişiyi superadmin yap
+      superAdminList = [];
+    }
+  } catch(e) {
+    superAdminList = [];
+  }
+}
+
+async function isSuperAdmin(email) {
+  await loadSuperAdmins();
+  return superAdminList.map(e => e.toLowerCase()).includes((email || "").toLowerCase());
+}
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = (user.email || "").toLowerCase();
-    if (email !== SUPER_ADMIN_EMAIL) {
+    // SuperAdmin listesi yoksa ilk giriş yapan kişiyi superadmin yap (bootstrapping)
+    await loadSuperAdmins();
+    if (superAdminList.length === 0) {
+      superAdminList = [email];
+      await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+    }
+    if (!superAdminList.map(e => e.toLowerCase()).includes(email)) {
       await fbSignOut(auth);
       document.getElementById("login-denied").style.display = "block";
       return;
@@ -395,7 +530,182 @@ window.showTab = (tab) => {
   document.getElementById("nav-" + tab).classList.add("active");
 };
 
-async function loadAll() { await Promise.all([loadUsers(), loadRules()]); }
+async function loadAll() { await Promise.all([loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics()]); }
+
+/* ── AI KULLANIM ANALİTİĞİ ── */
+async function loadAnalytics() {
+  const container = document.getElementById("analytics-table-container");
+  if (!container) return;
+  container.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
+
+  try {
+    const snap = await getDocs(collection(db, "yetkili_kullanicilar"));
+    let totalQueries = 0;
+    let unlimitedCount = 0;
+    let limitedCount = 0;
+    let quotaExceededCount = 0;
+
+    let rowsHtml = `
+      <table style="width:100%;border-collapse:collapse;font-size:13px;text-align:left;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);color:var(--text2);font-size:12px;">
+            <th style="padding:12px 14px;">MÜŞTERİ / GMAIL</th>
+            <th style="padding:12px 14px;">AD SOYAD & MESLEK</th>
+            <th style="padding:12px 14px;">KULLANILAN / KOTA</th>
+            <th style="padding:12px 14px;">KULLANIM ORANI</th>
+            <th style="padding:12px 14px;">MODÜLLER</th>
+            <th style="padding:12px 14px;text-align:right;">İŞLEM</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    snap.forEach(ds => {
+      const d = ds.data();
+      const email = d.email || ds.id;
+      const ad = d.adSoyad || "İsimsiz Müşteri";
+      const meslek = d.meslek || "İSG Uzmanı";
+      const used = d.kullanilanSorgu || 0;
+      const limit = d.aiSorguLimiti ?? -1;
+
+      totalQueries += used;
+
+      let limitText = "";
+      let pct = 0;
+      let barColor = "var(--accent2)";
+
+      if (limit === -1) {
+        unlimitedCount++;
+        limitText = `${used} / ♾️ Sınırsız`;
+        pct = 100;
+      } else {
+        limitedCount++;
+        limitText = `${used} / ${limit}`;
+        pct = Math.min(100, Math.round((used / limit) * 100));
+        if (pct >= 100) {
+          quotaExceededCount++;
+          barColor = "var(--danger)";
+        } else if (pct > 75) {
+          barColor = "var(--accent)";
+        }
+      }
+
+      rowsHtml += `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+          <td style="padding:12px 14px;font-weight:600;">${esc(email)}</td>
+          <td style="padding:12px 14px;color:var(--text2);">${esc(ad)} <span style="font-size:11px;opacity:0.7;">(${esc(meslek)})</span></td>
+          <td style="padding:12px 14px;font-weight:700;color:var(--accent);">${limitText}</td>
+          <td style="padding:12px 14px;">
+            <div style="display:flex;align-items:center;gap:10px;width:140px;">
+              <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;">
+                <div style="width:${limit === -1 ? '100%' : pct + '%'};height:100%;background:${barColor};"></div>
+              </div>
+              <span style="font-size:11px;font-weight:600;min-width:32px;">${limit === -1 ? '♾️' : pct + '%'}</span>
+            </div>
+          </td>
+          <td style="padding:12px 14px;">
+            <div style="display:flex;gap:4px;">
+              ${d.uzmanAi !== false ? '<span class="badge badge-primary">🤖 Uzman</span>' : ''}
+              ${d.resimAi === true ? '<span class="badge badge-success">📸 Görsel</span>' : ''}
+              ${d.sesliAi !== false ? '<span class="badge badge-warning">🎙️ Sesli</span>' : ''}
+            </div>
+          </td>
+          <td style="padding:12px 14px;text-align:right;">
+            <button class="btn btn-ghost btn-sm" onclick="resetUserQueries('${esc(email)}')">🔄 Sıfırla</button>
+          </td>
+        </tr>
+      `;
+    });
+
+    rowsHtml += `</tbody></table>`;
+    container.innerHTML = rowsHtml;
+
+    document.getElementById("stat-total-queries").textContent = totalQueries;
+    document.getElementById("stat-unlimited-users").textContent = unlimitedCount;
+    document.getElementById("stat-limited-users").textContent = limitedCount;
+    document.getElementById("stat-quota-exceeded").textContent = quotaExceededCount;
+
+  } catch(e) {
+    container.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Analiz yükleme hatası: ${e.message}</p></div>`;
+  }
+}
+window.loadAnalytics = loadAnalytics;
+
+/* ── AI ORKESTRASYON & DAVRANIŞ AYARLARI ── */
+async function loadAiSettings() {
+  try {
+    const snap = await getDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"));
+    if (snap.exists()) {
+      const d = snap.data();
+      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen UZMAN İSG Danışmanısın. Sadece İSG ve saha denetim konularına yanıt ver. Alakasız konularda uyar.";
+      document.getElementById("ai-image-policy").value = d.imagePolicy || "teyit_sor";
+      document.getElementById("ai-action-policy").value = d.actionPolicy || "onay_iste";
+    }
+  } catch(e) {
+    console.error("AI Ayarları Yükleme Hatası:", e);
+  }
+}
+
+window.saveAiSettings = async () => {
+  const prompt = document.getElementById("ai-global-prompt").value.trim();
+  const imagePolicy = document.getElementById("ai-image-policy").value;
+  const actionPolicy = document.getElementById("ai-action-policy").value;
+
+  const data = {
+    systemPrompt: prompt || "Sen UZMAN İSG Danışmanısın. Sadece İSG ve saha denetim konularına yanıt ver. Alakasız konularda uyar.",
+    imagePolicy: imagePolicy,
+    actionPolicy: actionPolicy,
+    guncelleme: serverTimestamp()
+  };
+
+  try {
+    await setDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"), data, { merge: true });
+    toast("AI Davranış & Orkestrasyon Ayarları Güncellendi! 💾✅");
+  } catch(e) {
+    toast(e.message, "error");
+  }
+};
+
+/* ── SUPERADMIN YÖNETİMİ ── */
+async function renderSuperAdminList() {
+  const c = document.getElementById("superadmin-list");
+  if (!c) return;
+  await loadSuperAdmins();
+  if (superAdminList.length === 0) {
+    c.innerHTML = `<div class="empty-state"><p>SuperAdmin bulunamadı.</p></div>`;
+    return;
+  }
+  c.innerHTML = superAdminList.map(email => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:10px;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:600;">👑 ${esc(email)}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeSuperAdmin('${esc(email)}')">Kaldır</button>
+    </div>
+  `).join('');
+}
+
+window.addSuperAdmin = async () => {
+  const email = (document.getElementById("new-superadmin-email").value || "").trim().toLowerCase();
+  if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.", "error"); return; }
+  if (superAdminList.map(e => e.toLowerCase()).includes(email)) { toast("Bu e-posta zaten ekli.", "error"); return; }
+  superAdminList.push(email);
+  try {
+    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+    document.getElementById("new-superadmin-email").value = "";
+    toast("SuperAdmin eklendi! 👑");
+    renderSuperAdminList();
+  } catch(e) { toast(e.message, "error"); }
+};
+
+window.removeSuperAdmin = async (email) => {
+  if (superAdminList.length <= 1) { toast("En az 1 SuperAdmin zorunludur! Silinemez.", "error"); return; }
+  if (!confirm(`${email} adresini SuperAdmin listesinden kaldırmak istiyor musunuz?`)) return;
+  superAdminList = superAdminList.filter(e => e.toLowerCase() !== email.toLowerCase());
+  try {
+    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+    toast("SuperAdmin kaldırıldı.");
+    renderSuperAdminList();
+  } catch(e) { toast(e.message, "error"); }
+};
 
 /* ── MÜŞTERİ & KULLANICI YÖNETİMİ ── */
 async function loadUsers() {
@@ -408,7 +718,7 @@ async function loadUsers() {
     let countAi = 0, countVision = 0;
 
     snap.forEach(ds => {
-      if (ds.id.toLowerCase() !== SUPER_ADMIN_EMAIL) {
+      if (!superAdminList.map(e => e.toLowerCase()).includes(ds.id.toLowerCase())) {
         const d = ds.data();
         allUsersList.push({ id: ds.id, ...d });
         if (d.uzmanAi !== false) countAi++;
@@ -572,22 +882,54 @@ window.deleteUser = async (email) => {
 };
 
 /* ── AI KURALLARI ── */
+window.fillRuleTemplate = (type) => {
+  if (type === 'ihlal') {
+    document.getElementById("rule-name").value = "⚡ Baret & KKD İhlali Otomatik Saha Kaydı";
+    document.getElementById("rule-keywords").value = "baret yok, kkd eksik, ihlal var, baret takmamış, baret takmıyor";
+    document.getElementById("rule-action-type").value = "otomatik_kaydet";
+    document.getElementById("rule-image-req").value = "farketsmez";
+    document.getElementById("rule-response").value = "⚡ [{firma}] firması için Baret/KKD ihlali tespit edildi. Otomatik Saha Denetim Kaydı açıldı ve termin atandı.";
+  } else if (type === 'teyit') {
+    document.getElementById("rule-name").value = "❓ Yangın Tüpü Teyitli Soru Sorma";
+    document.getElementById("rule-keywords").value = "yangın tüpü, tüp son kullanma, tüp eksik";
+    document.getElementById("rule-action-type").value = "teyit_sor";
+    document.getElementById("rule-image-req").value = "farketsmez";
+    document.getElementById("rule-response").value = "❓ Yangın tüpü ile ilgili bir risk bildirdiniz. [{firma}] firmasına bu bildirim için Saha Denetim Kaydı açmamı ister misiniz?";
+  } else if (type === 'mevzuat') {
+    document.getElementById("rule-name").value = "📚 6331 İSG Kanunu Madde 10 Risk Değerlendirmesi";
+    document.getElementById("rule-keywords").value = "madde 10, risk analizi zorunlu mu, risk değerlendirmesi kanun";
+    document.getElementById("rule-action-type").value = "ozel_yanit";
+    document.getElementById("rule-image-req").value = "farketsmez";
+    document.getElementById("rule-response").value = "📚 6331 Sayılı İSG Kanunu Madde 10 Uyarınca: İşveren, iş sağlığı ve güvenliği yönünden risk değerlendirmesi yapmak veya yaptırmakla yükümlüdür. [{firma}] firmasında tüm riskler yazılı raporlanmalıdır.";
+  }
+};
+
 async function loadRules() {
   const c = document.getElementById("rules-list");
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"UzmanKurallar"));
     document.getElementById("stat-rules").textContent = snap.size;
-    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok.</p></div>`; return; }
+    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok. "+ Yeni Kural" butonuna basarak kural ekleyebilirsiniz.</p></div>`; return; }
     c.innerHTML = "";
     snap.forEach(ds => {
-      const d = ds.data(); const kw = d.tetikleyiciler || []; const auto = d.oto_denetim === true;
+      const d = ds.data(); const kw = d.tetikleyiciler || [];
+      const actType = d.action_type || (d.oto_denetim ? "otomatik_kaydet" : "ozel_yanit");
+      const imgReq = d.image_req || "farketsmez";
+
+      let badgeHtml = '<span class="badge badge-gray">📚 Mevzuat Yanıtı</span>';
+      if (actType === "otomatik_kaydet") badgeHtml = '<span class="badge badge-success">⚡ Oto Saha Kaydı</span>';
+      else if (actType === "teyit_sor") badgeHtml = '<span class="badge badge-warning">❓ Teyit Sorma</span>';
+
+      let imgBadge = imgReq === "resim_zorunlu" ? '<span class="badge badge-primary">🖼️ Resim Şartı Var</span>' : '';
+
       c.innerHTML += `
         <div class="rule-item">
           <div class="rule-item-header">
             <div class="rule-item-title">${esc(d.kural_adi || "Kural")}</div>
             <div style="display:flex;gap:6px;align-items:center;">
-              ${auto ? '<span class="badge badge-success">⚡ Oto Saha Denetim Kaydı</span>' : '<span class="badge badge-gray">📚 Mevzuat / Şablon Yanıt</span>'}
+              ${badgeHtml}
+              ${imgBadge}
               <button class="btn btn-ghost btn-sm" onclick="editRule('${ds.id}')">✏️</button>
               <button class="btn btn-danger btn-sm" onclick="deleteRule('${ds.id}')">🗑️</button>
             </div>
@@ -601,9 +943,10 @@ async function loadRules() {
 
 window.openRuleModal = () => {
   editingRuleId = null;
-  document.getElementById("rule-modal-title").textContent = "Yeni AI Kuralı";
+  document.getElementById("rule-modal-title").textContent = "Yeni AI Kuralı & Niyet Yönlendirmesi";
   ["rule-name","rule-keywords","rule-response"].forEach(id => document.getElementById(id).value = "");
-  document.getElementById("rule-toggle-auto").classList.remove("on");
+  document.getElementById("rule-action-type").value = "otomatik_kaydet";
+  document.getElementById("rule-image-req").value = "farketsmez";
   document.getElementById("rule-modal").classList.add("open");
 };
 
@@ -616,7 +959,8 @@ window.editRule = async (id) => {
     document.getElementById("rule-name").value = d.kural_adi || "";
     document.getElementById("rule-keywords").value = (d.tetikleyiciler || []).join(", ");
     document.getElementById("rule-response").value = d.yanit || "";
-    setTog("rule-toggle-auto", d.oto_denetim === true);
+    document.getElementById("rule-action-type").value = d.action_type || (d.oto_denetim ? "otomatik_kaydet" : "ozel_yanit");
+    document.getElementById("rule-image-req").value = d.image_req || "farketsmez";
     document.getElementById("rule-modal").classList.add("open");
   } catch(e) { toast(e.message,"error"); }
 };
@@ -625,11 +969,21 @@ window.saveRule = async () => {
   const name = document.getElementById("rule-name").value.trim();
   const kwRaw = document.getElementById("rule-keywords").value;
   const response = document.getElementById("rule-response").value.trim();
-  const auto = document.getElementById("rule-toggle-auto").classList.contains("on");
+  const actionType = document.getElementById("rule-action-type").value;
+  const imageReq = document.getElementById("rule-image-req").value;
+
   if (!name || !kwRaw || !response) { toast("Lütfen tüm alanları doldurun.","error"); return; }
 
   const keywords = kwRaw.split(",").map(k => k.trim().toLowerCase()).filter(Boolean);
-  const data = { kural_adi: name, tetikleyiciler: keywords, yanit: response, oto_denetim: auto, guncelleme: serverTimestamp() };
+  const data = {
+    kural_adi: name,
+    tetikleyiciler: keywords,
+    yanit: response,
+    oto_denetim: actionType === "otomatik_kaydet",
+    action_type: actionType,
+    image_req: imageReq,
+    guncelleme: serverTimestamp()
+  };
 
   try {
     if (editingRuleId) {
