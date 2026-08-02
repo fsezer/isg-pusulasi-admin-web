@@ -335,7 +335,8 @@
 <div class="modal-bg" id="user-modal">
   <div class="modal">
     <div class="modal-title" id="user-modal-title">Müşteri / Kullanıcı Tanımla</div>
-    <div class="form-group"><label class="form-label">Gmail Adresi (Zorunlu)</label><input type="email" class="form-control" id="user-email-input" placeholder="uzman@gmail.com" /></div>
+    <div class="form-group"><label class="form-label">E-posta Adresi (Zorunlu)</label><input type="email" class="form-control" id="user-email-input" placeholder="uzman@firma.com" /></div>
+    <div class="form-group"><label class="form-label">Geçici Şifre (yeni kullanıcı / sıfırlama)</label><input type="password" class="form-control" id="user-password-input" placeholder="En az 6 karakter — boş bırakılırsa Auth hesabı oluşturulmaz" autocomplete="new-password" /><div class="form-hint">Kayıt sırasında Firebase Auth e-posta/şifre hesabı oluşur. Agent ve mobil bu bilgilerle giriş yapar.</div></div>
     <div class="grid-2">
       <div class="form-group"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" /></div>
       <div class="form-group"><label class="form-label">Şehir</label><input type="text" class="form-control" id="user-sehir" placeholder="İstanbul" /></div>
@@ -446,7 +447,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -462,6 +463,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+// Secondary app: Auth kullanıcısı oluştururken admin oturumunu bozmamak için
+const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+const secondaryAuth = getAuth(secondaryApp);
 
 let editingRuleId = null;
 let superAdminList = [];
@@ -850,6 +854,7 @@ window.saveUser = async () => {
   const email = document.getElementById("user-email-input").value.trim().toLowerCase();
   if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.","error"); return; }
 
+  const password = (document.getElementById("user-password-input")?.value || "").trim();
   const ad = document.getElementById("user-adsoyad").value.trim();
   const sehir = document.getElementById("user-sehir").value.trim();
   const meslek = document.getElementById("user-meslek").value;
@@ -869,7 +874,32 @@ window.saveUser = async () => {
   };
 
   try {
+    if (password) {
+      if (password.length < 6) { toast("Şifre en az 6 karakter olmalı.","error"); return; }
+      try {
+        await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        await fbSignOut(secondaryAuth);
+        toast("Firebase Auth hesabı oluşturuldu.", "ok");
+      } catch (authErr) {
+        const code = authErr?.code || "";
+        if (code === "auth/email-already-in-use") {
+          // Hesap var — şifreyi admin client’tan güncelleyemeyiz; reset mail öner
+          try {
+            await sendPasswordResetEmail(auth, email);
+            toast("Hesap zaten var. Şifre sıfırlama e-postası gönderildi.", "ok");
+          } catch (resetErr) {
+            toast("Hesap zaten var. Şifre: " + (authErr.message || code), "error");
+          }
+        } else {
+          toast("Auth hesap hatası: " + (authErr.message || code), "error");
+          return;
+        }
+      }
+    }
+
     await setDoc(doc(db,"yetkili_kullanicilar",email), data, { merge: true });
+    const pwdEl = document.getElementById("user-password-input");
+    if (pwdEl) pwdEl.value = "";
     toast("Müşteri hesabı ve paket izinleri güncellendi! ✅");
     closeModal("user-modal"); loadUsers();
   } catch(e) { toast(e.message,"error"); }
