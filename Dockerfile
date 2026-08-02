@@ -8,6 +8,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Statik dosyaları kopyala
 COPY index.html /usr/share/nginx/html/index.html
+COPY assets/ /usr/share/nginx/html/assets/
 
 # Cloud Run 8080 portunu expose et
 EXPOSE 8080
