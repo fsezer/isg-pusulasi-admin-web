@@ -161,14 +161,31 @@
   <div class="login-card">
     <div class="login-logo"><img src="/assets/app_logo.png" alt="İSG Pusulası" /></div>
     <div class="login-title">İSG Pusulası SaaS Admin</div>
-    <div class="login-sub">Yönetici portalına erişmek için yetkili admin hesabınızla giriş yapın</div>
-    <button class="btn-google" onclick="doSignIn()">
-      <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-      Google ile Giriş Yap
-    </button>
+    <div class="login-sub">Süper admin e-posta ve şifre ile giriş yapın (Google yok)</div>
+    <div class="form-group" style="text-align:left;margin-top:8px;">
+      <label class="form-label">E-posta</label>
+      <input type="email" class="form-control" id="login-email" placeholder="admin@firma.com" autocomplete="username" />
+    </div>
+    <div class="form-group" style="text-align:left;">
+      <label class="form-label">Şifre</label>
+      <input type="password" class="form-control" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doSignIn()">Giriş Yap</button>
     <div class="login-denied" id="login-denied">⛔ Bu hesabın admin yetkisi yoktur. Erişim reddedildi.</div>
   </div>
-  <div style="font-size:12px;color:#475569;">İSG Pusulası SaaS Admin Portal v2.0</div>
+  <div style="font-size:12px;color:#475569;">İSG Pusulası SaaS Admin Portal v2.4</div>
+</div>
+
+<!-- Zorunlu şifre değişimi (admin) -->
+<div class="modal-bg" id="force-pwd-modal">
+  <div class="modal">
+    <div class="modal-title">Şifre değiştirme zorunlu</div>
+    <div class="form-hint" style="margin-bottom:12px;">Geçici şifreyi kalıcı şifrenizle değiştirin (en az 8 karakter).</div>
+    <div class="form-group"><label class="form-label">Yeni şifre</label><input type="password" class="form-control" id="force-pwd-new" /></div>
+    <div class="form-group"><label class="form-label">Tekrar</label><input type="password" class="form-control" id="force-pwd-confirm" /></div>
+    <div id="force-pwd-err" class="form-hint" style="color:var(--danger);"></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="submitForcePwd()">Kaydet ve devam et</button>
+  </div>
 </div>
 
 <div id="app">
@@ -180,8 +197,11 @@
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
       <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetki Yönetimi</div>
-      <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> AI Kural Motoru</div>
-      <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span> AI Kullanım Analitiği</div>
+      <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> Uzman AI</div>
+      <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📊</span> AI Kullanım</div>
+      <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Başvurular</div>
+      <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span> Tanıtım İndirmeleri</div>
+      <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span> Sürüm & Güncelleme</div>
       <div class="nav-item" onclick="showTab('settings')" id="nav-settings"><span class="icon">⚙️</span> Sistem Ayarları</div>
     </div>
     <div class="sidebar-footer">
@@ -213,7 +233,7 @@
         <div class="card-header"><div class="card-title">🚀 Hızlı İşlemler</div></div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <button class="btn btn-primary" onclick="showTab('users');openUserModal()">+ Yeni Müşteri / Kullanıcı Ekle</button>
-          <button class="btn btn-success" onclick="showTab('rules');openRuleModal()">+ Yeni AI Kuralı Oluştur</button>
+          <button class="btn btn-success" onclick="showTab('rules');openRuleModal()">+ Özel kural</button>
         </div>
       </div>
       <div class="card">
@@ -234,7 +254,7 @@
         <button class="btn btn-primary" onclick="openUserModal()">+ Müşteri Ekle</button>
       </div>
       <div class="privacy-notice">
-        🛡️ <strong>SaaS Lisanslama & Yetkilendirme:</strong> Buradan yeni eklediğiniz müşteriler mobil uygulamayı indirdiğinde Google ile giriş yaparak sistemi kullanmaya başlayabilir. Paket seçeneklerini (Görsel AI, Uzman AI, Limit) istediğiniz zaman değiştirebilirsiniz.
+        🛡️ <strong>SaaS Lisanslama:</strong> Yeni müşteriye geçici şifre verin; ilk girişte zorunlu olarak kendi şifresini değiştirir (Agent + Mobil). Paketleri (Uzman AI, Görsel AI, limit) buradan yönetin.
       </div>
       <div style="margin-bottom:16px;">
         <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Müşteri ara (İsim, E-posta, Şehir, Meslek)..." oninput="filterUsers()" style="max-width:400px;" />
@@ -242,74 +262,211 @@
       <div id="users-list"></div>
     </div>
 
-    <!-- AI KURALLARI -->
+    <!-- UZMAN AI AYARLARI -->
     <div class="tab-content" id="tab-rules">
       <div class="page-header-row">
-        <div><div class="page-title">🤖 AI Kural & Davranış Motoru</div><div class="page-subtitle">Yapay zekanın üslubunu, görsel yükleme politikasını ve komut tepkilerini tam kontrol edin</div></div>
-        <button class="btn btn-primary" onclick="openRuleModal()">+ Yeni Kural</button>
-      </div>
-
-      <!-- GENEL AI DAVRANIŞ & AKIŞ KONTROL KARTI -->
-      <div class="card" style="border: 1px solid rgba(245,158,11,0.3); background: rgba(17,24,39,0.95);">
-        <div class="card-header"><div class="card-title" style="color:var(--accent);">🎛️ Genel AI Davranış & Orkestrasyon Ayarları</div></div>
-        
-        <div class="form-group">
-          <label class="form-label">🧠 Genel AI Sistem Promptu (Persona & Üslup Talimatı)</label>
-          <textarea class="form-control" id="ai-global-prompt" placeholder="Sen UZMAN İSG Danışmanısın..."></textarea>
-          <div class="form-hint">Bu talimat mobil uygulamadaki UZMAN yapay zekasının ana rolünü ve üslubunu belirler.</div>
+        <div>
+          <div class="page-title">🤖 Uzman AI</div>
+          <div class="page-subtitle">Mobildeki sohbet asistanı (Grigori’deki Nokta gibi). Gemini anahtarı buradan — aynı Google AI kredinizden düşer.</div>
         </div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label">📸 Görsel Yükleme Davranış Politikası</label>
-            <select class="form-control" id="ai-image-policy">
-              <option value="teyit_sor">❓ Önce Teyit Sor ("Görsel alındı. Ne yapmamı istersiniz?")</option>
-              <option value="direkt_analiz">⚡ Direkt Otomatik Analiz Et</option>
-            </select>
-            <div class="form-hint">Kullanıcı fotoğraf yüklediğinde sistemin vereceği varsayılan tepki.</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">⚡ Otomatik Saha Kaydı Onay Politikası</label>
-            <select class="form-control" id="ai-action-policy">
-              <option value="onay_iste">✋ Önce Teyit / Kullanıcı Onayı İste</option>
-              <option value="direkt_kaydet">🚀 Direkt Otomatik Veritabanına Kaydet</option>
-            </select>
-            <div class="form-hint">"Saha kaydet" dendiğinde direkt mi kaydetsin yoksa onay mı istesin?</div>
-          </div>
-        </div>
-
-        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-          <button class="btn btn-success" onclick="saveAiSettings()">💾 AI Orkestrasyon Ayarlarını Kaydet</button>
-        </div>
+        <button class="btn btn-primary" onclick="openRuleModal()">+ Özel kural</button>
       </div>
 
       <div class="privacy-notice">
-        💡 <strong>Kural Türleri Rehberi:</strong><br>
-        • <strong>⚡ Aksiyon Kuralları:</strong> Kullanıcı 'denetim aç', 'ihlal kaydet' dediğinde Firestore'a otomatik Saha Denetim Formu oluşturur.<br>
-        • <strong>⛔ Engelleme Kuralları:</strong> 'siyaset', 'netten bak' gibi konularda dış arama yapmayı kısıtlar ve uyarı verir.<br>
-        • <strong>📚 Mevzuat Kuralları:</strong> Yöneticinin panelden yazdığı özel 6331 İSG kanunu ve yönetmelik metinlerini söyler.
-      </div>
-      <div id="rules-list"></div>
-    </div>
-
-    <!-- AI KULLANIM ANALİTİĞİ -->
-    <div class="tab-content" id="tab-analytics">
-      <div class="page-header-row">
-        <div><div class="page-title">📈 AI Kullanım & Sorgu Analitiği</div><div class="page-subtitle">Müşterilerin canlı AI kullanım istatistikleri, sorgu kotaları ve modül performans raporları</div></div>
-        <button class="btn btn-ghost" onclick="loadAnalytics()">🔄 İstatistikleri Yenile</button>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="stat-total-queries">0</div><div class="stat-label">Toplam İşlenen AI Sorgusu</div></div>
-        <div class="stat-card"><div class="stat-icon">♾️</div><div class="stat-value" id="stat-unlimited-users">0</div><div class="stat-label">Sınırsız Paketli Müşteriler</div></div>
-        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-limited-users">0</div><div class="stat-label">Kotaya Bağlı Müşteriler</div></div>
-        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="stat-quota-exceeded">0</div><div class="stat-label">Kotası Dolan Müşteriler</div></div>
+        <b>Ne işe yarar?</b> Mobil uygulamadaki <b>Uzman</b> sohbeti. Anahtar = Google AI Studio / Gemini API key (Grigori Nokta ile aynı key’i yazarsanız fatura aynı hesaptan gider).
+        Kullanıcı kotası ayrıca <b>Müşteriler</b> ekranından (sorgu limiti) yönetilir.
       </div>
 
       <div class="card">
-        <div class="card-header"><div class="card-title">📊 Müşteri AI Sorgu & Kota Kullanım Detayları</div></div>
+        <div class="card-header"><div class="card-title">1) Gemini API anahtarı</div></div>
+        <div class="form-group">
+          <label class="form-label">API Key</label>
+          <input type="password" class="form-control" id="ai-gemini-key" placeholder="AIza…" autocomplete="off" />
+          <div class="form-hint">Boş bırakırsanız kayıtlı anahtar değişmez. Mobil bu anahtarı Firestore’dan okur (cihazda tutulmaz).</div>
+        </div>
+        <div id="ai-key-status" class="form-hint" style="margin-top:-6px;margin-bottom:10px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">2) Kişilik / nasıl konuşsun</div></div>
+        <div class="form-group">
+          <label class="form-label">Sistem talimatı</label>
+          <textarea class="form-control" id="ai-global-prompt" rows="4" placeholder="Sen İSG Uzmanısın…"></textarea>
+          <div class="form-hint">Kısa tutun. Örn: “Sen İSG uzmanısın. Türkçe, net ve saha odaklı cevap ver.”</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">3) Fotoğraf ve otomatik kayıt</div></div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Fotoğraf gelince</label>
+            <select class="form-control" id="ai-image-policy">
+              <option value="teyit_sor">Önce sor: ne yapayım?</option>
+              <option value="direkt_analiz">Direkt analiz et</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">“Kaydet / denetim aç” denince</label>
+            <select class="form-control" id="ai-action-policy">
+              <option value="onay_iste">Önce onay iste</option>
+              <option value="direkt_kaydet">Direkt kaydet</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+          <button class="btn btn-success" onclick="saveAiSettings()">Kaydet</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">4) Özel kurallar (isteğe bağlı)</div></div>
+        <div class="form-hint" style="margin-bottom:12px;">
+          Aksiyon = “denetim aç” gibi komutlarda otomatik kayıt · Engelleme = istenmeyen konular · Mevzuat = sabit metin cevapları.
+          Çoğu kullanımda 1–2 kural yeter; boş bırakılabilir.
+        </div>
+        <div id="rules-list"></div>
+      </div>
+    </div>
+
+    <!-- AI KULLANIM -->
+    <div class="tab-content" id="tab-analytics">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">📊 AI Kullanım</div>
+          <div class="page-subtitle">Müşteri başına kaç sorgu harcandı / kota doldu mu?</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadAnalytics()">Yenile</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="stat-total-queries">0</div><div class="stat-label">Toplam sorgu</div></div>
+        <div class="stat-card"><div class="stat-icon">♾️</div><div class="stat-value" id="stat-unlimited-users">0</div><div class="stat-label">Sınırsız paket</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-limited-users">0</div><div class="stat-label">Kotalı müşteri</div></div>
+        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="stat-quota-exceeded">0</div><div class="stat-label">Kotası dolan</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Müşteri detayı</div></div>
         <div id="analytics-table-container"></div>
+      </div>
+    </div>
+
+    <!-- ÜYELİK BAŞVURULARI -->
+    <div class="tab-content" id="tab-applications">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">📥 Üyelik Başvuruları</div>
+          <div class="page-subtitle">Tanıtım sitesinden gelen başvurular. Onaylayınca Müşteri olarak ekleyebilirsiniz.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadApplications()">Yenile</button>
+      </div>
+      <div class="privacy-notice">
+        Kaynak: <code>uyelik_basvurulari</code> · Site: tanıtım web. Okuma için Firestore kuralında bu koleksiyona
+        <b>authenticated read</b> gerekir (<code>allow read: if request.auth != null</code>).
+      </div>
+      <div id="applications-list" class="empty-state">Yükleniyor…</div>
+    </div>
+
+    <!-- TANITIM İNDİRMELERİ -->
+    <div class="tab-content" id="tab-downloads">
+      <div class="page-header">
+        <div class="page-title">📦 Tanıtım Sitesi İndirmeleri</div>
+        <div class="page-subtitle">Sitedeki Agent zip / APK / mağaza linkleri. Boş bırakırsanız örnek paketler kullanılır.</div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Paket yükle veya URL gir</div></div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Windows Agent (.zip) dosya</label>
+            <input type="file" class="form-control" id="dl-win-file" accept=".zip,application/zip" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">veya Windows indirme URL</label>
+            <input type="url" class="form-control" id="dl-win-url" placeholder="https://…/agent.zip" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Android APK dosya</label>
+            <input type="file" class="form-control" id="dl-apk-file" accept=".apk,application/vnd.android.package-archive" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">veya APK indirme URL</label>
+            <input type="url" class="form-control" id="dl-apk-url" placeholder="https://…/app.apk" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Google Play URL</label>
+            <input type="url" class="form-control" id="dl-play-url" placeholder="https://play.google.com/…" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">App Store URL</label>
+            <input type="url" class="form-control" id="dl-apple-url" placeholder="https://apps.apple.com/…" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Not (sitede görünür)</label>
+          <input type="text" class="form-control" id="dl-notes" placeholder="Örn: Agent 2.1.87 · APK 1.3.4" />
+        </div>
+        <button class="btn btn-success" onclick="saveDownloadPackages()">Kaydet / Yayınla</button>
+        <div id="dl-status" class="form-hint" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- SÜRÜM & GÜNCELLEME -->
+    <div class="tab-content" id="tab-updates">
+      <div class="page-header">
+        <div class="page-title">🚀 Sürüm & Uzaktan Güncelleme</div>
+        <div class="page-subtitle">Agent (Windows zip) ve Mobil (Android apk) ayrı kanallar. Yayınlanan paket API üzerinden kontrol edilir.</div>
+      </div>
+      <div class="privacy-notice">
+        <b>versionCode</b> tamsayı karşılaştırmadır (Agent: 2.1.85 → <code>20185</code> = 2×10000+1×100+85). Mobil: <code>versionCode</code> Gradle’daki değer.
+        Paket: Windows <b>.zip</b>, Android <b>.apk</b>. Yükleme Firebase Storage → API’ye kayıt.
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Yeni sürüm yayınla</div></div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Platform</label>
+            <select class="form-control" id="upd-platform">
+              <option value="windows">Windows Agent (.zip)</option>
+              <option value="android">Android Mobil (.apk)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">versionCode (zorunlu, tamsayı)</label>
+            <input type="number" class="form-control" id="upd-code" placeholder="20185" min="1" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">versionName (görünen)</label>
+            <input type="text" class="form-control" id="upd-name" placeholder="2.1.85" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Paket dosyası</label>
+            <input type="file" class="form-control" id="upd-file" accept=".zip,.apk,application/zip,application/vnd.android.package-archive" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notlar (changelog)</label>
+          <textarea class="form-control" id="upd-notes" rows="3" placeholder="Bu sürümde neler var?"></textarea>
+        </div>
+        <div class="toggle-row" style="margin-bottom:14px;">
+          <div><span class="toggle-label">Zorunlu güncelleme</span><span class="toggle-sub">Kullanıcı erteleyemesin</span></div>
+          <div class="toggle" id="tog-force" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <button class="btn btn-primary" onclick="publishUpdate()">📦 Yayınla</button>
+        <div id="upd-status" class="form-hint" style="margin-top:10px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Sürüm geçmişi</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadReleases()">🔄 Yenile</button>
+        </div>
+        <div id="releases-list" class="empty-state">Yükleniyor…</div>
       </div>
     </div>
 
@@ -323,13 +480,18 @@
         <div class="card-header"><div class="card-title">👑 SuperAdmin Hesapları</div></div>
         <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Bu listedeki e-posta adresleri admin paneline giriş yapabilir. En az 1 SuperAdmin her zaman zorunludur.</div>
         <div id="superadmin-list" style="margin-bottom:16px;"></div>
-        <div style="display:flex;gap:10px;align-items:flex-end;">
-          <div class="form-group" style="flex:1;margin-bottom:0;">
-            <label class="form-label">Yeni SuperAdmin E-posta Adresi</label>
-            <input type="email" id="new-superadmin-email" class="form-control" placeholder="admin@gmail.com" />
+        <div class="grid-2">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Yeni SuperAdmin e-posta</label>
+            <input type="email" id="new-superadmin-email" class="form-control" placeholder="admin@firma.com" />
           </div>
-          <button class="btn btn-primary" onclick="addSuperAdmin()">+ Ekle</button>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Geçici şifre (Auth hesabı)</label>
+            <input type="password" id="new-superadmin-password" class="form-control" placeholder="En az 8 karakter" autocomplete="new-password" />
+          </div>
         </div>
+        <div class="form-hint" style="margin:10px 0;">Şifre verilirse Firebase Auth hesabı oluşur; ilk girişte şifre değişimi zorunlu.</div>
+        <button class="btn btn-primary" onclick="addSuperAdmin()">+ SuperAdmin ekle</button>
       </div>
     </div>
 
@@ -341,7 +503,7 @@
   <div class="modal">
     <div class="modal-title" id="user-modal-title">Müşteri / Kullanıcı Tanımla</div>
     <div class="form-group"><label class="form-label">E-posta Adresi (Zorunlu)</label><input type="email" class="form-control" id="user-email-input" placeholder="uzman@firma.com" /></div>
-    <div class="form-group"><label class="form-label">Geçici Şifre (yeni kullanıcı / sıfırlama)</label><input type="password" class="form-control" id="user-password-input" placeholder="En az 6 karakter — boş bırakılırsa Auth hesabı oluşturulmaz" autocomplete="new-password" /><div class="form-hint">Kayıt sırasında Firebase Auth e-posta/şifre hesabı oluşur. Agent ve mobil bu bilgilerle giriş yapar.</div></div>
+    <div class="form-group"><label class="form-label">Geçici şifre (yeni / sıfırlama)</label><input type="password" class="form-control" id="user-password-input" placeholder="En az 8 karakter — boş = şifre dokunulmaz" autocomplete="new-password" /><div class="form-hint">Doldurulursa Auth hesabı oluşur/sıfırlanır ve <b>mustChangePassword</b> açılır — kullanıcı ilk girişte mecbur değiştirir.</div></div>
     <div class="grid-2">
       <div class="form-group"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" /></div>
       <div class="form-group"><label class="form-label">Şehir</label><input type="text" class="form-control" id="user-sehir" placeholder="İstanbul" /></div>
@@ -394,7 +556,7 @@
 <!-- RULE MODAL -->
 <div class="modal-bg" id="rule-modal">
   <div class="modal">
-    <div class="modal-title" id="rule-modal-title">Yeni AI Kuralı & Niyet Yönlendirmesi</div>
+    <div class="modal-title" id="rule-modal-title">Özel kural</div>
     
     <!-- HIZLI ÖRNEK ŞABLONLAR -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:16px;">
@@ -452,8 +614,12 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const API_BASE = "https://isg-pusulasi-api-kvfsvqx7na-ew.a.run.app";
+let apiJwt = null;
 
 const firebaseConfig = {
   apiKey: "AIzaSyB0-AXpS6ZLv5p303lW1-73r9_f4yTUPHQ",
@@ -468,24 +634,30 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 // Secondary app: Auth kullanıcısı oluştururken admin oturumunu bozmamak için
 const secondaryApp = initializeApp(firebaseConfig, "Secondary");
 const secondaryAuth = getAuth(secondaryApp);
 
 let editingRuleId = null;
 let superAdminList = [];
+let adminMustChangeMap = {};
+let pendingAdminTempPassword = "";
 
 async function loadSuperAdmins() {
   try {
     const snap = await getDoc(doc(db, "sistem_ayarlari", "superAdminlar"));
     if (snap.exists()) {
-      superAdminList = snap.data().liste || [];
+      const d = snap.data();
+      superAdminList = d.liste || [];
+      adminMustChangeMap = d.mustChangePassword || {};
     } else {
-      // İlk kurulum: mevcut giriş yapan kişiyi superadmin yap
       superAdminList = [];
+      adminMustChangeMap = {};
     }
   } catch(e) {
     superAdminList = [];
+    adminMustChangeMap = {};
   }
 }
 
@@ -494,29 +666,103 @@ async function isSuperAdmin(email) {
   return superAdminList.map(e => e.toLowerCase()).includes((email || "").toLowerCase());
 }
 
+function adminNeedsPwdChange(email) {
+  const e = (email || "").toLowerCase();
+  return adminMustChangeMap[e] === true;
+}
+
+async function clearAdminMustChange(email) {
+  const e = (email || "").toLowerCase();
+  adminMustChangeMap[e] = false;
+  await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
+    liste: superAdminList,
+    mustChangePassword: adminMustChangeMap
+  }, { merge: true });
+}
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = (user.email || "").toLowerCase();
-    // SuperAdmin listesi yoksa ilk giriş yapan kişiyi superadmin yap (bootstrapping)
     await loadSuperAdmins();
     if (superAdminList.length === 0) {
       superAdminList = [email];
-      await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+      adminMustChangeMap[email] = false;
+      await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
+        liste: superAdminList,
+        mustChangePassword: adminMustChangeMap
+      });
     }
     if (!superAdminList.map(e => e.toLowerCase()).includes(email)) {
       await fbSignOut(auth);
       document.getElementById("login-denied").style.display = "block";
       return;
     }
+    if (adminNeedsPwdChange(email)) {
+      document.getElementById("force-pwd-modal").classList.add("open");
+      return;
+    }
     showApp(user); loadAll();
+    ensureApiSession(user).then(() => loadReleases()).catch(e => console.warn("API session", e));
   } else { showLogin(); }
 });
 
+async function ensureApiSession(user) {
+  const idToken = await user.getIdToken(true);
+  const resp = await fetch(API_BASE + "/v1/auth/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      device_type: "admin",
+      machine_id: "admin-web",
+      id_token: idToken,
+      display_name: user.displayName || "Admin"
+    })
+  });
+  const data = await resp.json();
+  if (!resp.ok || !data.token) throw new Error(data.error || "api_session_failed");
+  apiJwt = data.token;
+  return apiJwt;
+}
+
 window.doSignIn = async () => {
-  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
-  catch (e) { toast("Giriş başarısız: " + e.message, "error"); }
+  const email = (document.getElementById("login-email").value || "").trim().toLowerCase();
+  const password = document.getElementById("login-password").value || "";
+  document.getElementById("login-denied").style.display = "none";
+  if (!email || !password) { toast("E-posta ve şifre girin", "error"); return; }
+  try {
+    pendingAdminTempPassword = password;
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (e) {
+    pendingAdminTempPassword = "";
+    toast("Yanlış e-posta veya şifre", "error");
+  }
 };
 window.doSignOut = async () => { await fbSignOut(auth); showLogin(); };
+
+window.submitForcePwd = async () => {
+  const n = document.getElementById("force-pwd-new").value || "";
+  const c = document.getElementById("force-pwd-confirm").value || "";
+  const err = document.getElementById("force-pwd-err");
+  err.textContent = "";
+  if (n.length < 8) { err.textContent = "En az 8 karakter."; return; }
+  if (n !== c) { err.textContent = "Şifreler eşleşmiyor."; return; }
+  if (pendingAdminTempPassword && n === pendingAdminTempPassword) {
+    err.textContent = "Geçici şifreden farklı seçin."; return;
+  }
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Oturum yok");
+    await updatePassword(user, n);
+    await clearAdminMustChange(user.email);
+    pendingAdminTempPassword = "";
+    document.getElementById("force-pwd-modal").classList.remove("open");
+    toast("Şifre güncellendi");
+    showApp(user); loadAll();
+    ensureApiSession(user).then(() => loadReleases()).catch(() => {});
+  } catch (e) {
+    err.textContent = e.message || "Şifre değiştirilemedi";
+  }
+};
 
 function showApp(user) {
   document.getElementById("login-screen").style.display = "none";
@@ -539,7 +785,215 @@ window.showTab = (tab) => {
   document.getElementById("nav-" + tab).classList.add("active");
 };
 
-async function loadAll() { await Promise.all([loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics()]); }
+async function loadAll() {
+  await Promise.all([
+    loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics(),
+    loadApplications(), loadDownloadPackages()
+  ]);
+}
+
+/* ── ÜYELİK BAŞVURULARI ── */
+window.loadApplications = async () => {
+  const box = document.getElementById("applications-list");
+  if (!box) return;
+  box.innerHTML = `<div class="empty-state">Yükleniyor…</div>`;
+  try {
+    const snap = await getDocs(collection(db, "uyelik_basvurulari"));
+    const items = [];
+    snap.forEach(ds => items.push({ id: ds.id, ...ds.data() }));
+    items.sort((a, b) => {
+      const ta = a.createdAt?.toMillis?.() || 0;
+      const tb = b.createdAt?.toMillis?.() || 0;
+      return tb - ta;
+    });
+    if (!items.length) {
+      box.innerHTML = `<div class="empty-state">Henüz başvuru yok. Tanıtım sitesinden gelenler burada listelenir.</div>`;
+      return;
+    }
+    box.innerHTML = items.map(it => {
+      const when = it.createdAt?.toDate ? it.createdAt.toDate().toLocaleString("tr-TR") : "—";
+      const durum = it.durum || "yeni";
+      const badge = durum === "musteri_yapildi" ? "badge-success" : durum === "arsiv" ? "badge-gray" : "badge-warning";
+      return `<div class="rule-item">
+        <div class="rule-item-header">
+          <div class="rule-item-title">${esc(it.adSoyad || "—")}
+            <span class="badge ${badge}">${esc(durum)}</span>
+            <span class="badge badge-primary">${esc(it.platform || "both")}</span>
+          </div>
+        </div>
+        <div style="font-size:13px;margin:6px 0;">
+          <b>E-posta:</b> ${esc(it.email || "")} · <b>Tel:</b> ${esc(it.telefon || "—")} · <b>Şehir:</b> ${esc(it.sehir || "—")}
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${esc(it.mesaj || "")}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">${when}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="applicationToCustomer('${esc(it.id)}','${esc(it.email)}','${esc(it.adSoyad)}','${esc(it.sehir)}')">Müşteri yap</button>
+          <button class="btn btn-ghost btn-sm" onclick="setApplicationStatus('${esc(it.id)}','arsiv')">Arşivle</button>
+        </div>
+      </div>`;
+    }).join("");
+  } catch (e) {
+    box.innerHTML = `<div class="empty-state" style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules’ta <code>uyelik_basvurulari</code> için authenticated read açın.</div>`;
+  }
+};
+
+window.setApplicationStatus = async (id, durum) => {
+  try {
+    await setDoc(doc(db, "uyelik_basvurulari", id), { durum, guncelleme: serverTimestamp() }, { merge: true });
+    toast("Durum güncellendi");
+    loadApplications();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.applicationToCustomer = async (id, email, adSoyad, sehir) => {
+  email = (email || "").trim().toLowerCase();
+  if (!email) { toast("E-posta yok", "error"); return; }
+  openUserModal();
+  document.getElementById("user-email-input").value = email;
+  document.getElementById("user-adsoyad").value = adSoyad || "";
+  document.getElementById("user-sehir").value = sehir || "";
+  document.getElementById("user-modal-title").textContent = "Başvurudan müşteri oluştur";
+  try {
+    await setDoc(doc(db, "uyelik_basvurulari", id), { durum: "musteri_yapildi", guncelleme: serverTimestamp() }, { merge: true });
+  } catch (_) {}
+  showTab("users");
+  toast("Müşteri formunu doldurup kaydedin (geçici şifre verin)");
+};
+
+/* ── TANITIM İNDİRMELERİ ── */
+window.loadDownloadPackages = async () => {
+  try {
+    const snap = await getDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"));
+    if (!snap.exists()) return;
+    const d = snap.data();
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
+    set("dl-win-url", d.windowsUrl || "");
+    set("dl-apk-url", d.androidUrl || "");
+    set("dl-play-url", d.playStoreUrl || "");
+    set("dl-apple-url", d.appStoreUrl || "");
+    set("dl-notes", d.notes || "");
+  } catch (e) { console.warn("loadDownloadPackages", e); }
+};
+
+window.saveDownloadPackages = async () => {
+  const st = document.getElementById("dl-status");
+  st.textContent = "Kaydediliyor…";
+  try {
+    let windowsUrl = (document.getElementById("dl-win-url").value || "").trim();
+    let androidUrl = (document.getElementById("dl-apk-url").value || "").trim();
+    const playStoreUrl = (document.getElementById("dl-play-url").value || "").trim();
+    const appStoreUrl = (document.getElementById("dl-apple-url").value || "").trim();
+    const notes = (document.getElementById("dl-notes").value || "").trim();
+    const winFile = document.getElementById("dl-win-file").files[0];
+    const apkFile = document.getElementById("dl-apk-file").files[0];
+
+    if (winFile) {
+      st.textContent = "Windows paketi yükleniyor…";
+      const path = `tanitim/downloads/windows/${Date.now()}_${winFile.name}`;
+      const r = storageRef(storage, path);
+      await uploadBytes(r, winFile);
+      windowsUrl = await getDownloadURL(r);
+      document.getElementById("dl-win-url").value = windowsUrl;
+    }
+    if (apkFile) {
+      st.textContent = "APK yükleniyor…";
+      const path = `tanitim/downloads/android/${Date.now()}_${apkFile.name}`;
+      const r = storageRef(storage, path);
+      await uploadBytes(r, apkFile);
+      androidUrl = await getDownloadURL(r);
+      document.getElementById("dl-apk-url").value = androidUrl;
+    }
+
+    await setDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"), {
+      windowsUrl, androidUrl, playStoreUrl, appStoreUrl, notes,
+      guncelleme: serverTimestamp()
+    }, { merge: true });
+    st.textContent = "Yayınlandı — tanıtım sitesi bu linkleri kullanır.";
+    toast("Tanıtım indirmeleri kaydedildi");
+    document.getElementById("dl-win-file").value = "";
+    document.getElementById("dl-apk-file").value = "";
+  } catch (e) {
+    st.textContent = "";
+    toast("Hata: " + e.message, "error");
+  }
+};
+
+window.publishUpdate = async () => {
+  const platform = document.getElementById("upd-platform").value;
+  const versionCode = parseInt(document.getElementById("upd-code").value, 10);
+  const versionName = (document.getElementById("upd-name").value || "").trim();
+  const notes = (document.getElementById("upd-notes").value || "").trim();
+  const force = document.getElementById("tog-force").classList.contains("on");
+  const file = document.getElementById("upd-file").files[0];
+  const st = document.getElementById("upd-status");
+  if (!versionCode || !versionName) { toast("versionCode ve versionName gerekli", "error"); return; }
+  if (!file) { toast("Paket dosyası seçin (.zip veya .apk)", "error"); return; }
+  const lower = file.name.toLowerCase();
+  if (platform === "windows" && !lower.endsWith(".zip")) { toast("Windows için .zip yükleyin", "error"); return; }
+  if (platform === "android" && !lower.endsWith(".apk")) { toast("Android için .apk yükleyin", "error"); return; }
+  try {
+    st.textContent = "Storage’a yükleniyor…";
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) throw new Error("API oturumu yok");
+    const path = `releases/${platform}/${versionCode}/${file.name}`;
+    const ref = storageRef(storage, path);
+    await uploadBytes(ref, file, { contentType: file.type || "application/octet-stream" });
+    const downloadUrl = await getDownloadURL(ref);
+    st.textContent = "API’ye yayınlanıyor…";
+    const resp = await fetch(API_BASE + "/v1/updates/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({
+        platform,
+        version_code: versionCode,
+        version_name: versionName,
+        object_path: path,
+        download_url: downloadUrl,
+        notes,
+        force_update: force,
+        active: true
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || data.detail || "publish_failed");
+    st.textContent = "Yayınlandı ✅";
+    toast("Sürüm yayınlandı: " + versionName);
+    document.getElementById("upd-file").value = "";
+    loadReleases();
+  } catch (e) {
+    st.textContent = "";
+    toast("Yayın hatası: " + e.message, "error");
+  }
+};
+
+window.loadReleases = async () => {
+  const box = document.getElementById("releases-list");
+  if (!box) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const resp = await fetch(API_BASE + "/v1/updates/releases", {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    const items = data.items || [];
+    if (!items.length) { box.innerHTML = "<div class='empty-state'>Henüz sürüm yok</div>"; return; }
+    box.innerHTML = items.map(it => `
+      <div class="rule-item">
+        <div class="rule-item-header">
+          <div class="rule-item-title">${it.platform.toUpperCase()} · ${it.version_name} <span class="badge badge-primary">code ${it.version_code}</span>
+            ${it.force_update ? '<span class="badge badge-warning">zorunlu</span>' : ''}
+            ${it.active ? '<span class="badge badge-success">aktif</span>' : '<span class="badge badge-gray">pasif</span>'}
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">${(it.notes||"").replace(/</g,"&lt;")}</div>
+        <div style="font-size:11px;color:var(--text2);word-break:break-all;">${it.download_url || it.object_path || ""}</div>
+      </div>`).join("");
+  } catch (e) {
+    box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`;
+  }
+};
 
 /* ── AI KULLANIM ANALİTİĞİ ── */
 async function loadAnalytics() {
@@ -640,15 +1094,23 @@ async function loadAnalytics() {
 }
 window.loadAnalytics = loadAnalytics;
 
-/* ── AI ORKESTRASYON & DAVRANIŞ AYARLARI ── */
+/* ── UZMAN AI AYARLARI ── */
 async function loadAiSettings() {
   try {
     const snap = await getDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"));
+    const keyEl = document.getElementById("ai-gemini-key");
+    const st = document.getElementById("ai-key-status");
     if (snap.exists()) {
       const d = snap.data();
-      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen UZMAN İSG Danışmanısın. Sadece İSG ve saha denetim konularına yanıt ver. Alakasız konularda uyar.";
+      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver. Alakasız konularda nazikçe İSG’ye yönlendir.";
       document.getElementById("ai-image-policy").value = d.imagePolicy || "teyit_sor";
       document.getElementById("ai-action-policy").value = d.actionPolicy || "onay_iste";
+      if (keyEl) keyEl.value = "";
+      if (st) st.textContent = d.geminiApiKey
+        ? "Kayıtlı anahtar var (••••" + String(d.geminiApiKey).slice(-4) + "). Değiştirmek için yeni key yazıp Kaydet."
+        : "Henüz anahtar yok — Google AI Studio key yapıştırın.";
+    } else if (st) {
+      st.textContent = "Henüz ayar yok.";
     }
   } catch(e) {
     console.error("AI Ayarları Yükleme Hatası:", e);
@@ -659,17 +1121,21 @@ window.saveAiSettings = async () => {
   const prompt = document.getElementById("ai-global-prompt").value.trim();
   const imagePolicy = document.getElementById("ai-image-policy").value;
   const actionPolicy = document.getElementById("ai-action-policy").value;
+  const newKey = (document.getElementById("ai-gemini-key").value || "").trim();
 
   const data = {
-    systemPrompt: prompt || "Sen UZMAN İSG Danışmanısın. Sadece İSG ve saha denetim konularına yanıt ver. Alakasız konularda uyar.",
+    systemPrompt: prompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver.",
     imagePolicy: imagePolicy,
     actionPolicy: actionPolicy,
     guncelleme: serverTimestamp()
   };
+  if (newKey) data.geminiApiKey = newKey;
 
   try {
     await setDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"), data, { merge: true });
-    toast("AI Davranış & Orkestrasyon Ayarları Güncellendi! 💾✅");
+    document.getElementById("ai-gemini-key").value = "";
+    toast("Uzman AI ayarları kaydedildi");
+    loadAiSettings();
   } catch(e) {
     toast(e.message, "error");
   }
@@ -694,13 +1160,31 @@ async function renderSuperAdminList() {
 
 window.addSuperAdmin = async () => {
   const email = (document.getElementById("new-superadmin-email").value || "").trim().toLowerCase();
+  const password = (document.getElementById("new-superadmin-password")?.value || "").trim();
   if (!email || !email.includes("@")) { toast("Geçerli bir e-posta girin.", "error"); return; }
   if (superAdminList.map(e => e.toLowerCase()).includes(email)) { toast("Bu e-posta zaten ekli.", "error"); return; }
-  superAdminList.push(email);
+  if (!password || password.length < 8) { toast("Geçici şifre en az 8 karakter (Auth hesabı için).", "error"); return; }
   try {
-    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+    try {
+      await createUserWithEmailAndPassword(secondaryAuth, email, password);
+      await fbSignOut(secondaryAuth);
+    } catch (authErr) {
+      const code = authErr?.code || "";
+      if (code !== "auth/email-already-in-use") {
+        toast("Auth: " + (authErr.message || code), "error");
+        return;
+      }
+      await sendPasswordResetEmail(auth, email);
+    }
+    superAdminList.push(email);
+    adminMustChangeMap[email] = true;
+    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
+      liste: superAdminList,
+      mustChangePassword: adminMustChangeMap
+    }, { merge: true });
     document.getElementById("new-superadmin-email").value = "";
-    toast("SuperAdmin eklendi! 👑");
+    document.getElementById("new-superadmin-password").value = "";
+    toast("SuperAdmin eklendi — ilk girişte şifre değişimi zorunlu");
     renderSuperAdminList();
   } catch(e) { toast(e.message, "error"); }
 };
@@ -709,8 +1193,12 @@ window.removeSuperAdmin = async (email) => {
   if (superAdminList.length <= 1) { toast("En az 1 SuperAdmin zorunludur! Silinemez.", "error"); return; }
   if (!confirm(`${email} adresini SuperAdmin listesinden kaldırmak istiyor musunuz?`)) return;
   superAdminList = superAdminList.filter(e => e.toLowerCase() !== email.toLowerCase());
+  delete adminMustChangeMap[(email || "").toLowerCase()];
   try {
-    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), { liste: superAdminList });
+    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
+      liste: superAdminList,
+      mustChangePassword: adminMustChangeMap
+    }, { merge: true });
     toast("SuperAdmin kaldırıldı.");
     renderSuperAdminList();
   } catch(e) { toast(e.message, "error"); }
@@ -880,18 +1368,18 @@ window.saveUser = async () => {
 
   try {
     if (password) {
-      if (password.length < 6) { toast("Şifre en az 6 karakter olmalı.","error"); return; }
+      if (password.length < 8) { toast("Geçici şifre en az 8 karakter olmalı.","error"); return; }
+      data.mustChangePassword = true;
       try {
         await createUserWithEmailAndPassword(secondaryAuth, email, password);
         await fbSignOut(secondaryAuth);
-        toast("Firebase Auth hesabı oluşturuldu.", "ok");
+        toast("Auth hesabı oluşturuldu — ilk girişte şifre değişimi zorunlu.", "ok");
       } catch (authErr) {
         const code = authErr?.code || "";
         if (code === "auth/email-already-in-use") {
-          // Hesap var — şifreyi admin client’tan güncelleyemeyiz; reset mail öner
           try {
             await sendPasswordResetEmail(auth, email);
-            toast("Hesap zaten var. Şifre sıfırlama e-postası gönderildi.", "ok");
+            toast("Hesap var. Sıfırlama maili gönderildi; mustChangePassword açıldı.", "ok");
           } catch (resetErr) {
             toast("Hesap zaten var. Şifre: " + (authErr.message || code), "error");
           }
@@ -978,7 +1466,7 @@ async function loadRules() {
 
 window.openRuleModal = () => {
   editingRuleId = null;
-  document.getElementById("rule-modal-title").textContent = "Yeni AI Kuralı & Niyet Yönlendirmesi";
+  document.getElementById("rule-modal-title").textContent = "Özel kural";
   ["rule-name","rule-keywords","rule-response"].forEach(id => document.getElementById(id).value = "");
   document.getElementById("rule-action-type").value = "otomatik_kaydet";
   document.getElementById("rule-image-req").value = "farketsmez";
