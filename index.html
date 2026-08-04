@@ -46,10 +46,10 @@
     /* LOGIN */
     #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.12) 0%, transparent 70%), var(--bg); gap: 32px; }
     .login-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 48px 40px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 0 80px rgba(245,158,11,0.08); }
-    .login-logo { width: 88px; height: 88px; border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(245,158,11,0.3); overflow: hidden; background: #0b1f33; border: 1px solid rgba(245,158,11,0.35); }
-    .login-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .sidebar-logo { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; background: #0b1f33; border: 1px solid rgba(245,158,11,0.35); }
-    .sidebar-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .login-logo { width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; box-shadow: 0 8px 32px rgba(245,158,11,0.3); overflow: hidden; background: transparent; border: none; }
+    .login-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .sidebar-logo { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; background: transparent; border: none; }
+    .sidebar-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .login-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
     .login-sub { font-size: 13px; color: var(--text2); margin-bottom: 32px; }
     .btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px 20px; background: white; color: #1a1a1a; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
@@ -156,15 +156,43 @@
     .rule-response { font-size: 12px; color: var(--text2); background: rgba(0,0,0,0.25); border-radius: 8px; padding: 10px 12px; white-space: pre-wrap; }
 
     /* STATS */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-    .stat-icon { font-size: 24px; margin-bottom: 6px; }
-    .stat-value { font-size: 26px; font-weight: 800; }
-    .stat-label { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; }
+    .stat-card.clickable { cursor: pointer; transition: border-color .15s, transform .12s; }
+    .stat-card.clickable:hover { border-color: rgba(245,158,11,0.45); transform: translateY(-1px); }
+    .nav-item.nav-sub { padding-left: 28px; font-size: 13px; }
+    .filter-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .filter-chip { border:1px solid var(--border); background:var(--surface2); color:var(--text2); padding:6px 12px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; }
+    .filter-chip.active { background:var(--accent-glow); color:var(--accent); border-color:rgba(245,158,11,0.35); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:11px; word-break:break-all; }
+    .stat-icon { font-size: 28px; margin-bottom: 8px; line-height: 1; }
+    .stat-value { font-size: 28px; font-weight: 800; line-height: 1.1; }
+    .stat-label { font-size: 12.5px; color: var(--text2); margin-top: 6px; font-weight: 600; }
+    .file-drop { display: block; border: 1.5px dashed rgba(245,158,11,0.45); background: rgba(245,158,11,0.06); border-radius: 14px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all .15s; }
+    .file-drop:hover, .file-drop.drag { border-color: var(--accent); background: rgba(245,158,11,0.12); }
+    .file-drop.has-file { border-style: solid; border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.08); }
+    .file-drop input { display: none; }
+    .file-drop-icon { font-size: 28px; margin-bottom: 8px; }
+    .file-drop-title { font-size: 14px; font-weight: 700; }
+    .file-drop-sub { font-size: 12px; color: var(--text2); margin-top: 4px; word-break: break-all; }
+    .current-ver-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; }
+    .current-ver-box b { color: var(--accent); }
 
     /* MODAL */
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .modal-bg.open { display: flex; }
+    .ui-dialog { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: min(420px, 92vw); box-shadow: 0 24px 80px rgba(0,0,0,0.45); animation: dialogIn .2s ease; }
+    .ui-dialog-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 14px; }
+    .ui-dialog-icon.warn { background: rgba(245,158,11,0.15); }
+    .ui-dialog-icon.danger { background: rgba(239,68,68,0.15); }
+    .ui-dialog-icon.ok { background: rgba(16,185,129,0.15); }
+    .ui-dialog-icon.info { background: rgba(59,130,246,0.15); }
+    .ui-dialog-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .ui-dialog-msg { font-size: 14px; color: var(--text2); line-height: 1.55; margin-bottom: 22px; white-space: pre-wrap; }
+    .ui-dialog-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    @keyframes dialogIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+    .users-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+    .users-toolbar .form-control { max-width: 280px; }
     .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; }
     .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
 
@@ -203,7 +231,7 @@
     <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doSignIn()">Giriş Yap</button>
     <div class="login-denied" id="login-denied">⛔ Bu hesabın admin yetkisi yoktur. Erişim reddedildi.</div>
   </div>
-  <div style="font-size:12px;color:#475569;">İSG Pusulası SaaS Admin Portal v2.4</div>
+  <div style="font-size:12px;color:#475569;">İSG Pusulası SaaS Admin Portal v2.7</div>
 </div>
 
 <!-- Zorunlu şifre değişimi (admin) -->
@@ -227,6 +255,7 @@
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
       <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetki Yönetimi</div>
+      <div class="nav-item nav-sub" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span> Yetkisiz Girişler</div>
       <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> Uzman AI</div>
       <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📊</span> AI Kullanım</div>
       <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Başvurular</div>
@@ -250,29 +279,29 @@
     <!-- DASHBOARD -->
     <div class="tab-content active" id="tab-dashboard">
       <div class="page-header">
-        <div class="page-title">SaaS Yönetim Paneli</div>
-        <div class="page-subtitle">İSG Pusulası müşteri erişimleri, paket yetkileri ve yapay zeka kural yönetimi</div>
+        <div class="page-title">Yönetim Paneli</div>
+        <div class="page-subtitle">Özet durum — karta tıklayarak ilgili listeye gidin</div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="stat-users">-</div><div class="stat-label">Kayıtlı Müşteri</div></div>
-        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-value" id="stat-ai-users">-</div><div class="stat-label">Uzman AI Paketli</div></div>
-        <div class="stat-card"><div class="stat-icon">📸</div><div class="stat-value" id="stat-vision-users">-</div><div class="stat-label">Görsel AI Paketli</div></div>
-        <div class="stat-card"><div class="stat-icon">📜</div><div class="stat-value" id="stat-rules">-</div><div class="stat-label">Aktif AI Kuralı</div></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">🚀 Hızlı İşlemler</div></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="showTab('users');openUserModal()">+ Yeni Müşteri / Kullanıcı Ekle</button>
-          <button class="btn btn-success" onclick="showTab('rules');openRuleModal()">+ Özel kural</button>
+        <div class="stat-card clickable" onclick="showTab('users')" title="Müşteriler">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="stat-users">-</div>
+          <div class="stat-label">Kayıtlı Müşteri</div>
         </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">🔒 Multi-Tenant Veri İzolasyon Güvencesi</div></div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.7;">
-          <p>• <strong>Sadece Yetkili Admin:</strong> Admin panele yalnızca Sistem Ayarlarında tanımlı SuperAdmin hesapları giriş yapabilir.</p>
-          <p>• <strong>Kullanıcı Paket Yönetimi:</strong> Uygulamayı indiren kullanıcıların Ad-Soyad, Meslek ve Şehir bilgilerini kaydedebilir; Uzman AI, Görsel AI (Resim Okuma) ve Sorgu Limitlerini dinamik olarak tanımlayabilirsiniz.</p>
-          <p>• <strong>Sıfır APK Build Zorunluluğu:</strong> Mobil uygulamaya kod yazmaya gerek kalmadan, yeni müşteri erişimleri ve AI kuralları anında Firestore üzerinden aktifleştirilir.</p>
-          <p>• <strong>Kullanıcı Gizliliği:</strong> Kullanıcıların saha kayıtları ve firma verileri tamamen kendilerine özeldir, başka kullanıcılar tarafından görüntülenemez.</p>
+        <div class="stat-card clickable" onclick="openPassiveUsers()" title="Pasif müşteriler">
+          <div class="stat-icon">⏸️</div>
+          <div class="stat-value" id="stat-passive">-</div>
+          <div class="stat-label">Pasife Alınan</div>
+        </div>
+        <div class="stat-card clickable" onclick="showTab('unauthorized')" title="Yetkisiz girişler">
+          <div class="stat-icon">🚫</div>
+          <div class="stat-value" id="stat-unauthorized">-</div>
+          <div class="stat-label">Yetkisiz Giriş</div>
+        </div>
+        <div class="stat-card clickable" onclick="showTab('unauthorized');setUnauthSection('blocked')" title="Engellenen makineler">
+          <div class="stat-icon">🖥️</div>
+          <div class="stat-value" id="stat-blocked-machines">-</div>
+          <div class="stat-label">Engelli Makine</div>
         </div>
       </div>
     </div>
@@ -283,13 +312,44 @@
         <div><div class="page-title">👤 Müşteri & Paket Yönetimi</div><div class="page-subtitle">Uygulamaya erişim izni verilen İSG Uzmanları ve paket tanımları</div></div>
         <button class="btn btn-primary" onclick="openUserModal()">+ Müşteri Ekle</button>
       </div>
-      <div class="privacy-notice">
-        🛡️ <strong>SaaS Lisanslama:</strong> Yeni müşteriye geçici şifre verin; ilk girişte zorunlu olarak kendi şifresini değiştirir (Agent + Mobil). Paketleri (Uzman AI, Görsel AI, limit) buradan yönetin.
+      <div class="users-toolbar">
+        <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Ara (isim, e-posta, şehir…)" oninput="filterUsers()" />
+        <select id="user-sort-select" class="form-control" style="max-width:200px;" onchange="setUserSort(this.value)">
+          <option value="newest">📅 Yeni → Eski</option>
+          <option value="oldest">📅 Eski → Yeni</option>
+          <option value="license_asc">🗓️ Lisans bitiş (yakın)</option>
+          <option value="license_desc">🗓️ Lisans bitiş (uzak)</option>
+          <option value="name">🔤 Ada göre</option>
+        </select>
       </div>
-      <div style="margin-bottom:16px;">
-        <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Müşteri ara (İsim, E-posta, Şehir, Meslek, Firma)..." oninput="filterUsers()" style="max-width:440px;" />
+      <div class="filter-chips" id="user-filter-chips">
+        <button type="button" class="filter-chip active" data-filter="all" onclick="setUserStatusFilter('all')">Tümü</button>
+        <button type="button" class="filter-chip" data-filter="active" onclick="setUserStatusFilter('active')">Aktif</button>
+        <button type="button" class="filter-chip" data-filter="passive" onclick="setUserStatusFilter('passive')">Pasif</button>
       </div>
       <div id="users-list"></div>
+    </div>
+
+    <!-- YETKİSİZ GİRİŞLER -->
+    <div class="tab-content" id="tab-unauthorized">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">🚫 Yetkisiz Girişler</div>
+          <div class="page-subtitle">Müşteri olmayan e-posta denemeleri · Makine engelle / engeli kaldır</div>
+        </div>
+      </div>
+      <div class="filter-chips" style="margin-bottom:16px;">
+        <button type="button" class="filter-chip active" id="chip-unauth-attempts" onclick="setUnauthSection('attempts')">Denemeler</button>
+        <button type="button" class="filter-chip" id="chip-unauth-blocked" onclick="setUnauthSection('blocked')">Engellenen makineler</button>
+      </div>
+      <div id="unauth-attempts-wrap">
+        <input type="text" id="unauth-search-input" class="form-control" placeholder="🔍 E-posta veya makine ara…" oninput="filterUnauthorized()" style="max-width:440px;margin-bottom:14px;" />
+        <div id="unauthorized-list"></div>
+      </div>
+      <div id="unauth-blocked-wrap" style="display:none;">
+        <input type="text" id="blocked-search-input" class="form-control" placeholder="🔍 Makine veya e-posta ara…" oninput="filterBlockedMachines()" style="max-width:440px;margin-bottom:14px;" />
+        <div id="blocked-machines-list"></div>
+      </div>
     </div>
 
     <!-- UZMAN AI AYARLARI -->
@@ -300,11 +360,6 @@
           <div class="page-subtitle">Mobildeki sohbet asistanı (Grigori'deki Nokta gibi). Gemini anahtarı buradan — aynı Google AI kredinizden düşer.</div>
         </div>
         <button class="btn btn-primary" onclick="openRuleModal()">+ Özel kural</button>
-      </div>
-
-      <div class="privacy-notice">
-        <b>Ne işe yarar?</b> Mobil uygulamadaki <b>Uzman</b> sohbeti. Anahtar = Google AI Studio / Gemini API key (Grigori Nokta ile aynı key'i yazarsanız fatura aynı hesaptan gider).
-        Kullanıcı kotası ayrıca <b>Müşteriler</b> ekranından (sorgu limiti) yönetilir.
       </div>
 
       <div class="card">
@@ -391,10 +446,6 @@
         </div>
         <button class="btn btn-ghost" onclick="loadApplications()">Yenile</button>
       </div>
-      <div class="privacy-notice">
-        Kaynak: <code>uyelik_basvurulari</code> · Site: tanıtım web. Okuma için Firestore kuralında bu koleksiyona
-        <b>authenticated read</b> gerekir (<code>allow read: if request.auth != null</code>).
-      </div>
       <div id="applications-list" class="empty-state">Yükleniyor…</div>
     </div>
 
@@ -402,27 +453,37 @@
     <div class="tab-content" id="tab-downloads">
       <div class="page-header">
         <div class="page-title">📦 Tanıtım Sitesi İndirmeleri</div>
-        <div class="page-subtitle">Sitedeki Agent zip / APK / mağaza linkleri. Boş bırakırsanız örnek paketler kullanılır.</div>
+        <div class="page-subtitle">Tanıtım sitesindeki Agent / APK / mağaza linkleri</div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">Paket yükle veya URL gir</div></div>
+        <div class="card-header"><div class="card-title">Paket yükle veya URL</div></div>
         <div class="grid-2">
           <div class="form-group">
-            <label class="form-label">Windows Agent (.zip) dosya</label>
-            <input type="file" class="form-control" id="dl-win-file" accept=".zip,application/zip" />
+            <label class="form-label">Windows Agent (.zip)</label>
+            <label class="file-drop" id="dl-win-drop">
+              <input type="file" id="dl-win-file" accept=".zip,application/zip" onchange="onFileDropChange('dl-win')" />
+              <div class="file-drop-icon">🪟</div>
+              <div class="file-drop-title">Dosya seç</div>
+              <div class="file-drop-sub" id="dl-win-file-label">ZIP sürükle veya tıkla</div>
+            </label>
           </div>
           <div class="form-group">
-            <label class="form-label">veya Windows indirme URL</label>
+            <label class="form-label">veya Windows URL</label>
             <input type="url" class="form-control" id="dl-win-url" placeholder="https://…/agent.zip" />
           </div>
         </div>
         <div class="grid-2">
           <div class="form-group">
-            <label class="form-label">Android APK dosya</label>
-            <input type="file" class="form-control" id="dl-apk-file" accept=".apk,application/vnd.android.package-archive" />
+            <label class="form-label">Android APK</label>
+            <label class="file-drop" id="dl-apk-drop">
+              <input type="file" id="dl-apk-file" accept=".apk,application/vnd.android.package-archive" onchange="onFileDropChange('dl-apk')" />
+              <div class="file-drop-icon">🤖</div>
+              <div class="file-drop-title">Dosya seç</div>
+              <div class="file-drop-sub" id="dl-apk-file-label">APK sürükle veya tıkla</div>
+            </label>
           </div>
           <div class="form-group">
-            <label class="form-label">veya APK indirme URL</label>
+            <label class="form-label">veya APK URL</label>
             <input type="url" class="form-control" id="dl-apk-url" placeholder="https://…/app.apk" />
           </div>
         </div>
@@ -443,24 +504,27 @@
         <button class="btn btn-success" onclick="saveDownloadPackages()">Kaydet / Yayınla</button>
         <div id="dl-status" class="form-hint" style="margin-top:10px;"></div>
       </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Yükleme geçmişi</div></div>
+        <div id="download-history-list" class="empty-state">Henüz kayıt yok</div>
+      </div>
     </div>
 
     <!-- SÜRÜM & GÜNCELLEME -->
     <div class="tab-content" id="tab-updates">
       <div class="page-header">
         <div class="page-title">🚀 Sürüm & Uzaktan Güncelleme</div>
-        <div class="page-subtitle">Agent (Windows zip) ve Mobil (Android apk) ayrı kanallar. Yayınlanan paket API üzerinden kontrol edilir.</div>
-      </div>
-      <div class="privacy-notice">
-        <b>versionCode</b> tamsayı karşılaştırmadır (Agent: 2.1.85 → <code>20185</code> = 2×10000+1×100+85). Mobil: <code>versionCode</code> Gradle'daki değer.
-        Paket: Windows <b>.zip</b>, Android <b>.apk</b>. Yükleme Firebase Storage → API'ye kayıt.
+        <div class="page-subtitle">Agent (Windows zip) ve Mobil (Android apk) ayrı kanallar</div>
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Yeni sürüm yayınla</div></div>
+        <div class="current-ver-box" id="upd-current-box">
+          Mevcut sürüm: <b id="upd-current-text">yükleniyor…</b>
+        </div>
         <div class="grid-2">
           <div class="form-group">
             <label class="form-label">Platform</label>
-            <select class="form-control" id="upd-platform">
+            <select class="form-control" id="upd-platform" onchange="refreshCurrentReleaseHint()">
               <option value="windows">Windows Agent (.zip)</option>
               <option value="android">Android Mobil (.apk)</option>
             </select>
@@ -477,7 +541,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Paket dosyası</label>
-            <input type="file" class="form-control" id="upd-file" accept=".zip,.apk,application/zip,application/vnd.android.package-archive" />
+            <label class="file-drop" id="upd-file-drop">
+              <input type="file" id="upd-file" accept=".zip,.apk,application/zip,application/vnd.android.package-archive" onchange="onFileDropChange('upd')" />
+              <div class="file-drop-icon">📦</div>
+              <div class="file-drop-title">Dosya seç</div>
+              <div class="file-drop-sub" id="upd-file-label">.zip veya .apk</div>
+            </label>
           </div>
         </div>
         <div class="form-group">
@@ -538,6 +607,16 @@
     </div>
 
   </main>
+</div>
+
+<!-- Genel onay / uyarı diyaloğu -->
+<div class="modal-bg" id="ui-dialog" style="z-index:2000;">
+  <div class="ui-dialog">
+    <div class="ui-dialog-icon info" id="ui-dialog-icon">💬</div>
+    <div class="ui-dialog-title" id="ui-dialog-title">Onay</div>
+    <div class="ui-dialog-msg" id="ui-dialog-msg"></div>
+    <div class="ui-dialog-actions" id="ui-dialog-actions"></div>
+  </div>
 </div>
 
 <!-- USER MODAL -->
@@ -710,15 +789,24 @@
         <div class="form-group" style="margin-bottom:0;display:none;" id="deneme-gun-group">
           <label class="form-label">Deneme Süresi</label>
           <select class="form-control" id="user-denemeGun">
-            <option value="7">7 gün</option>
+            <option value="1">1 gün</option>
+            <option value="2">2 gün</option>
+            <option value="3">3 gün</option>
+            <option value="4">4 gün</option>
+            <option value="5">5 gün</option>
+            <option value="6">6 gün</option>
+            <option value="7" selected>7 gün</option>
+            <option value="8">8 gün</option>
+            <option value="9">9 gün</option>
+            <option value="10">10 gün</option>
+            <option value="11">11 gün</option>
+            <option value="12">12 gün</option>
+            <option value="13">13 gün</option>
             <option value="14">14 gün</option>
-            <option value="30">30 gün</option>
-            <option value="60">60 gün</option>
-            <option value="90">90 gün</option>
           </select>
         </div>
       </div>
-      <div class="form-hint" style="margin-top:8px;">Deneme seçilince bitiş tarihi otomatik hesaplanır. Süresi dolan lisansta erişim otomatik kapatılır.</div>
+      <div class="form-hint" style="margin-top:8px;">Deneme: 1–14 gün seçilir, bitiş otomatik hesaplanır. Bitişten sonra 1 gün tolerans; ardından Agent + Mobil erişimi kapanır.</div>
     </div>
 
     <!-- PAKET & MODÜL -->
@@ -860,6 +948,21 @@ const PAGE_SIZE = 20;
 let allUsersList = [];
 let filteredUsersList = [];
 let currentUsersPage = 0;
+let userStatusFilter = "all"; // all | active | passive
+let userSort = "newest";
+
+let allUnauthorizedList = [];
+let filteredUnauthorizedList = [];
+let currentUnauthorizedPage = 0;
+let allBlockedMachines = [];
+let filteredBlockedMachines = [];
+let currentBlockedPage = 0;
+let unauthSection = "attempts";
+
+let allReleasesList = [];
+let currentReleasesPage = 0;
+let downloadHistoryList = [];
+let currentDlHistoryPage = 0;
 
 /* ── THEME ── */
 function applyTema(tema) {
@@ -1067,7 +1170,8 @@ window.showTab = (tab) => {
 async function loadAll() {
   await Promise.all([
     loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics(),
-    loadApplications(), loadDownloadPackages(), loadTheme()
+    loadApplications(), loadDownloadPackages(), loadTheme(),
+    loadUnauthorized(), loadBlockedMachines()
   ]);
 }
 
@@ -1140,10 +1244,42 @@ window.applicationToCustomer = async (id, email, adSoyad, sehir) => {
 };
 
 /* ── TANITIM İNDİRMELERİ ── */
+window.onFileDropChange = (kind) => {
+  const map = {
+    "dl-win": { input: "dl-win-file", label: "dl-win-file-label", drop: "dl-win-drop", empty: "ZIP sürükle veya tıkla" },
+    "dl-apk": { input: "dl-apk-file", label: "dl-apk-file-label", drop: "dl-apk-drop", empty: "APK sürükle veya tıkla" },
+    "upd": { input: "upd-file", label: "upd-file-label", drop: "upd-file-drop", empty: ".zip veya .apk" }
+  };
+  const m = map[kind];
+  if (!m) return;
+  const f = document.getElementById(m.input)?.files?.[0];
+  const lab = document.getElementById(m.label);
+  const drop = document.getElementById(m.drop);
+  if (lab) lab.textContent = f ? `${f.name} (${Math.round(f.size/1024)} KB)` : m.empty;
+  if (drop) drop.classList.toggle("has-file", !!f);
+};
+
+function wireFileDrops() {
+  [["dl-win-drop","dl-win-file","dl-win"],["dl-apk-drop","dl-apk-file","dl-apk"],["upd-file-drop","upd-file","upd"]].forEach(([dropId, inputId, kind]) => {
+    const drop = document.getElementById(dropId);
+    const input = document.getElementById(inputId);
+    if (!drop || !input) return;
+    ["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("drag"); }));
+    ["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("drag"); }));
+    drop.addEventListener("drop", e => {
+      const files = e.dataTransfer?.files;
+      if (!files?.length) return;
+      input.files = files;
+      onFileDropChange(kind);
+    });
+  });
+}
+setTimeout(wireFileDrops, 0);
+
 window.loadDownloadPackages = async () => {
   try {
     const snap = await getDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"));
-    if (!snap.exists()) return;
+    if (!snap.exists()) { renderDownloadHistory([]); return; }
     const d = snap.data();
     const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
     set("dl-win-url", d.windowsUrl || "");
@@ -1151,7 +1287,45 @@ window.loadDownloadPackages = async () => {
     set("dl-play-url", d.playStoreUrl || "");
     set("dl-apple-url", d.appStoreUrl || "");
     set("dl-notes", d.notes || "");
+    downloadHistoryList = Array.isArray(d.history) ? [...d.history] : [];
+    downloadHistoryList.sort((a, b) => (b.atMs || 0) - (a.atMs || 0));
+    currentDlHistoryPage = 0;
+    renderDownloadHistory(downloadHistoryList);
   } catch (e) { console.warn("loadDownloadPackages", e); }
+};
+
+function renderDownloadHistory(list) {
+  const box = document.getElementById("download-history-list");
+  if (!box) return;
+  const total = list.length;
+  if (!total) { box.innerHTML = `<div class="empty-state">Henüz yükleme kaydı yok</div>`; return; }
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentDlHistoryPage >= totalPages) currentDlHistoryPage = totalPages - 1;
+  const page = list.slice(currentDlHistoryPage * PAGE_SIZE, (currentDlHistoryPage + 1) * PAGE_SIZE);
+  let html = page.map(it => {
+    const when = it.atLabel || "—";
+    return `<div class="user-card-item">
+      <div class="user-card-header">
+        <div>
+          <div class="user-name-text">${esc(it.kind || "paket")} · ${esc(it.fileName || "URL/meta")}</div>
+          <div class="user-meta-text">${when}${it.by ? " · " + esc(it.by) : ""}</div>
+          ${it.url ? `<div class="mono" style="margin-top:6px;color:var(--text2);">${esc(it.url)}</div>` : ""}
+        </div>
+        <span class="badge badge-primary">${esc(it.kind || "")}</span>
+      </div>
+    </div>`;
+  }).join("");
+  html += `<div class="pager">
+    <button class="btn btn-ghost btn-sm" ${currentDlHistoryPage === 0 ? "disabled" : ""} onclick="goDlHistoryPage(${currentDlHistoryPage - 1})">‹ Önceki</button>
+    <span style="color:var(--text2);">Sayfa ${currentDlHistoryPage + 1} / ${totalPages} · ${total} kayıt</span>
+    <button class="btn btn-ghost btn-sm" ${currentDlHistoryPage >= totalPages - 1 ? "disabled" : ""} onclick="goDlHistoryPage(${currentDlHistoryPage + 1})">Sonraki ›</button>
+  </div>`;
+  box.innerHTML = html;
+}
+
+window.goDlHistoryPage = (p) => {
+  currentDlHistoryPage = p;
+  renderDownloadHistory(downloadHistoryList);
 };
 
 window.saveDownloadPackages = async () => {
@@ -1165,6 +1339,10 @@ window.saveDownloadPackages = async () => {
     const notes = (document.getElementById("dl-notes").value || "").trim();
     const winFile = document.getElementById("dl-win-file").files[0];
     const apkFile = document.getElementById("dl-apk-file").files[0];
+    const by = auth.currentUser?.email || "";
+    const now = Date.now();
+    const atLabel = new Date(now).toLocaleString("tr-TR");
+    const hist = Array.isArray(downloadHistoryList) ? [...downloadHistoryList] : [];
 
     if (winFile) {
       st.textContent = "Windows paketi yükleniyor…";
@@ -1173,6 +1351,7 @@ window.saveDownloadPackages = async () => {
       await uploadBytes(r, winFile);
       windowsUrl = await getDownloadURL(r);
       document.getElementById("dl-win-url").value = windowsUrl;
+      hist.unshift({ kind: "windows", fileName: winFile.name, url: windowsUrl, atMs: now, atLabel, by });
     }
     if (apkFile) {
       st.textContent = "APK yükleniyor…";
@@ -1181,16 +1360,27 @@ window.saveDownloadPackages = async () => {
       await uploadBytes(r, apkFile);
       androidUrl = await getDownloadURL(r);
       document.getElementById("dl-apk-url").value = androidUrl;
+      hist.unshift({ kind: "android", fileName: apkFile.name, url: androidUrl, atMs: now + 1, atLabel, by });
+    }
+    if (!winFile && !apkFile && (windowsUrl || androidUrl || notes)) {
+      hist.unshift({ kind: "meta", fileName: notes || "link güncelleme", url: windowsUrl || androidUrl || "", atMs: now, atLabel, by });
     }
 
+    const historyTrim = hist.slice(0, 100);
     await setDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"), {
       windowsUrl, androidUrl, playStoreUrl, appStoreUrl, notes,
+      history: historyTrim,
       guncelleme: serverTimestamp()
     }, { merge: true });
-    st.textContent = "Yayınlandı — tanıtım sitesi bu linkleri kullanır.";
+    st.textContent = "Yayınlandı";
     toast("Tanıtım indirmeleri kaydedildi");
     document.getElementById("dl-win-file").value = "";
     document.getElementById("dl-apk-file").value = "";
+    onFileDropChange("dl-win");
+    onFileDropChange("dl-apk");
+    downloadHistoryList = historyTrim;
+    currentDlHistoryPage = 0;
+    renderDownloadHistory(downloadHistoryList);
   } catch (e) {
     st.textContent = "";
     toast("Hata: " + e.message, "error");
@@ -1238,12 +1428,37 @@ window.publishUpdate = async () => {
     st.textContent = "Yayınlandı ✅";
     toast("Sürüm yayınlandı: " + versionName);
     document.getElementById("upd-file").value = "";
-    loadReleases();
+    onFileDropChange("upd");
+    await loadReleases();
   } catch (e) {
     st.textContent = "";
     toast("Yayın hatası: " + e.message, "error");
   }
 };
+
+window.refreshCurrentReleaseHint = () => {
+  const platform = document.getElementById("upd-platform")?.value || "windows";
+  const el = document.getElementById("upd-current-text");
+  if (!el) return;
+  const items = allReleasesList.filter(x => (x.platform || "").toLowerCase() === platform);
+  if (!items.length) {
+    el.textContent = platform === "windows" ? "Windows için kayıt yok" : "Android için kayıt yok";
+    return;
+  }
+  items.sort((a, b) => (b.version_code || 0) - (a.version_code || 0));
+  const latest = items[0];
+  el.textContent = `${latest.version_name} (code ${latest.version_code})`;
+  const codeEl = document.getElementById("upd-code");
+  const nameEl = document.getElementById("upd-name");
+  if (codeEl && !codeEl.value) codeEl.placeholder = String((latest.version_code || 0) + 1);
+  if (nameEl && !nameEl.value) nameEl.placeholder = suggestNextName(latest.version_name);
+};
+
+function suggestNextName(name) {
+  const m = String(name || "").match(/^(\d+)\.(\d+)\.(\d+)$/);
+  if (!m) return name || "";
+  return `${m[1]}.${m[2]}.${parseInt(m[3], 10) + 1}`;
+}
 
 window.loadReleases = async () => {
   const box = document.getElementById("releases-list");
@@ -1256,22 +1471,46 @@ window.loadReleases = async () => {
     });
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || "list_failed");
-    const items = data.items || [];
-    if (!items.length) { box.innerHTML = "<div class='empty-state'>Henüz sürüm yok</div>"; return; }
-    box.innerHTML = items.map(it => `
+    allReleasesList = data.items || [];
+    allReleasesList.sort((a, b) => (b.version_code || 0) - (a.version_code || 0));
+    currentReleasesPage = 0;
+    renderReleasesPage();
+    refreshCurrentReleaseHint();
+  } catch (e) {
+    box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`;
+  }
+};
+
+function renderReleasesPage() {
+  const box = document.getElementById("releases-list");
+  if (!box) return;
+  const total = allReleasesList.length;
+  if (!total) { box.innerHTML = "<div class='empty-state'>Henüz sürüm yok</div>"; return; }
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentReleasesPage >= totalPages) currentReleasesPage = totalPages - 1;
+  const page = allReleasesList.slice(currentReleasesPage * PAGE_SIZE, (currentReleasesPage + 1) * PAGE_SIZE);
+  let html = page.map(it => `
       <div class="rule-item">
         <div class="rule-item-header">
-          <div class="rule-item-title">${it.platform.toUpperCase()} · ${it.version_name} <span class="badge badge-primary">code ${it.version_code}</span>
+          <div class="rule-item-title">${esc((it.platform || "").toUpperCase())} · ${esc(it.version_name)} <span class="badge badge-primary">code ${it.version_code}</span>
             ${it.force_update ? '<span class="badge badge-warning">zorunlu</span>' : ''}
             ${it.active ? '<span class="badge badge-success">aktif</span>' : '<span class="badge badge-gray">pasif</span>'}
           </div>
         </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">${(it.notes||"").replace(/</g,"&lt;")}</div>
-        <div style="font-size:11px;color:var(--text2);word-break:break-all;">${it.download_url || it.object_path || ""}</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">${esc(it.notes || "")}</div>
+        <div class="mono" style="color:var(--text2);">${esc(it.download_url || it.object_path || "")}</div>
       </div>`).join("");
-  } catch (e) {
-    box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`;
-  }
+  html += `<div class="pager">
+    <button class="btn btn-ghost btn-sm" ${currentReleasesPage === 0 ? "disabled" : ""} onclick="goReleasesPage(${currentReleasesPage - 1})">‹ Önceki</button>
+    <span style="color:var(--text2);">Sayfa ${currentReleasesPage + 1} / ${totalPages} · ${total} kayıt</span>
+    <button class="btn btn-ghost btn-sm" ${currentReleasesPage >= totalPages - 1 ? "disabled" : ""} onclick="goReleasesPage(${currentReleasesPage + 1})">Sonraki ›</button>
+  </div>`;
+  box.innerHTML = html;
+}
+
+window.goReleasesPage = (p) => {
+  currentReleasesPage = p;
+  renderReleasesPage();
 };
 
 /* ── AI KULLANIM ANALİTİĞİ ── */
@@ -1470,7 +1709,7 @@ window.addSuperAdmin = async () => {
 
 window.removeSuperAdmin = async (email) => {
   if (superAdminList.length <= 1) { toast("En az 1 SuperAdmin zorunludur! Silinemez.", "error"); return; }
-  if (!confirm(`${email} adresini SuperAdmin listesinden kaldırmak istiyor musunuz?`)) return;
+  if (!(await uiConfirm(`${email} adresini SuperAdmin listesinden kaldırmak istiyor musunuz?`, { title: "SuperAdmin kaldır", danger: true }))) return;
   superAdminList = superAdminList.filter(e => e.toLowerCase() !== email.toLowerCase());
   delete adminMustChangeMap[(email || "").toLowerCase()];
   try {
@@ -1491,14 +1730,11 @@ async function loadUsers() {
   try {
     const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
     allUsersList = [];
-    let countAi = 0, countVision = 0;
 
     snap.forEach(ds => {
       if (!superAdminList.map(e => e.toLowerCase()).includes(ds.id.toLowerCase())) {
         const d = ds.data();
         allUsersList.push({ id: ds.id, ...d });
-        if (d.uzmanAi !== false) countAi++;
-        if (d.resimAi === true) countVision++;
       }
     });
 
@@ -1509,17 +1745,76 @@ async function loadUsers() {
       return tb - ta;
     });
 
+    const passiveCount = allUsersList.filter(u => u.aktif === false).length;
     const statU = document.getElementById("stat-users");
-    const statA = document.getElementById("stat-ai-users");
-    const statV = document.getElementById("stat-vision-users");
+    const statP = document.getElementById("stat-passive");
     if (statU) statU.textContent = allUsersList.length;
-    if (statA) statA.textContent = countAi;
-    if (statV) statV.textContent = countVision;
+    if (statP) statP.textContent = passiveCount;
 
-    filteredUsersList = [...allUsersList];
-    currentUsersPage = 0;
-    window.renderUserCards(filteredUsersList);
+    applyUserFilters();
   } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
+}
+
+window.setUserStatusFilter = (f) => {
+  userStatusFilter = f || "all";
+  document.querySelectorAll("#user-filter-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.dataset.filter === userStatusFilter);
+  });
+  applyUserFilters();
+};
+
+window.setUserSort = (v) => {
+  userSort = v || "newest";
+  applyUserFilters();
+};
+
+window.openPassiveUsers = () => {
+  showTab("users");
+  setUserStatusFilter("passive");
+};
+
+function userUpdatedMs(u) {
+  return u.guncelleme?.toMillis?.() || u.createdAt?.toMillis?.() || u.authPasswordSetAt?.toMillis?.() || u.pasifAt?.toMillis?.() || 0;
+}
+
+function userLicenseDay(u) {
+  const d = u.lisansBitis || u.lisansBitisTarihi || "";
+  if (!d || typeof d !== "string") return null;
+  const t = Date.parse(d.slice(0, 10));
+  return Number.isNaN(t) ? null : t;
+}
+
+function applyUserFilters() {
+  const q = (document.getElementById("user-search-input")?.value || "").toLowerCase();
+  filteredUsersList = allUsersList.filter(u => {
+    const aktif = u.aktif !== false;
+    if (userStatusFilter === "active" && !aktif) return false;
+    if (userStatusFilter === "passive" && aktif) return false;
+    if (!q) return true;
+    return (u.adSoyad || "").toLowerCase().includes(q) ||
+      (u.id || "").toLowerCase().includes(q) ||
+      (u.sehir || "").toLowerCase().includes(q) ||
+      (u.meslek || "").toLowerCase().includes(q) ||
+      (u.firma || "").toLowerCase().includes(q) ||
+      (u.pasifNeden || "").toLowerCase().includes(q);
+  });
+
+  filteredUsersList.sort((a, b) => {
+    if (userSort === "oldest") return userUpdatedMs(a) - userUpdatedMs(b);
+    if (userSort === "name") return String(a.adSoyad || a.id || "").localeCompare(String(b.adSoyad || b.id || ""), "tr");
+    if (userSort === "license_asc" || userSort === "license_desc") {
+      const la = userLicenseDay(a);
+      const lb = userLicenseDay(b);
+      if (la == null && lb == null) return 0;
+      if (la == null) return 1;
+      if (lb == null) return -1;
+      return userSort === "license_asc" ? la - lb : lb - la;
+    }
+    return userUpdatedMs(b) - userUpdatedMs(a); // newest
+  });
+
+  currentUsersPage = 0;
+  window.renderUserCards(filteredUsersList);
 }
 
 window.renderUserCards = (list) => {
@@ -1549,6 +1844,14 @@ window.renderUserCards = (list) => {
     const kullanilan = u.kullanilanSorgu ?? 0;
     const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
     const lisansStr = formatLisans(u);
+    const badges = [];
+    if (uzmanAi) badges.push('<span class="badge badge-primary">🤖 Uzman AI</span>');
+    if (resimAi) badges.push('<span class="badge badge-warning">📸 Görsel AI</span>');
+    if (sesliAi) badges.push('<span class="badge badge-primary">🎙️ Sesli AI</span>');
+    badges.push(`<span class="badge badge-gray">🗓️ ${esc(lisansStr)}</span>`);
+    const resetBtn = limit === -1
+      ? ""
+      : `<button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')" title="Sorgu Sayacını Sıfırla">🔄 Sayacı Sıfırla</button>`;
 
     html += `
       <div class="user-card-item">
@@ -1562,32 +1865,24 @@ window.renderUserCards = (list) => {
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <span class="badge ${aktif ? "badge-success" : "badge-danger"}" style="font-size:12px;padding:5px 12px;">${aktif ? "✓ Aktif" : "✗ Pasif"}</span>
-            <button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')" title="Sorgu Sayacını Sıfırla">🔄 Sayacı Sıfırla</button>
+            ${!aktif && u.pasifNeden ? `<span class="badge badge-warning" title="Pasif neden">${esc(u.pasifNeden)}</span>` : ""}
+            ${resetBtn}
             <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
             <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
           </div>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-          <div class="tier-badges">
-            ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
-            ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
-            ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
-            <span class="badge badge-gray">🗓️ ${esc(lisansStr)}</span>
-          </div>
+          <div class="tier-badges">${badges.join(" ")}</div>
           <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
         </div>
       </div>`;
   });
 
-  // Pager
-  let pagerHtml = "";
-  if (totalPages > 1) {
-    pagerHtml = `<div class="pager">
-      <button class="btn btn-ghost btn-sm" ${currentUsersPage === 0 ? 'disabled' : ''} onclick="goUsersPage(${currentUsersPage - 1})">‹ Önceki</button>
+  const pagerHtml = `<div class="pager">
+      <button class="btn btn-ghost btn-sm" ${currentUsersPage === 0 ? "disabled" : ""} onclick="goUsersPage(${currentUsersPage - 1})">‹ Önceki</button>
       <span style="color:var(--text2);">Sayfa ${currentUsersPage + 1} / ${totalPages} · ${total} kayıt</span>
-      <button class="btn btn-ghost btn-sm" ${currentUsersPage >= totalPages - 1 ? 'disabled' : ''} onclick="goUsersPage(${currentUsersPage + 1})">Sonraki ›</button>
+      <button class="btn btn-ghost btn-sm" ${currentUsersPage >= totalPages - 1 ? "disabled" : ""} onclick="goUsersPage(${currentUsersPage + 1})">Sonraki ›</button>
     </div>`;
-  }
 
   c.innerHTML = html + pagerHtml;
 };
@@ -1598,20 +1893,224 @@ window.goUsersPage = (page) => {
 };
 
 window.filterUsers = () => {
-  const q = (document.getElementById("user-search-input")?.value || "").toLowerCase();
-  filteredUsersList = allUsersList.filter(u =>
-    (u.adSoyad || "").toLowerCase().includes(q) ||
-    (u.id || "").toLowerCase().includes(q) ||
-    (u.sehir || "").toLowerCase().includes(q) ||
-    (u.meslek || "").toLowerCase().includes(q) ||
-    (u.firma || "").toLowerCase().includes(q)
+  applyUserFilters();
+};
+
+/* ── YETKİSİZ GİRİŞ / ENGELLİ MAKİNE ── */
+window.setUnauthSection = (sec) => {
+  unauthSection = sec === "blocked" ? "blocked" : "attempts";
+  const att = document.getElementById("unauth-attempts-wrap");
+  const blk = document.getElementById("unauth-blocked-wrap");
+  const cAtt = document.getElementById("chip-unauth-attempts");
+  const cBlk = document.getElementById("chip-unauth-blocked");
+  if (att) att.style.display = unauthSection === "attempts" ? "" : "none";
+  if (blk) blk.style.display = unauthSection === "blocked" ? "" : "none";
+  if (cAtt) cAtt.classList.toggle("active", unauthSection === "attempts");
+  if (cBlk) cBlk.classList.toggle("active", unauthSection === "blocked");
+};
+
+async function loadUnauthorized() {
+  const c = document.getElementById("unauthorized-list");
+  if (!c) return;
+  c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
+  try {
+    const snap = await getDocs(collection(db, "yetkisiz_girisler"));
+    allUnauthorizedList = [];
+    snap.forEach(ds => allUnauthorizedList.push({ id: ds.id, ...ds.data() }));
+    allUnauthorizedList.sort((a, b) => {
+      const ta = a.lastAt?.toMillis?.() || 0;
+      const tb = b.lastAt?.toMillis?.() || 0;
+      return tb - ta;
+    });
+    const stat = document.getElementById("stat-unauthorized");
+    if (stat) stat.textContent = allUnauthorizedList.length;
+    filterUnauthorized();
+  } catch (e) {
+    c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>yetkisiz_girisler</code> authenticated read/write açın.</p></div>`;
+  }
+}
+
+window.filterUnauthorized = () => {
+  const q = (document.getElementById("unauth-search-input")?.value || "").toLowerCase();
+  filteredUnauthorizedList = allUnauthorizedList.filter(x =>
+    !q ||
+    (x.email || "").toLowerCase().includes(q) ||
+    (x.machineId || "").toLowerCase().includes(q) ||
+    (x.platform || "").toLowerCase().includes(q)
   );
-  currentUsersPage = 0;
-  window.renderUserCards(filteredUsersList);
+  currentUnauthorizedPage = 0;
+  renderUnauthorizedCards();
+};
+
+function renderUnauthorizedCards() {
+  const c = document.getElementById("unauthorized-list");
+  if (!c) return;
+  const total = filteredUnauthorizedList.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentUnauthorizedPage >= totalPages) currentUnauthorizedPage = totalPages - 1;
+  const pageList = filteredUnauthorizedList.slice(
+    currentUnauthorizedPage * PAGE_SIZE,
+    (currentUnauthorizedPage + 1) * PAGE_SIZE
+  );
+  if (!total) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🚫</div><p>Henüz yetkisiz giriş denemesi yok.</p></div>`;
+    return;
+  }
+  let html = pageList.map(x => {
+    const when = x.lastAt?.toDate ? x.lastAt.toDate().toLocaleString("tr-TR") : "—";
+    const mid = x.machineId || "";
+    const isBlocked = allBlockedMachines.some(b => b.id === mid || b.machineId === mid);
+    return `<div class="user-card-item">
+      <div class="user-card-header">
+        <div>
+          <div class="user-name-text">${esc(x.email || "—")}</div>
+          <div class="user-meta-text">Deneme: <b>${x.attemptCount || 1}</b> · ${esc(x.platform || "windows")} · Son: ${when}</div>
+          <div class="mono" style="margin-top:6px;color:var(--text2);">Makine: ${esc(mid || "—")}</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          ${isBlocked ? '<span class="badge badge-danger">Engelli</span>' : '<span class="badge badge-warning">Açık</span>'}
+          ${!isBlocked && mid ? `<button class="btn btn-danger btn-sm" onclick="blockMachine('${esc(mid)}','${esc(x.email || "")}','${esc(x.id)}')">Makineyi engelle</button>` : ""}
+          ${isBlocked && mid ? `<button class="btn btn-ghost btn-sm" onclick="unblockMachine('${esc(mid)}')">Engeli kaldır</button>` : ""}
+          <button class="btn btn-ghost btn-sm" onclick="deleteUnauthorized('${esc(x.id)}')">Sil</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+  if (totalPages > 1) {
+    html += `<div class="pager">
+      <button class="btn btn-ghost btn-sm" ${currentUnauthorizedPage === 0 ? "disabled" : ""} onclick="goUnauthorizedPage(${currentUnauthorizedPage - 1})">‹ Önceki</button>
+      <span style="color:var(--text2);">Sayfa ${currentUnauthorizedPage + 1} / ${totalPages} · ${total} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${currentUnauthorizedPage >= totalPages - 1 ? "disabled" : ""} onclick="goUnauthorizedPage(${currentUnauthorizedPage + 1})">Sonraki ›</button>
+    </div>`;
+  }
+  c.innerHTML = html;
+}
+
+window.goUnauthorizedPage = (p) => {
+  currentUnauthorizedPage = p;
+  renderUnauthorizedCards();
+};
+
+window.deleteUnauthorized = async (id) => {
+  if (!(await uiConfirm("Bu yetkisiz giriş kaydını silmek istiyor musunuz?", { title: "Kaydı sil", danger: true }))) return;
+  try {
+    await deleteDoc(doc(db, "yetkisiz_girisler", id));
+    toast("Kayıt silindi");
+    loadUnauthorized();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+async function loadBlockedMachines() {
+  const c = document.getElementById("blocked-machines-list");
+  try {
+    const snap = await getDocs(collection(db, "engellenen_makineler"));
+    allBlockedMachines = [];
+    snap.forEach(ds => allBlockedMachines.push({ id: ds.id, ...ds.data() }));
+    allBlockedMachines.sort((a, b) => {
+      const ta = a.blockedAt?.toMillis?.() || 0;
+      const tb = b.blockedAt?.toMillis?.() || 0;
+      return tb - ta;
+    });
+    const stat = document.getElementById("stat-blocked-machines");
+    if (stat) stat.textContent = allBlockedMachines.length;
+    filterBlockedMachines();
+    if (filteredUnauthorizedList.length) renderUnauthorizedCards();
+  } catch (e) {
+    if (c) c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>engellenen_makineler</code> authenticated read/write açın.</p></div>`;
+  }
+}
+
+window.filterBlockedMachines = () => {
+  const q = (document.getElementById("blocked-search-input")?.value || "").toLowerCase();
+  filteredBlockedMachines = allBlockedMachines.filter(x =>
+    !q ||
+    (x.id || "").toLowerCase().includes(q) ||
+    (x.machineId || "").toLowerCase().includes(q) ||
+    (x.email || "").toLowerCase().includes(q) ||
+    (x.reason || "").toLowerCase().includes(q)
+  );
+  currentBlockedPage = 0;
+  renderBlockedMachines();
+};
+
+function renderBlockedMachines() {
+  const c = document.getElementById("blocked-machines-list");
+  if (!c) return;
+  const total = filteredBlockedMachines.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentBlockedPage >= totalPages) currentBlockedPage = totalPages - 1;
+  const pageList = filteredBlockedMachines.slice(currentBlockedPage * PAGE_SIZE, (currentBlockedPage + 1) * PAGE_SIZE);
+  if (!total) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🖥️</div><p>Engellenen makine yok.</p></div>`;
+    return;
+  }
+  let html = pageList.map(x => {
+    const when = x.blockedAt?.toDate ? x.blockedAt.toDate().toLocaleString("tr-TR") : "—";
+    const mid = x.machineId || x.id;
+    return `<div class="user-card-item">
+      <div class="user-card-header">
+        <div>
+          <div class="user-name-text">Engelli makine</div>
+          <div class="user-meta-text">E-posta ipucu: ${esc(x.email || "—")} · ${when}</div>
+          <div class="mono" style="margin-top:6px;color:var(--text2);">${esc(mid)}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:4px;">${esc(x.reason || "admin_block")} · ${esc(x.blockedBy || "")}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="unblockMachine('${esc(mid)}')">Engeli kaldır</button>
+      </div>
+    </div>`;
+  }).join("");
+  if (totalPages > 1) {
+    html += `<div class="pager">
+      <button class="btn btn-ghost btn-sm" ${currentBlockedPage === 0 ? "disabled" : ""} onclick="goBlockedPage(${currentBlockedPage - 1})">‹ Önceki</button>
+      <span style="color:var(--text2);">Sayfa ${currentBlockedPage + 1} / ${totalPages} · ${total} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${currentBlockedPage >= totalPages - 1 ? "disabled" : ""} onclick="goBlockedPage(${currentBlockedPage + 1})">Sonraki ›</button>
+    </div>`;
+  }
+  c.innerHTML = html;
+}
+
+window.goBlockedPage = (p) => {
+  currentBlockedPage = p;
+  renderBlockedMachines();
+};
+
+window.blockMachine = async (machineId, email, unauthId) => {
+  machineId = (machineId || "").trim();
+  if (!machineId) { toast("Makine id yok", "error"); return; }
+  if (!(await uiConfirm(`Bu makineyi engellemek istiyor musunuz?\n${machineId}`, { title: "Makineyi engelle", danger: true, confirmText: "Engelle" }))) return;
+  try {
+    const adminEmail = auth.currentUser?.email || "";
+    await setDoc(doc(db, "engellenen_makineler", machineId), {
+      machineId,
+      email: (email || "").toLowerCase(),
+      reason: "admin_block",
+      blockedAt: serverTimestamp(),
+      blockedBy: adminEmail,
+      sourceUnauthorizedId: unauthId || null
+    }, { merge: true });
+    if (unauthId) {
+      try { await updateDoc(doc(db, "yetkisiz_girisler", unauthId), { blocked: true, blockedAt: serverTimestamp() }); } catch (_) {}
+    }
+    toast("Makine engellendi");
+    await loadBlockedMachines();
+    await loadUnauthorized();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.unblockMachine = async (machineId) => {
+  machineId = (machineId || "").trim();
+  if (!machineId) return;
+  if (!(await uiConfirm("Makine engelini kaldırmak istiyor musunuz?", { title: "Engeli kaldır", confirmText: "Kaldır" }))) return;
+  try {
+    await deleteDoc(doc(db, "engellenen_makineler", machineId));
+    toast("Engel kaldırıldı");
+    await loadBlockedMachines();
+    await loadUnauthorized();
+  } catch (e) { toast(e.message, "error"); }
 };
 
 window.resetUsageCount = async (email) => {
-  if (!confirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`)) return;
+  if (!(await uiConfirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`, { title: "Sayacı sıfırla", icon: "🔄", confirmText: "Sıfırla" }))) return;
   try {
     await updateDoc(doc(db,"yetkili_kullanicilar",email), { kullanilanSorgu: 0 });
     toast("Sorgu sayacı sıfırlandı! 🔄");
@@ -1630,7 +2129,7 @@ window.openUserModal = () => {
   document.getElementById("user-limit").value = "-1";
   document.getElementById("user-lisansTipi").value = "normal";
   document.getElementById("user-lisansBitis").value = "";
-  document.getElementById("user-denemeGun").value = "30";
+  document.getElementById("user-denemeGun").value = "7";
   onLisansTipiChange();
   setAktifSeg(true);
   ["tog-uzman","tog-resim","tog-sesli"].forEach(id => document.getElementById(id).classList.add("on"));
@@ -1662,7 +2161,7 @@ window.editUser = async (email) => {
     const tipi = d.lisansTipi || "normal";
     document.getElementById("user-lisansTipi").value = tipi;
     document.getElementById("user-lisansBitis").value = d.lisansBitis || "";
-    document.getElementById("user-denemeGun").value = d.denemeGun ? String(d.denemeGun) : "30";
+    document.getElementById("user-denemeGun").value = d.denemeGun ? String(d.denemeGun) : "7";
     onLisansTipiChange();
 
     setAktifSeg(d.aktif !== false);
@@ -1720,7 +2219,9 @@ window.saveUser = async () => {
   if (lisansTipi === "normal") {
     lisansBitis = document.getElementById("user-lisansBitis").value || "";
   } else {
-    denemeGun = parseInt(document.getElementById("user-denemeGun").value) || 30;
+    denemeGun = parseInt(document.getElementById("user-denemeGun").value) || 7;
+    if (denemeGun < 1) denemeGun = 1;
+    if (denemeGun > 14) denemeGun = 14;
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + denemeGun);
     lisansBitis = endDate.toISOString().slice(0, 10);
@@ -1812,7 +2313,7 @@ window.saveUser = async () => {
 };
 
 window.deleteUser = async (email) => {
-  if (!confirm(`${email} müşterisinin erişimini kaldırmak istiyor musunuz?`)) return;
+  if (!(await uiConfirm(`${email} müşterisinin erişimini kaldırmak istiyor musunuz?`, { title: "Müşteriyi sil", danger: true, confirmText: "Sil" }))) return;
   try { await deleteDoc(doc(db,"yetkili_kullanicilar",email)); toast("Müşteri silindi."); loadUsers(); }
   catch(e) { toast(e.message,"error"); }
 };
@@ -1845,7 +2346,9 @@ async function loadRules() {
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"UzmanKurallar"));
-    document.getElementById("stat-rules").textContent = snap.size;
+    // rules count only used on Uzman AI tab if needed
+    const rulesStat = document.getElementById("stat-rules");
+    if (rulesStat) rulesStat.textContent = snap.size;
     if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok. "+ Yeni Kural" butonuna basarak kural ekleyebilirsiniz.</p></div>`; return; }
     c.innerHTML = "";
     snap.forEach(ds => {
@@ -1934,20 +2437,79 @@ window.saveRule = async () => {
 };
 
 window.deleteRule = async (id) => {
-  if (!confirm("Bu AI kuralını silmek istiyor musunuz?")) return;
+  if (!(await uiConfirm("Bu AI kuralını silmek istiyor musunuz?", { title: "Kuralı sil", danger: true, confirmText: "Sil" }))) return;
   try { await deleteDoc(doc(db,"UzmanKurallar",id)); toast("Kural silindi."); loadRules(); }
   catch(e) { toast(e.message,"error"); }
 };
 
 /* ── HELPERS ── */
 window.closeModal = (id) => document.getElementById(id).classList.remove("open");
-document.querySelectorAll(".modal-bg").forEach(bg => bg.addEventListener("click", e => { if(e.target===bg) bg.classList.remove("open"); }));
+document.querySelectorAll(".modal-bg").forEach(bg => bg.addEventListener("click", e => {
+  if (e.target !== bg) return;
+  if (bg.id === "ui-dialog") return; // onay diyalogu arka plana tıklayınca kapanmasın
+  bg.classList.remove("open");
+}));
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function showUiDialog({ title, message, icon = "💬", kind = "info", confirmText = "Tamam", cancelText = null, danger = false }) {
+  return new Promise((resolve) => {
+    const bg = document.getElementById("ui-dialog");
+    const iconEl = document.getElementById("ui-dialog-icon");
+    const titleEl = document.getElementById("ui-dialog-title");
+    const msgEl = document.getElementById("ui-dialog-msg");
+    const actions = document.getElementById("ui-dialog-actions");
+    iconEl.className = "ui-dialog-icon " + (kind || "info");
+    iconEl.textContent = icon;
+    titleEl.textContent = title || "";
+    msgEl.textContent = message || "";
+    actions.innerHTML = "";
+    const finish = (val) => {
+      bg.classList.remove("open");
+      resolve(val);
+    };
+    if (cancelText) {
+      const cancelBtn = document.createElement("button");
+      cancelBtn.className = "btn btn-ghost";
+      cancelBtn.textContent = cancelText;
+      cancelBtn.onclick = () => finish(false);
+      actions.appendChild(cancelBtn);
+    }
+    const okBtn = document.createElement("button");
+    okBtn.className = danger ? "btn btn-danger" : "btn btn-primary";
+    okBtn.textContent = confirmText;
+    okBtn.onclick = () => finish(true);
+    actions.appendChild(okBtn);
+    bg.classList.add("open");
+    okBtn.focus();
+  });
+}
+
+window.uiConfirm = (message, opts = {}) => showUiDialog({
+  title: opts.title || "Onay",
+  message,
+  icon: opts.icon || (opts.danger ? "⚠️" : "❓"),
+  kind: opts.danger ? "danger" : "warn",
+  confirmText: opts.confirmText || "Evet",
+  cancelText: opts.cancelText || "Vazgeç",
+  danger: !!opts.danger
+});
+
+window.uiAlert = (message, opts = {}) => showUiDialog({
+  title: opts.title || "Bilgi",
+  message,
+  icon: opts.icon || (opts.kind === "error" ? "⛔" : opts.kind === "ok" ? "✅" : "💬"),
+  kind: opts.kind === "error" ? "danger" : opts.kind === "ok" ? "ok" : "info",
+  confirmText: opts.confirmText || "Tamam",
+  cancelText: null
+});
+
 function toast(msg, type="success") {
   const c = document.getElementById("toast-container");
   const t = document.createElement("div");
-  t.className = `toast toast-${type}`; t.textContent = msg;
-  c.appendChild(t); setTimeout(()=>t.remove(), 3500);
+  t.className = `toast toast-${type === "error" ? "error" : type === "ok" ? "success" : type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3800);
 }
 </script>
 </body>
