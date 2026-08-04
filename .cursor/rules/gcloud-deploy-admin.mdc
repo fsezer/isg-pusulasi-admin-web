@@ -1,0 +1,12 @@
+---
+description: Cloud/GCP deploy — admin@istiklalyazilim.com; oturum düşerse Chrome link
+alwaysApply: true
+---
+
+# Google Cloud / Deploy (İSG Pusulası)
+
+- Cloud hesabı **asla değişmez**: `admin@istiklalyazilim.com`.
+- Deploy / `gcloud` oturumu düşmüşse kullanıcıya “sen login ol” deme.
+- Yapılacak: tarayıcı auth’u başlat, kullanıcıya **Chrome linkini** ver, girişini bekle, deploy’a devam et.
+- Canlı Admin: `https://isg-admin-web-kvfsvqx7na-ew.a.run.app`
+- Proje: `isg-pusulasi`

@@ -24,6 +24,23 @@
       --text2: #94a3b8;
       --radius: 14px;
     }
+
+    /* LIGHT THEME */
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface2: #f8fafc;
+      --text: #0f172a;
+      --text2: #64748b;
+      --border: rgba(0,0,0,0.10);
+    }
+    [data-theme="light"] body { background: var(--bg); }
+    [data-theme="light"] .form-control { background: #f1f5f9; color: var(--text); }
+    [data-theme="light"] .btn-ghost { background: #e2e8f0; color: var(--text); }
+    [data-theme="light"] .btn-ghost:hover { background: #cbd5e1; }
+    [data-theme="light"] .login-denied { background: rgba(239,68,68,0.08); }
+    [data-theme="light"] .privacy-notice { background: rgba(59,130,246,0.06); }
+
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
     /* LOGIN */
@@ -95,7 +112,7 @@
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 
-    /* TOGGLE OPTION */
+    /* TOGGLE */
     .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
     .toggle-row:last-child { border-bottom: none; }
     .toggle-label { font-size: 13px; font-weight: 500; }
@@ -104,6 +121,15 @@
     .toggle.on { background: var(--accent2); border-color: var(--accent2); }
     .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.2s; }
     .toggle.on::after { transform: translateX(20px); }
+
+    /* SEGMENTED CONTROL */
+    .seg-ctrl { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+    .seg-btn { flex: 1; padding: 11px 0; font-size: 14px; font-weight: 700; border: none; cursor: pointer; transition: all 0.15s; font-family: inherit; background: var(--surface2); color: var(--text2); }
+    .seg-btn + .seg-btn { border-left: 1px solid var(--border); }
+    .seg-btn.aktif-btn.active { background: #10b981; color: white; border-color: #10b981; }
+    .seg-btn.pasif-btn.active { background: #ef4444; color: white; border-color: #ef4444; }
+    .seg-btn.tema-btn.active { background: var(--accent); color: #0a0e1a; border-color: var(--accent); }
+    .seg-btn:disabled { opacity: 0.5; cursor: default; }
 
     /* USER & RULE ITEMS */
     .user-card-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s; }
@@ -139,7 +165,7 @@
     /* MODAL */
     .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
     .modal-bg.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; }
     .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 20px; }
 
     .spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
@@ -153,6 +179,10 @@
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); }
     .empty-icon { font-size: 44px; margin-bottom: 12px; }
     .privacy-notice { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #93c5fd; margin-bottom: 20px; line-height: 1.6; }
+
+    /* PAGER */
+    .pager { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 0 4px; font-size: 13px; }
+    .pager button:disabled { opacity: 0.4; cursor: default; }
   </style>
 </head>
 <body>
@@ -257,7 +287,7 @@
         🛡️ <strong>SaaS Lisanslama:</strong> Yeni müşteriye geçici şifre verin; ilk girişte zorunlu olarak kendi şifresini değiştirir (Agent + Mobil). Paketleri (Uzman AI, Görsel AI, limit) buradan yönetin.
       </div>
       <div style="margin-bottom:16px;">
-        <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Müşteri ara (İsim, E-posta, Şehir, Meslek)..." oninput="filterUsers()" style="max-width:400px;" />
+        <input type="text" id="user-search-input" class="form-control" placeholder="🔍 Müşteri ara (İsim, E-posta, Şehir, Meslek, Firma)..." oninput="filterUsers()" style="max-width:440px;" />
       </div>
       <div id="users-list"></div>
     </div>
@@ -267,13 +297,13 @@
       <div class="page-header-row">
         <div>
           <div class="page-title">🤖 Uzman AI</div>
-          <div class="page-subtitle">Mobildeki sohbet asistanı (Grigori’deki Nokta gibi). Gemini anahtarı buradan — aynı Google AI kredinizden düşer.</div>
+          <div class="page-subtitle">Mobildeki sohbet asistanı (Grigori'deki Nokta gibi). Gemini anahtarı buradan — aynı Google AI kredinizden düşer.</div>
         </div>
         <button class="btn btn-primary" onclick="openRuleModal()">+ Özel kural</button>
       </div>
 
       <div class="privacy-notice">
-        <b>Ne işe yarar?</b> Mobil uygulamadaki <b>Uzman</b> sohbeti. Anahtar = Google AI Studio / Gemini API key (Grigori Nokta ile aynı key’i yazarsanız fatura aynı hesaptan gider).
+        <b>Ne işe yarar?</b> Mobil uygulamadaki <b>Uzman</b> sohbeti. Anahtar = Google AI Studio / Gemini API key (Grigori Nokta ile aynı key'i yazarsanız fatura aynı hesaptan gider).
         Kullanıcı kotası ayrıca <b>Müşteriler</b> ekranından (sorgu limiti) yönetilir.
       </div>
 
@@ -282,7 +312,7 @@
         <div class="form-group">
           <label class="form-label">API Key</label>
           <input type="password" class="form-control" id="ai-gemini-key" placeholder="AIza…" autocomplete="off" />
-          <div class="form-hint">Boş bırakırsanız kayıtlı anahtar değişmez. Mobil bu anahtarı Firestore’dan okur (cihazda tutulmaz).</div>
+          <div class="form-hint">Boş bırakırsanız kayıtlı anahtar değişmez. Mobil bu anahtarı Firestore'dan okur (cihazda tutulmaz).</div>
         </div>
         <div id="ai-key-status" class="form-hint" style="margin-top:-6px;margin-bottom:10px;"></div>
       </div>
@@ -292,7 +322,7 @@
         <div class="form-group">
           <label class="form-label">Sistem talimatı</label>
           <textarea class="form-control" id="ai-global-prompt" rows="4" placeholder="Sen İSG Uzmanısın…"></textarea>
-          <div class="form-hint">Kısa tutun. Örn: “Sen İSG uzmanısın. Türkçe, net ve saha odaklı cevap ver.”</div>
+          <div class="form-hint">Kısa tutun. Örn: "Sen İSG uzmanısın. Türkçe, net ve saha odaklı cevap ver."</div>
         </div>
       </div>
 
@@ -307,7 +337,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">“Kaydet / denetim aç” denince</label>
+            <label class="form-label">"Kaydet / denetim aç" denince</label>
             <select class="form-control" id="ai-action-policy">
               <option value="onay_iste">Önce onay iste</option>
               <option value="direkt_kaydet">Direkt kaydet</option>
@@ -322,7 +352,7 @@
       <div class="card">
         <div class="card-header"><div class="card-title">4) Özel kurallar (isteğe bağlı)</div></div>
         <div class="form-hint" style="margin-bottom:12px;">
-          Aksiyon = “denetim aç” gibi komutlarda otomatik kayıt · Engelleme = istenmeyen konular · Mevzuat = sabit metin cevapları.
+          Aksiyon = "denetim aç" gibi komutlarda otomatik kayıt · Engelleme = istenmeyen konular · Mevzuat = sabit metin cevapları.
           Çoğu kullanımda 1–2 kural yeter; boş bırakılabilir.
         </div>
         <div id="rules-list"></div>
@@ -422,8 +452,8 @@
         <div class="page-subtitle">Agent (Windows zip) ve Mobil (Android apk) ayrı kanallar. Yayınlanan paket API üzerinden kontrol edilir.</div>
       </div>
       <div class="privacy-notice">
-        <b>versionCode</b> tamsayı karşılaştırmadır (Agent: 2.1.85 → <code>20185</code> = 2×10000+1×100+85). Mobil: <code>versionCode</code> Gradle’daki değer.
-        Paket: Windows <b>.zip</b>, Android <b>.apk</b>. Yükleme Firebase Storage → API’ye kayıt.
+        <b>versionCode</b> tamsayı karşılaştırmadır (Agent: 2.1.85 → <code>20185</code> = 2×10000+1×100+85). Mobil: <code>versionCode</code> Gradle'daki değer.
+        Paket: Windows <b>.zip</b>, Android <b>.apk</b>. Yükleme Firebase Storage → API'ye kayıt.
       </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Yeni sürüm yayınla</div></div>
@@ -474,8 +504,20 @@
     <div class="tab-content" id="tab-settings">
       <div class="page-header">
         <div class="page-title">⚙️ Sistem Ayarları</div>
-        <div class="page-subtitle">SuperAdmin hesap yönetimi. En az 1 SuperAdmin zorunludur.</div>
+        <div class="page-subtitle">SuperAdmin hesap yönetimi ve arayüz ayarları.</div>
       </div>
+
+      <!-- TEMA -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎨 Tema</div></div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Arayüz renk modu. Ayar Firestore'a ve yerel belleğe kaydedilir.</div>
+        <div class="seg-ctrl" style="max-width:260px;">
+          <button type="button" class="seg-btn tema-btn" id="tema-acik" onclick="setTema('light')">☀️ Açık</button>
+          <button type="button" class="seg-btn tema-btn" id="tema-koyu" onclick="setTema('dark')">🌙 Koyu</button>
+        </div>
+      </div>
+
+      <!-- SUPERADMIN -->
       <div class="card">
         <div class="card-header"><div class="card-title">👑 SuperAdmin Hesapları</div></div>
         <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Bu listedeki e-posta adresleri admin paneline giriş yapabilir. En az 1 SuperAdmin her zaman zorunludur.</div>
@@ -502,12 +544,142 @@
 <div class="modal-bg" id="user-modal">
   <div class="modal">
     <div class="modal-title" id="user-modal-title">Müşteri / Kullanıcı Tanımla</div>
-    <div class="form-group"><label class="form-label">E-posta Adresi (Zorunlu)</label><input type="email" class="form-control" id="user-email-input" placeholder="uzman@firma.com" /></div>
-    <div class="form-group"><label class="form-label">Geçici şifre (yeni / sıfırlama)</label><input type="password" class="form-control" id="user-password-input" placeholder="En az 8 karakter — boş = şifre dokunulmaz" autocomplete="new-password" /><div class="form-hint">Doldurulursa Auth hesabı oluşur/sıfırlanır ve <b>mustChangePassword</b> açılır — kullanıcı ilk girişte mecbur değiştirir.</div></div>
-    <div class="grid-2">
-      <div class="form-group"><label class="form-label">Ad Soyad</label><input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" /></div>
-      <div class="form-group"><label class="form-label">Şehir</label><input type="text" class="form-control" id="user-sehir" placeholder="İstanbul" /></div>
+
+    <div class="form-group">
+      <label class="form-label">E-posta Adresi (Zorunlu)</label>
+      <input type="email" class="form-control" id="user-email-input" placeholder="uzman@firma.com" />
     </div>
+
+    <div class="form-group">
+      <label class="form-label">Geçici şifre (yeni / sıfırlama)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" class="form-control" id="user-password-input" placeholder="8 haneli rakam — boş = şifre dokunulmaz" autocomplete="new-password" inputmode="numeric" style="flex:1;font-family:ui-monospace,monospace;letter-spacing:1px;" />
+        <button type="button" class="btn btn-ghost" onclick="fillTempPassword()" title="8 haneli üret">Üret</button>
+      </div>
+      <div class="form-hint">«Üret» ile 8 haneli geçici şifre gelir. Kaydedince Auth şifresi <b>gerçekten değişir</b>; eski şifre çalışmaz. Müşteri ilk girişte değiştirmek zorunda.</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Ad Soyad</label>
+        <input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Şehir</label>
+        <select class="form-control" id="user-sehir">
+          <option value="">Şehir seçin…</option>
+          <option value="Adana">Adana</option>
+          <option value="Adıyaman">Adıyaman</option>
+          <option value="Afyonkarahisar">Afyonkarahisar</option>
+          <option value="Ağrı">Ağrı</option>
+          <option value="Amasya">Amasya</option>
+          <option value="Ankara">Ankara</option>
+          <option value="Antalya">Antalya</option>
+          <option value="Artvin">Artvin</option>
+          <option value="Aydın">Aydın</option>
+          <option value="Balıkesir">Balıkesir</option>
+          <option value="Bilecik">Bilecik</option>
+          <option value="Bingöl">Bingöl</option>
+          <option value="Bitlis">Bitlis</option>
+          <option value="Bolu">Bolu</option>
+          <option value="Burdur">Burdur</option>
+          <option value="Bursa">Bursa</option>
+          <option value="Çanakkale">Çanakkale</option>
+          <option value="Çankırı">Çankırı</option>
+          <option value="Çorum">Çorum</option>
+          <option value="Denizli">Denizli</option>
+          <option value="Diyarbakır">Diyarbakır</option>
+          <option value="Düzce">Düzce</option>
+          <option value="Edirne">Edirne</option>
+          <option value="Elazığ">Elazığ</option>
+          <option value="Erzincan">Erzincan</option>
+          <option value="Erzurum">Erzurum</option>
+          <option value="Eskişehir">Eskişehir</option>
+          <option value="Gaziantep">Gaziantep</option>
+          <option value="Giresun">Giresun</option>
+          <option value="Gümüşhane">Gümüşhane</option>
+          <option value="Hakkari">Hakkari</option>
+          <option value="Hatay">Hatay</option>
+          <option value="Iğdır">Iğdır</option>
+          <option value="Isparta">Isparta</option>
+          <option value="İstanbul">İstanbul</option>
+          <option value="İzmir">İzmir</option>
+          <option value="Kahramanmaraş">Kahramanmaraş</option>
+          <option value="Karabük">Karabük</option>
+          <option value="Karaman">Karaman</option>
+          <option value="Kars">Kars</option>
+          <option value="Kastamonu">Kastamonu</option>
+          <option value="Kayseri">Kayseri</option>
+          <option value="Kırıkkale">Kırıkkale</option>
+          <option value="Kırklareli">Kırklareli</option>
+          <option value="Kırşehir">Kırşehir</option>
+          <option value="Kilis">Kilis</option>
+          <option value="Kocaeli">Kocaeli</option>
+          <option value="Konya">Konya</option>
+          <option value="Kütahya">Kütahya</option>
+          <option value="Malatya">Malatya</option>
+          <option value="Manisa">Manisa</option>
+          <option value="Mardin">Mardin</option>
+          <option value="Mersin">Mersin</option>
+          <option value="Muğla">Muğla</option>
+          <option value="Muş">Muş</option>
+          <option value="Nevşehir">Nevşehir</option>
+          <option value="Niğde">Niğde</option>
+          <option value="Ordu">Ordu</option>
+          <option value="Osmaniye">Osmaniye</option>
+          <option value="Rize">Rize</option>
+          <option value="Sakarya">Sakarya</option>
+          <option value="Samsun">Samsun</option>
+          <option value="Siirt">Siirt</option>
+          <option value="Sinop">Sinop</option>
+          <option value="Sivas">Sivas</option>
+          <option value="Şanlıurfa">Şanlıurfa</option>
+          <option value="Şırnak">Şırnak</option>
+          <option value="Tekirdağ">Tekirdağ</option>
+          <option value="Tokat">Tokat</option>
+          <option value="Trabzon">Trabzon</option>
+          <option value="Tunceli">Tunceli</option>
+          <option value="Uşak">Uşak</option>
+          <option value="Van">Van</option>
+          <option value="Yalova">Yalova</option>
+          <option value="Yozgat">Yozgat</option>
+          <option value="Zonguldak">Zonguldak</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">TC Kimlik No</label>
+        <input type="text" class="form-control" id="user-tc" placeholder="11 haneli TC" maxlength="11" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telefon</label>
+        <input type="text" class="form-control" id="user-telefon" placeholder="05xx xxx xx xx" maxlength="15" inputmode="tel" oninput="this.value=this.value.replace(/[^0-9+\s]/g,'')" />
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label class="form-label">Firma Adı</label>
+        <input type="text" class="form-control" id="user-firma" placeholder="ABC İSG Hizmetleri A.Ş." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Yedek E-posta</label>
+        <input type="email" class="form-control" id="user-yedekEmail" placeholder="yedek@email.com" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Adres</label>
+      <input type="text" class="form-control" id="user-adres" placeholder="Açık adres…" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">IBAN</label>
+      <input type="text" class="form-control" id="user-iban" placeholder="TR00 0000 0000 0000 0000 0000 00" maxlength="32" oninput="this.value=this.value.toUpperCase()" />
+    </div>
+
     <div class="form-group">
       <label class="form-label">Meslek / Unvan</label>
       <select class="form-control" id="user-meslek">
@@ -519,13 +691,49 @@
         <option value="Saha İSG Yöneticisi">Saha İSG Yöneticisi</option>
       </select>
     </div>
-    
+
+    <!-- LİSANS -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
-      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;">🎁 Paket & Modül İzinleri</div>
-      <div class="toggle-row">
-        <div><span class="toggle-label">🟢 Uygulama Erişim İzni</span><span class="toggle-sub">Giriş yapabilir mi?</span></div>
-        <div class="toggle on" id="tog-aktif" onclick="this.classList.toggle('on')"></div>
+      <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px;">🗓️ Lisans</div>
+      <div class="grid-2">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Lisans Tipi</label>
+          <select class="form-control" id="user-lisansTipi" onchange="onLisansTipiChange()">
+            <option value="normal">Normal</option>
+            <option value="deneme">Deneme</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;" id="lisans-bitis-group">
+          <label class="form-label">Bitiş Tarihi</label>
+          <input type="date" class="form-control" id="user-lisansBitis" />
+        </div>
+        <div class="form-group" style="margin-bottom:0;display:none;" id="deneme-gun-group">
+          <label class="form-label">Deneme Süresi</label>
+          <select class="form-control" id="user-denemeGun">
+            <option value="7">7 gün</option>
+            <option value="14">14 gün</option>
+            <option value="30">30 gün</option>
+            <option value="60">60 gün</option>
+            <option value="90">90 gün</option>
+          </select>
+        </div>
       </div>
+      <div class="form-hint" style="margin-top:8px;">Deneme seçilince bitiş tarihi otomatik hesaplanır. Süresi dolan lisansta erişim otomatik kapatılır.</div>
+    </div>
+
+    <!-- PAKET & MODÜL -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px;">🎁 Paket & Modül İzinleri</div>
+
+      <!-- Aktif / Pasif — büyük segmented control -->
+      <div style="margin-bottom:14px;">
+        <div class="form-label" style="margin-bottom:8px;">Uygulama Erişim İzni</div>
+        <div class="seg-ctrl">
+          <button type="button" class="seg-btn aktif-btn active" id="seg-aktif-btn" onclick="setAktifSeg(true)">✓ Aktif — Giriş Açık</button>
+          <button type="button" class="seg-btn pasif-btn" id="seg-pasif-btn" onclick="setAktifSeg(false)">✗ Pasif — Giriş Kapalı</button>
+        </div>
+      </div>
+
       <div class="toggle-row">
         <div><span class="toggle-label">🤖 Uzman AI Sohbeti</span><span class="toggle-sub">6331 Mevzuat asistanı</span></div>
         <div class="toggle on" id="tog-uzman" onclick="this.classList.toggle('on')"></div>
@@ -558,7 +766,6 @@
   <div class="modal">
     <div class="modal-title" id="rule-modal-title">Özel kural</div>
     
-    <!-- HIZLI ÖRNEK ŞABLONLAR -->
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:16px;">
       <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">💡 Hızlı Hazır Kural Şablonları (Tek Tıkla Doldur):</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -588,7 +795,6 @@
           <option value="ozel_yanit">📚 Sadece Özel Mevzuat/Şablon Yanıtı Ver</option>
         </select>
       </div>
-
       <div class="form-group">
         <label class="form-label">Görsel Şartı</label>
         <select class="form-control" id="rule-image-req">
@@ -615,8 +821,14 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+// Apply theme from localStorage immediately on load
+(function() {
+  const t = localStorage.getItem('admin_tema') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+})();
 
 const API_BASE = "https://isg-pusulasi-api-kvfsvqx7na-ew.a.run.app";
 let apiJwt = null;
@@ -635,7 +847,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
-// Secondary app: Auth kullanıcısı oluştururken admin oturumunu bozmamak için
 const secondaryApp = initializeApp(firebaseConfig, "Secondary");
 const secondaryAuth = getAuth(secondaryApp);
 
@@ -644,6 +855,74 @@ let superAdminList = [];
 let adminMustChangeMap = {};
 let pendingAdminTempPassword = "";
 
+// Pagination state
+const PAGE_SIZE = 20;
+let allUsersList = [];
+let filteredUsersList = [];
+let currentUsersPage = 0;
+
+/* ── THEME ── */
+function applyTema(tema) {
+  document.documentElement.setAttribute('data-theme', tema);
+  localStorage.setItem('admin_tema', tema);
+  const acikBtn = document.getElementById('tema-acik');
+  const koyuBtn = document.getElementById('tema-koyu');
+  if (acikBtn) acikBtn.classList.toggle('active', tema === 'light');
+  if (koyuBtn) koyuBtn.classList.toggle('active', tema === 'dark');
+}
+
+async function loadTheme() {
+  const localTema = localStorage.getItem('admin_tema') || 'dark';
+  applyTema(localTema);
+  try {
+    const snap = await getDoc(doc(db, "sistem_ayarlari", "ui"));
+    if (snap.exists()) {
+      const t = snap.data().tema || 'dark';
+      applyTema(t);
+    }
+  } catch(e) {}
+}
+
+window.setTema = async (tema) => {
+  applyTema(tema);
+  try {
+    await setDoc(doc(db, "sistem_ayarlari", "ui"), { tema }, { merge: true });
+    toast("Tema kaydedildi");
+  } catch(e) { toast(e.message, "error"); }
+};
+
+/* ── LICENSE HELPER ── */
+function formatLisans(u) {
+  const d = u.lisansBitis || u.lisansBitisTarihi || "";
+  if (!d) return "Süresiz";
+  const today = new Date().toISOString().slice(0, 10);
+  const expired = d < today;
+  const prefix = u.lisansTipi === 'deneme' ? 'Deneme · ' : '';
+  return prefix + d + (expired ? ' ⚠️ Süresi Doldu' : '');
+}
+
+/* ── AKTIF/PASIF SEGMENTED CONTROL ── */
+window.setAktifSeg = (aktif) => {
+  const ab = document.getElementById('seg-aktif-btn');
+  const pb = document.getElementById('seg-pasif-btn');
+  if (ab) ab.classList.toggle('active', aktif);
+  if (pb) pb.classList.toggle('active', !aktif);
+};
+function getAktifSeg() {
+  const ab = document.getElementById('seg-aktif-btn');
+  return ab ? ab.classList.contains('active') : true;
+}
+
+/* ── LİSANS TİPİ TOGGLE ── */
+window.onLisansTipiChange = () => {
+  const tipi = document.getElementById('user-lisansTipi').value;
+  const bitisGrp = document.getElementById('lisans-bitis-group');
+  const denemeGrp = document.getElementById('deneme-gun-group');
+  if (bitisGrp) bitisGrp.style.display = tipi === 'normal' ? '' : 'none';
+  if (denemeGrp) denemeGrp.style.display = tipi === 'deneme' ? '' : 'none';
+};
+
+/* ── SUPERADMIN ── */
 async function loadSuperAdmins() {
   try {
     const snap = await getDoc(doc(db, "sistem_ayarlari", "superAdminlar"));
@@ -788,7 +1067,7 @@ window.showTab = (tab) => {
 async function loadAll() {
   await Promise.all([
     loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics(),
-    loadApplications(), loadDownloadPackages()
+    loadApplications(), loadDownloadPackages(), loadTheme()
   ]);
 }
 
@@ -833,7 +1112,7 @@ window.loadApplications = async () => {
       </div>`;
     }).join("");
   } catch (e) {
-    box.innerHTML = `<div class="empty-state" style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules’ta <code>uyelik_basvurulari</code> için authenticated read açın.</div>`;
+    box.innerHTML = `<div class="empty-state" style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>uyelik_basvurulari</code> için authenticated read açın.</div>`;
   }
 };
 
@@ -932,14 +1211,14 @@ window.publishUpdate = async () => {
   if (platform === "windows" && !lower.endsWith(".zip")) { toast("Windows için .zip yükleyin", "error"); return; }
   if (platform === "android" && !lower.endsWith(".apk")) { toast("Android için .apk yükleyin", "error"); return; }
   try {
-    st.textContent = "Storage’a yükleniyor…";
+    st.textContent = "Storage'a yükleniyor…";
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
     if (!apiJwt) throw new Error("API oturumu yok");
     const path = `releases/${platform}/${versionCode}/${file.name}`;
     const ref = storageRef(storage, path);
     await uploadBytes(ref, file, { contentType: file.type || "application/octet-stream" });
     const downloadUrl = await getDownloadURL(ref);
-    st.textContent = "API’ye yayınlanıyor…";
+    st.textContent = "API'ye yayınlanıyor…";
     const resp = await fetch(API_BASE + "/v1/updates/publish", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
@@ -1074,7 +1353,7 @@ async function loadAnalytics() {
             </div>
           </td>
           <td style="padding:12px 14px;text-align:right;">
-            <button class="btn btn-ghost btn-sm" onclick="resetUserQueries('${esc(email)}')">🔄 Sıfırla</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')">🔄 Sıfırla</button>
           </td>
         </tr>
       `;
@@ -1102,7 +1381,7 @@ async function loadAiSettings() {
     const st = document.getElementById("ai-key-status");
     if (snap.exists()) {
       const d = snap.data();
-      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver. Alakasız konularda nazikçe İSG’ye yönlendir.";
+      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver. Alakasız konularda nazikçe İSG'ye yönlendir.";
       document.getElementById("ai-image-policy").value = d.imagePolicy || "teyit_sor";
       document.getElementById("ai-action-policy").value = d.actionPolicy || "onay_iste";
       if (keyEl) keyEl.value = "";
@@ -1211,7 +1490,7 @@ async function loadUsers() {
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
     const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
-    let allUsersList = [];
+    allUsersList = [];
     let countAi = 0, countVision = 0;
 
     snap.forEach(ds => {
@@ -1223,6 +1502,13 @@ async function loadUsers() {
       }
     });
 
+    // Sort: newest first by guncelleme / createdAt / authPasswordSetAt
+    allUsersList.sort((a, b) => {
+      const ta = a.guncelleme?.toMillis?.() || a.createdAt?.toMillis?.() || a.authPasswordSetAt?.toMillis?.() || 0;
+      const tb = b.guncelleme?.toMillis?.() || b.createdAt?.toMillis?.() || b.authPasswordSetAt?.toMillis?.() || 0;
+      return tb - ta;
+    });
+
     const statU = document.getElementById("stat-users");
     const statA = document.getElementById("stat-ai-users");
     const statV = document.getElementById("stat-vision-users");
@@ -1230,87 +1516,125 @@ async function loadUsers() {
     if (statA) statA.textContent = countAi;
     if (statV) statV.textContent = countVision;
 
-    window.renderUserCards = (list) => {
-      if (list.length === 0) {
-        c.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Henüz tanımlı müşteri yok veya arama kriterine uymuyor.<br>Sağ üstten "+ Müşteri Ekle" butonunu kullanın.</p></div>`;
-        return;
-      }
-      c.innerHTML = "";
-      list.forEach(u => {
-        const email = u.id;
-        const ad = u.adSoyad || "İsimsiz Uzman";
-        const meslek = u.meslek || "İSG Uzmanı";
-        const sehir = u.sehir || "Belirtilmedi";
-        const aktif = u.aktif !== false;
-        const resimAi = u.resimAi === true;
-        const uzmanAi = u.uzmanAi !== false;
-        const sesliAi = u.sesliAi !== false;
-        const limit = u.aiSorguLimiti ?? -1;
-        const kullanilan = u.kullanilanSorgu ?? 0;
-        const bitis = u.lisansBitisTarihi || "Süresiz";
-        const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
-
-        c.innerHTML += `
-          <div class="user-card-item">
-            <div class="user-card-header">
-              <div class="user-main-info">
-                <div class="user-avatar-lg">${ad.charAt(0).toUpperCase()}</div>
-                <div>
-                  <div class="user-name-text">${esc(ad)}</div>
-                  <div class="user-meta-text">✉️ ${esc(email)} • 🏢 ${esc(meslek)} (${esc(sehir)})</div>
-                </div>
-              </div>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-                <span class="badge ${aktif ? "badge-success" : "badge-danger"}">${aktif ? "✓ Erişimi Açık" : "✗ Pasif"}</span>
-                <button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')" title="Sorgu Sayacını Sıfırla">🔄 Sayacı Sıfırla</button>
-                <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
-              </div>
-            </div>
-            <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-              <div class="tier-badges">
-                ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
-                ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
-                ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
-                <span class="badge badge-gray">📅 Lisans: ${esc(bitis)}</span>
-              </div>
-              <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
-            </div>
-          </div>`;
-      });
-    };
-
-    window.filterUsers = () => {
-      const q = (document.getElementById("user-search-input")?.value || "").toLowerCase();
-      const filtered = allUsersList.filter(u => 
-        (u.adSoyad || "").toLowerCase().includes(q) ||
-        (u.id || "").toLowerCase().includes(q) ||
-        (u.sehir || "").toLowerCase().includes(q) ||
-        (u.meslek || "").toLowerCase().includes(q)
-      );
-      window.renderUserCards(filtered);
-    };
-
-    window.resetUsageCount = async (email) => {
-      if (!confirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`)) return;
-      try {
-        await updateDoc(doc(db,"yetkili_kullanicilar",email), { kullanilanSorgu: 0 });
-        toast("Sorgu sayacı sıfırlandı! 🔄");
-        loadUsers();
-      } catch(e) { toast(e.message, "error"); }
-    };
-
-    window.renderUserCards(allUsersList);
+    filteredUsersList = [...allUsersList];
+    currentUsersPage = 0;
+    window.renderUserCards(filteredUsersList);
   } catch(e) { c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Hata: ${e.message}</p></div>`; }
 }
+
+window.renderUserCards = (list) => {
+  const c = document.getElementById("users-list");
+  if (!c) return;
+  const total = list.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentUsersPage >= totalPages) currentUsersPage = totalPages - 1;
+  const pageList = list.slice(currentUsersPage * PAGE_SIZE, (currentUsersPage + 1) * PAGE_SIZE);
+
+  if (total === 0) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">👥</div><p>Henüz tanımlı müşteri yok veya arama kriterine uymuyor.<br>Sağ üstten "+ Müşteri Ekle" butonunu kullanın.</p></div>`;
+    return;
+  }
+
+  let html = "";
+  pageList.forEach(u => {
+    const email = u.id;
+    const ad = u.adSoyad || "İsimsiz Uzman";
+    const meslek = u.meslek || "İSG Uzmanı";
+    const sehir = u.sehir || "Belirtilmedi";
+    const aktif = u.aktif !== false;
+    const resimAi = u.resimAi === true;
+    const uzmanAi = u.uzmanAi !== false;
+    const sesliAi = u.sesliAi !== false;
+    const limit = u.aiSorguLimiti ?? -1;
+    const kullanilan = u.kullanilanSorgu ?? 0;
+    const limitStr = limit === -1 ? "Sınırsız Sorgu" : `${kullanilan} / ${limit} Sorgu`;
+    const lisansStr = formatLisans(u);
+
+    html += `
+      <div class="user-card-item">
+        <div class="user-card-header">
+          <div class="user-main-info">
+            <div class="user-avatar-lg">${ad.charAt(0).toUpperCase()}</div>
+            <div>
+              <div class="user-name-text">${esc(ad)}</div>
+              <div class="user-meta-text">✉️ ${esc(email)} • 🏢 ${esc(meslek)} (${esc(sehir)})</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge ${aktif ? "badge-success" : "badge-danger"}" style="font-size:12px;padding:5px 12px;">${aktif ? "✓ Aktif" : "✗ Pasif"}</span>
+            <button class="btn btn-ghost btn-sm" onclick="resetUsageCount('${esc(email)}')" title="Sorgu Sayacını Sıfırla">🔄 Sayacı Sıfırla</button>
+            <button class="btn btn-ghost btn-sm" onclick="editUser('${esc(email)}')">✏️ Düzenle</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteUser('${esc(email)}')">🗑️</button>
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <div class="tier-badges">
+            ${uzmanAi ? '<span class="badge badge-primary">🤖 Uzman AI</span>' : '<span class="badge badge-gray">🤖 Uzman AI Yok</span>'}
+            ${resimAi ? '<span class="badge badge-warning">📸 Görsel AI (Resim)</span>' : '<span class="badge badge-gray">📸 Görsel AI Yok</span>'}
+            ${sesliAi ? '<span class="badge badge-primary">🎙️ Sesli AI</span>' : '<span class="badge badge-gray">🎙️ Sesli AI Yok</span>'}
+            <span class="badge badge-gray">🗓️ ${esc(lisansStr)}</span>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:var(--accent);">📊 ${limitStr}</div>
+        </div>
+      </div>`;
+  });
+
+  // Pager
+  let pagerHtml = "";
+  if (totalPages > 1) {
+    pagerHtml = `<div class="pager">
+      <button class="btn btn-ghost btn-sm" ${currentUsersPage === 0 ? 'disabled' : ''} onclick="goUsersPage(${currentUsersPage - 1})">‹ Önceki</button>
+      <span style="color:var(--text2);">Sayfa ${currentUsersPage + 1} / ${totalPages} · ${total} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${currentUsersPage >= totalPages - 1 ? 'disabled' : ''} onclick="goUsersPage(${currentUsersPage + 1})">Sonraki ›</button>
+    </div>`;
+  }
+
+  c.innerHTML = html + pagerHtml;
+};
+
+window.goUsersPage = (page) => {
+  currentUsersPage = page;
+  window.renderUserCards(filteredUsersList);
+};
+
+window.filterUsers = () => {
+  const q = (document.getElementById("user-search-input")?.value || "").toLowerCase();
+  filteredUsersList = allUsersList.filter(u =>
+    (u.adSoyad || "").toLowerCase().includes(q) ||
+    (u.id || "").toLowerCase().includes(q) ||
+    (u.sehir || "").toLowerCase().includes(q) ||
+    (u.meslek || "").toLowerCase().includes(q) ||
+    (u.firma || "").toLowerCase().includes(q)
+  );
+  currentUsersPage = 0;
+  window.renderUserCards(filteredUsersList);
+};
+
+window.resetUsageCount = async (email) => {
+  if (!confirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`)) return;
+  try {
+    await updateDoc(doc(db,"yetkili_kullanicilar",email), { kullanilanSorgu: 0 });
+    toast("Sorgu sayacı sıfırlandı! 🔄");
+    loadUsers();
+  } catch(e) { toast(e.message, "error"); }
+};
 
 window.openUserModal = () => {
   document.getElementById("user-modal-title").textContent = "Müşteri / Kullanıcı Tanımla";
   document.getElementById("user-email-input").disabled = false;
-  ["user-email-input","user-adsoyad","user-sehir"].forEach(id => document.getElementById(id).value = "");
+  ["user-email-input","user-adsoyad","user-tc","user-telefon","user-firma","user-yedekEmail","user-adres","user-iban"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = "";
+  });
+  document.getElementById("user-sehir").value = "";
   document.getElementById("user-meslek").selectedIndex = 0;
   document.getElementById("user-limit").value = "-1";
-  ["tog-aktif","tog-uzman","tog-resim","tog-sesli"].forEach(id => document.getElementById(id).classList.add("on"));
+  document.getElementById("user-lisansTipi").value = "normal";
+  document.getElementById("user-lisansBitis").value = "";
+  document.getElementById("user-denemeGun").value = "30";
+  onLisansTipiChange();
+  setAktifSeg(true);
+  ["tog-uzman","tog-resim","tog-sesli"].forEach(id => document.getElementById(id).classList.add("on"));
+  fillTempPassword();
   document.getElementById("user-modal").classList.add("open");
 };
 
@@ -1326,22 +1650,51 @@ window.editUser = async (email) => {
 
     document.getElementById("user-adsoyad").value = d.adSoyad || "";
     document.getElementById("user-sehir").value = d.sehir || "";
+    document.getElementById("user-tc").value = d.tc || "";
+    document.getElementById("user-telefon").value = d.telefon || "";
+    document.getElementById("user-firma").value = d.firma || "";
+    document.getElementById("user-yedekEmail").value = d.yedekEmail || "";
+    document.getElementById("user-adres").value = d.adres || "";
+    document.getElementById("user-iban").value = d.iban || "";
     if (d.meslek) document.getElementById("user-meslek").value = d.meslek;
     document.getElementById("user-limit").value = d.aiSorguLimiti ?? -1;
 
-    setTog("tog-aktif", d.aktif !== false);
+    const tipi = d.lisansTipi || "normal";
+    document.getElementById("user-lisansTipi").value = tipi;
+    document.getElementById("user-lisansBitis").value = d.lisansBitis || "";
+    document.getElementById("user-denemeGun").value = d.denemeGun ? String(d.denemeGun) : "30";
+    onLisansTipiChange();
+
+    setAktifSeg(d.aktif !== false);
     setTog("tog-uzman", d.uzmanAi !== false);
     setTog("tog-resim", d.resimAi === true);
     setTog("tog-sesli", d.sesliAi !== false);
 
+    const pwdEl = document.getElementById("user-password-input");
+    if (pwdEl) pwdEl.value = "";
     document.getElementById("user-modal").classList.add("open");
   } catch(e) { toast(e.message,"error"); }
 };
 
 function setTog(id, val) {
   const el = document.getElementById(id);
+  if (!el) return;
   if (val) el.classList.add("on"); else el.classList.remove("on");
 }
+
+window.generateTempPassword = () => {
+  let s = "";
+  for (let i = 0; i < 8; i++) s += Math.floor(Math.random() * 10);
+  return s;
+};
+
+window.fillTempPassword = () => {
+  const el = document.getElementById("user-password-input");
+  if (!el) return;
+  el.value = generateTempPassword();
+  el.focus();
+  el.select();
+};
 
 window.saveUser = async () => {
   const email = document.getElementById("user-email-input").value.trim().toLowerCase();
@@ -1349,53 +1702,113 @@ window.saveUser = async () => {
 
   const password = (document.getElementById("user-password-input")?.value || "").trim();
   const ad = document.getElementById("user-adsoyad").value.trim();
-  const sehir = document.getElementById("user-sehir").value.trim();
+  const sehir = document.getElementById("user-sehir").value;
+  const tc = document.getElementById("user-tc").value.trim();
+  const telefon = document.getElementById("user-telefon").value.trim();
+  const firma = document.getElementById("user-firma").value.trim();
+  const yedekEmail = document.getElementById("user-yedekEmail").value.trim();
+  const adres = document.getElementById("user-adres").value.trim();
+  const iban = document.getElementById("user-iban").value.trim();
   const meslek = document.getElementById("user-meslek").value;
   const limit = parseInt(document.getElementById("user-limit").value) || -1;
+
+  const lisansTipi = document.getElementById("user-lisansTipi").value;
+  let lisansBitis = "";
+  let denemeGun = null;
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (lisansTipi === "normal") {
+    lisansBitis = document.getElementById("user-lisansBitis").value || "";
+  } else {
+    denemeGun = parseInt(document.getElementById("user-denemeGun").value) || 30;
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + denemeGun);
+    lisansBitis = endDate.toISOString().slice(0, 10);
+  }
+
+  let aktif = getAktifSeg();
+  // Force pasif if license is expired
+  if (lisansBitis && lisansBitis < today) aktif = false;
 
   const data = {
     email,
     adSoyad: ad,
     sehir,
+    tc,
+    telefon,
+    firma,
+    yedekEmail,
+    adres,
+    iban,
     meslek,
-    aktif: document.getElementById("tog-aktif").classList.contains("on"),
+    aktif,
     uzmanAi: document.getElementById("tog-uzman").classList.contains("on"),
     resimAi: document.getElementById("tog-resim").classList.contains("on"),
     sesliAi: document.getElementById("tog-sesli").classList.contains("on"),
     aiSorguLimiti: limit,
+    lisansTipi,
+    lisansBitis,
+    lisansBitisTarihi: lisansBitis,
     guncelleme: serverTimestamp()
   };
+  if (denemeGun !== null) data.denemeGun = denemeGun;
 
   try {
     if (password) {
-      if (password.length < 8) { toast("Geçici şifre en az 8 karakter olmalı.","error"); return; }
+      if (!/^\d{8}$/.test(password)) {
+        toast("Geçici şifre tam 8 haneli rakam olmalı (Üret).", "error");
+        return;
+      }
       data.mustChangePassword = true;
+      data.authPasswordSetAt = serverTimestamp();
+
+      let created = false;
       try {
         await createUserWithEmailAndPassword(secondaryAuth, email, password);
         await fbSignOut(secondaryAuth);
-        toast("Auth hesabı oluşturuldu — ilk girişte şifre değişimi zorunlu.", "ok");
+        created = true;
       } catch (authErr) {
         const code = authErr?.code || "";
-        if (code === "auth/email-already-in-use") {
-          try {
-            await sendPasswordResetEmail(auth, email);
-            toast("Hesap var. Sıfırlama maili gönderildi; mustChangePassword açıldı.", "ok");
-          } catch (resetErr) {
-            toast("Hesap zaten var. Şifre: " + (authErr.message || code), "error");
-          }
-        } else {
+        if (code !== "auth/email-already-in-use") {
           toast("Auth hesap hatası: " + (authErr.message || code), "error");
           return;
         }
       }
+
+      if (!created) {
+        if (!apiJwt) {
+          toast("API oturumu yok — sayfayı yenileyip tekrar giriş yapın.", "error");
+          return;
+        }
+        const resp = await fetch(API_BASE + "/v1/admin/users/set-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiJwt
+          },
+          body: JSON.stringify({ email, password })
+        });
+        const body = await resp.json().catch(() => ({}));
+        if (!resp.ok) {
+          toast("Şifre set edilemedi: " + (body.detail || body.error || resp.status), "error");
+          return;
+        }
+      }
+
+      toast("Geçici şifre: " + password + " — bunu müşteriye verin.", "ok");
     }
 
-    await setDoc(doc(db,"yetkili_kullanicilar",email), data, { merge: true });
+    if (data.aktif === false) {
+      data.authPasswordSetAt = serverTimestamp();
+    }
+
+    await setDoc(doc(db, "yetkili_kullanicilar", email), data, { merge: true });
     const pwdEl = document.getElementById("user-password-input");
     if (pwdEl) pwdEl.value = "";
-    toast("Müşteri hesabı ve paket izinleri güncellendi! ✅");
-    closeModal("user-modal"); loadUsers();
-  } catch(e) { toast(e.message,"error"); }
+    toast("Müşteri hesabı güncellendi ✅");
+    closeModal("user-modal");
+    loadUsers();
+  } catch (e) { toast(e.message, "error"); }
 };
 
 window.deleteUser = async (email) => {
