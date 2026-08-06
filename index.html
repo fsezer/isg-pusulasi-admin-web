@@ -213,6 +213,10 @@
     .upd-subtab:hover { color: var(--text); background: rgba(255,255,255,0.04); }
     .upd-subtab.on { color: #0f172a; background: #93c5fd; }
     .upd-subtab.on.and { background: #6ee7b7; }
+    .upd-subtab.on.ios { background: #d4b4fe; }
+    .upd-plat-card.ios { box-shadow: inset 4px 0 0 #a855f7; }
+    .upd-plat-card.ios .upd-plat-icon { background: rgba(168,85,247,0.15); }
+    .rel-card.plat-ios::before { background: linear-gradient(180deg, #a855f7, #d4b4fe); }
     .upd-subtab .dot {
       width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.55;
     }
@@ -350,6 +354,9 @@
       <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📊</span> AI Kullanım</div>
       <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Başvurular</div>
       <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span> Tanıtım İndirmeleri</div>
+      <div class="nav-item nav-sub" onclick="showTab('leads')" id="nav-leads"><span class="icon">📧</span> İndirme Talepleri</div>
+      <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span> Geri Bildirimler</div>
+      <div class="nav-item" onclick="showTab('kota')" id="nav-kota"><span class="icon">📈</span> Kota / Kullanım</div>
       <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span> Sürüm & Güncelleme</div>
       <div class="nav-item" onclick="showTab('settings')" id="nav-settings"><span class="icon">⚙️</span> Sistem Ayarları</div>
     </div>
@@ -636,6 +643,9 @@
         <button type="button" class="upd-subtab and" id="upd-tab-android" onclick="showUpdPlat('android')">
           <span class="dot"></span>🤖 Android Mobil
         </button>
+        <button type="button" class="upd-subtab ios" id="upd-tab-ios" onclick="showUpdPlat('ios')">
+          <span class="dot"></span>&#xF8FF; iOS / iPhone
+        </button>
       </div>
 
       <div id="upd-panel-windows" class="upd-plat-panel on">
@@ -749,6 +759,121 @@
           </div>
         </div>
       </div>
+
+      <div id="upd-panel-ios" class="upd-plat-panel">
+        <!-- iOS -->
+        <div class="upd-plat-card ios card" style="margin-bottom:0;">
+          <div class="upd-plat-head">
+            <div class="upd-plat-icon">&#xF8FF;</div>
+            <div>
+              <div class="upd-plat-title">iOS / iPhone</div>
+              <div class="upd-plat-sub">Paket: <b>.ipa</b> · platform=<code>ios</code></div>
+            </div>
+          </div>
+          <div class="current-ver-box">Mevcut: <b id="upd-ios-current">yükleniyor…</b></div>
+          <div class="rel-edit-banner" id="upd-ios-edit-banner">
+            <span id="upd-ios-edit-banner-text">Düzenleme</span>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="cancelEditRelease('ios')">Vazgeç</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">versionCode</label>
+            <input type="number" class="form-control" id="upd-ios-code" placeholder="1" min="1" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">versionName</label>
+            <input type="text" class="form-control" id="upd-ios-name" placeholder="1.0.0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Paket (.ipa) <span id="upd-ios-file-optional" style="font-weight:500;color:var(--text2);display:none;">(düzenlemede opsiyonel)</span></label>
+            <label class="file-drop" id="upd-ios-file-drop">
+              <input type="file" id="upd-ios-file" accept=".ipa" onchange="onFileDropChange('upd-ios')" />
+              <div class="file-drop-icon">&#xF8FF;</div>
+              <div class="file-drop-title">IPA seç</div>
+              <div class="file-drop-sub" id="upd-ios-file-label">iOS paket (.ipa)</div>
+            </label>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notlar</label>
+            <textarea class="form-control" id="upd-ios-notes" rows="2" placeholder="iOS changelog"></textarea>
+          </div>
+          <div class="toggle-row" style="margin-bottom:10px;">
+            <div><span class="toggle-label">Zorunlu</span><span class="toggle-sub">Ertelemeye izin yok</span></div>
+            <div class="toggle" id="upd-ios-force" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <div class="toggle-row" style="margin-bottom:14px;">
+            <div><span class="toggle-label">Aktif</span><span class="toggle-sub">Pasifse görünmez</span></div>
+            <div class="toggle on" id="upd-ios-active" onclick="this.classList.toggle('on')"></div>
+          </div>
+          <button class="btn btn-primary" id="upd-ios-publish-btn" onclick="publishUpdate('ios')" style="background:#a855f7;color:#fff;">&#xF8FF; iOS yayınla</button>
+          <div id="upd-ios-status" class="form-hint" style="margin-top:10px;"></div>
+          <div class="upd-plat-hist">
+            <div class="upd-plat-hist-title">
+              <span>iOS sürüm geçmişi</span>
+              <button class="btn btn-ghost btn-sm" onclick="loadReleases()">🔄</button>
+            </div>
+            <div id="releases-list-ios" class="empty-state">Yükleniyor…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- İNDİRME TALEPLERİ -->
+    <div class="tab-content" id="tab-leads">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">📧 İndirme Talepleri</div>
+          <div class="page-subtitle">Tanıtım sitesinden indirme isteyen e-postalar · Limit 3 indirme/kişi</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadLeads()">🔄 Yenile</button>
+      </div>
+      <div class="users-toolbar">
+        <input type="text" id="leads-search" class="form-control" placeholder="🔍 E-posta ara…" oninput="leadSearchDebounce()" style="max-width:320px;" />
+      </div>
+      <div id="leads-list"><div class="empty-state">Yükleniyor…</div></div>
+      <div class="pager" id="leads-pager"></div>
+    </div>
+
+    <!-- GERİ BİLDİRİMLER -->
+    <div class="tab-content" id="tab-feedback">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">💬 Geri Bildirimler</div>
+          <div class="page-subtitle">Uygulamadan gelen kullanıcı geri bildirimleri</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadFeedback()">🔄 Yenile</button>
+      </div>
+      <div class="users-toolbar">
+        <input type="text" id="feedback-search" class="form-control" placeholder="🔍 E-posta veya mesaj ara…" oninput="feedbackSearchDebounce()" style="max-width:320px;" />
+        <select id="feedback-cat" class="form-control" style="max-width:160px;" onchange="loadFeedback()">
+          <option value="">Tüm kategoriler</option>
+          <option value="teknik">Teknik</option>
+          <option value="oneri">Öneri</option>
+          <option value="guncelleme">Güncelleme</option>
+        </select>
+        <select id="feedback-status" class="form-control" style="max-width:140px;" onchange="loadFeedback()">
+          <option value="">Tüm durumlar</option>
+          <option value="open">Açık</option>
+          <option value="done">Tamamlandı</option>
+        </select>
+      </div>
+      <div id="feedback-list"><div class="empty-state">Yükleniyor…</div></div>
+      <div class="pager" id="feedback-pager"></div>
+    </div>
+
+    <!-- KOTA / KULLANIM -->
+    <div class="tab-content" id="tab-kota">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">📈 Kota / Kullanım</div>
+          <div class="page-subtitle">Kullanıcı bazlı sync ve depolama istatistikleri</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadUsage()">🔄 Yenile</button>
+      </div>
+      <div class="users-toolbar">
+        <input type="text" id="usage-search" class="form-control" placeholder="🔍 E-posta ara…" oninput="usageSearchDebounce()" style="max-width:320px;" />
+      </div>
+      <div id="usage-list"><div class="empty-state">Yükleniyor…</div></div>
+      <div class="pager" id="usage-pager"></div>
     </div>
 
     <!-- SİSTEM AYARLARI -->
@@ -1146,13 +1271,19 @@ let currentBlockedPage = 0;
 let unauthSection = "attempts";
 
 let allReleasesList = [];
-let currentReleasesPage = { windows: 0, android: 0 };
-/** @type {{ windows: string|null, android: string|null }} */
-let editingReleaseId = { windows: null, android: null };
+let currentReleasesPage = { windows: 0, android: 0, ios: 0 };
+/** @type {{ windows: string|null, android: string|null, ios: string|null }} */
+let editingReleaseId = { windows: null, android: null, ios: null };
 
 function updPfx(platform) {
-  return platform === "android" ? "and" : "win";
+  if (platform === "android") return "and";
+  if (platform === "ios") return "ios";
+  return "win";
 }
+
+let leadsPage = 0; let leadsTotal = 0;
+let feedbackPage = 0; let feedbackTotal = 0;
+let usagePage = 0; let usageTotal = 0;
 
 function updIds(platform) {
   const p = updPfx(platform);
@@ -1381,16 +1512,19 @@ function showLogin() {
 window.showTab = (tab) => {
   document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-  document.getElementById("tab-" + tab).classList.add("active");
-  document.getElementById("nav-" + tab).classList.add("active");
+  document.getElementById("tab-" + tab)?.classList.add("active");
+  document.getElementById("nav-" + tab)?.classList.add("active");
+  if (tab === "updates") loadReleases();
+  if (tab === "leads") loadLeads();
+  if (tab === "feedback") loadFeedback();
+  if (tab === "kota") loadUsage();
 };
 
 window.showUpdPlat = (plat) => {
-  const win = plat === "windows";
-  document.getElementById("upd-tab-windows")?.classList.toggle("on", win);
-  document.getElementById("upd-tab-android")?.classList.toggle("on", !win);
-  document.getElementById("upd-panel-windows")?.classList.toggle("on", win);
-  document.getElementById("upd-panel-android")?.classList.toggle("on", !win);
+  ["windows", "android", "ios"].forEach(p => {
+    document.getElementById("upd-tab-" + p)?.classList.toggle("on", p === plat);
+    document.getElementById("upd-panel-" + p)?.classList.toggle("on", p === plat);
+  });
 };
 
 async function loadAll() {
@@ -1399,6 +1533,169 @@ async function loadAll() {
     loadApplications(), loadDownloadPackages(), loadTheme(),
     loadUnauthorized(), loadBlockedMachines(), loadCustomerPcs()
   ]);
+}
+
+/* ── İNDİRME TALEPLERİ ── */
+let _leadSearchTimer;
+window.leadSearchDebounce = () => { clearTimeout(_leadSearchTimer); _leadSearchTimer = setTimeout(() => { leadsPage = 0; loadLeads(); }, 400); };
+window.loadLeads = async (page) => {
+  if (page !== undefined) leadsPage = page;
+  const box = document.getElementById("leads-list");
+  const pager = document.getElementById("leads-pager");
+  if (!box) return;
+  box.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const q = encodeURIComponent(document.getElementById("leads-search")?.value?.trim() || "");
+    const resp = await fetch(`${API_BASE}/v1/admin/downloads/leads?q=${q}&page=${leadsPage}&page_size=50`, {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    leadsTotal = data.total || 0;
+    const items = data.items || [];
+    if (!items.length) { box.innerHTML = "<div class='empty-state'>Kayıt yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    box.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="border-bottom:1px solid var(--border);color:var(--text2);">
+        <th style="padding:8px 12px;text-align:left;">E-posta</th>
+        <th style="padding:8px 12px;text-align:center;">İndirme</th>
+        <th style="padding:8px 12px;text-align:right;">Son</th>
+        <th style="padding:8px 12px;text-align:right;">Kayıt</th>
+      </tr></thead><tbody>` +
+      items.map(it => `<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:8px 12px;">${esc(it.Email||it.email||"")}</td>
+        <td style="padding:8px 12px;text-align:center;">
+          <span class="badge ${(it.DownloadCount||it.download_count||0)>=3?'badge-danger':'badge-success'}">${it.DownloadCount||it.download_count||0} / 3</span>
+        </td>
+        <td style="padding:8px 12px;text-align:right;color:var(--text2);font-size:12px;">${fmtDate(it.LastDownloadAt||it.last_download_at)}</td>
+        <td style="padding:8px 12px;text-align:right;color:var(--text2);font-size:12px;">${fmtDate(it.CreatedAt||it.created_at)}</td>
+      </tr>`).join("") + "</tbody></table>";
+    const totalPages = Math.ceil(leadsTotal / 50);
+    if (pager) pager.innerHTML = totalPages > 1 ? `
+      <button class="btn btn-ghost btn-sm" ${leadsPage===0?"disabled":""} onclick="loadLeads(${leadsPage-1})">‹</button>
+      <span style="font-size:12px;color:var(--text2);">Sayfa ${leadsPage+1} / ${totalPages} · ${leadsTotal} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${leadsPage>=totalPages-1?"disabled":""} onclick="loadLeads(${leadsPage+1})">›</button>` : "";
+  } catch (e) { box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`; }
+};
+
+/* ── GERİ BİLDİRİMLER ── */
+let _fbSearchTimer;
+window.feedbackSearchDebounce = () => { clearTimeout(_fbSearchTimer); _fbSearchTimer = setTimeout(() => { feedbackPage = 0; loadFeedback(); }, 400); };
+window.loadFeedback = async (page) => {
+  if (page !== undefined) feedbackPage = page;
+  const box = document.getElementById("feedback-list");
+  const pager = document.getElementById("feedback-pager");
+  if (!box) return;
+  box.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const q = encodeURIComponent(document.getElementById("feedback-search")?.value?.trim() || "");
+    const cat = encodeURIComponent(document.getElementById("feedback-cat")?.value || "");
+    const st = encodeURIComponent(document.getElementById("feedback-status")?.value || "");
+    const resp = await fetch(`${API_BASE}/v1/admin/feedback?q=${q}&category=${cat}&status=${st}&page=${feedbackPage}&page_size=50`, {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    feedbackTotal = data.total || 0;
+    const items = data.items || [];
+    if (!items.length) { box.innerHTML = "<div class='empty-state'>Geri bildirim yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    const catColor = { teknik: "badge-primary", oneri: "badge-warning", guncelleme: "badge-success" };
+    box.innerHTML = items.map(it => {
+      const id = esc(it.ID || it.id || "");
+      const status = it.Status || it.status || "open";
+      return `<div class="rule-item" style="margin-bottom:10px;">
+        <div class="rule-item-header">
+          <div class="rule-item-title">
+            ${esc(it.Email || it.email || "—")}
+            <span class="badge ${catColor[it.Category||it.category]||'badge-gray'}">${esc(it.Category||it.category||"")}</span>
+            <span class="badge ${status==='done'?'badge-success':'badge-warning'}">${status==='done'?'Tamam':'Açık'}</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            ${status==='open'?`<button class="btn btn-success btn-sm" onclick="setFeedbackStatus('${id}','done')">✓ Tamam</button>`
+              :`<button class="btn btn-ghost btn-sm" onclick="setFeedbackStatus('${id}','open')">↩ Aç</button>`}
+          </div>
+        </div>
+        <div style="font-size:13px;margin:6px 0;color:var(--text2);">${fmtDate(it.CreatedAt||it.created_at)}</div>
+        <div class="rule-response">${esc(it.Message||it.message||"")}</div>
+      </div>`;
+    }).join("");
+    const totalPages = Math.ceil(feedbackTotal / 50);
+    if (pager) pager.innerHTML = totalPages > 1 ? `
+      <button class="btn btn-ghost btn-sm" ${feedbackPage===0?"disabled":""} onclick="loadFeedback(${feedbackPage-1})">‹</button>
+      <span style="font-size:12px;color:var(--text2);">Sayfa ${feedbackPage+1} / ${totalPages} · ${feedbackTotal} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${feedbackPage>=totalPages-1?"disabled":""} onclick="loadFeedback(${feedbackPage+1})">›</button>` : "";
+  } catch (e) { box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`; }
+};
+window.setFeedbackStatus = async (id, status) => {
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(`${API_BASE}/v1/admin/feedback/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ status })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "update_failed");
+    toast(status === "done" ? "Tamamlandı olarak işaretlendi" : "Açık olarak işaretlendi");
+    await loadFeedback();
+  } catch (e) { toast("Hata: " + e.message, "error"); }
+};
+
+/* ── KOTA / KULLANIM ── */
+let _usageSearchTimer;
+window.usageSearchDebounce = () => { clearTimeout(_usageSearchTimer); _usageSearchTimer = setTimeout(() => { usagePage = 0; loadUsage(); }, 400); };
+window.loadUsage = async (page) => {
+  if (page !== undefined) usagePage = page;
+  const box = document.getElementById("usage-list");
+  const pager = document.getElementById("usage-pager");
+  if (!box) return;
+  box.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const q = encodeURIComponent(document.getElementById("usage-search")?.value?.trim() || "");
+    const resp = await fetch(`${API_BASE}/v1/admin/usage?q=${q}&page=${usagePage}&page_size=50`, {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    usageTotal = data.total || 0;
+    const items = data.items || [];
+    if (!items.length) { box.innerHTML = "<div class='empty-state'>Veri yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    box.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="border-bottom:1px solid var(--border);color:var(--text2);">
+        <th style="padding:8px 12px;text-align:left;">E-posta</th>
+        <th style="padding:8px 12px;text-align:center;">Sync</th>
+        <th style="padding:8px 12px;text-align:center;">Veri</th>
+        <th style="padding:8px 12px;text-align:right;">Son etkinlik</th>
+      </tr></thead><tbody>` +
+      items.map(it => `<tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:8px 12px;">${esc(it.Email||it.email||"")}</td>
+        <td style="padding:8px 12px;text-align:center;">${it.SyncCount||it.sync_count||0}</td>
+        <td style="padding:8px 12px;text-align:center;">${fmtBytes(it.TotalBytes||it.total_bytes||0)}</td>
+        <td style="padding:8px 12px;text-align:right;color:var(--text2);font-size:12px;">${fmtDate(it.LastEventAt||it.last_event_at)}</td>
+      </tr>`).join("") + "</tbody></table>";
+    const totalPages = Math.ceil(usageTotal / 50);
+    if (pager) pager.innerHTML = totalPages > 1 ? `
+      <button class="btn btn-ghost btn-sm" ${usagePage===0?"disabled":""} onclick="loadUsage(${usagePage-1})">‹</button>
+      <span style="font-size:12px;color:var(--text2);">Sayfa ${usagePage+1} / ${totalPages} · ${usageTotal} kayıt</span>
+      <button class="btn btn-ghost btn-sm" ${usagePage>=totalPages-1?"disabled":""} onclick="loadUsage(${usagePage+1})">›</button>` : "";
+  } catch (e) { box.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`; }
+};
+
+function fmtDate(val) {
+  if (!val) return "—";
+  try { return new Date(val).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" }); } catch { return String(val); }
+}
+function fmtBytes(b) {
+  b = Number(b) || 0;
+  if (b === 0) return "0 B";
+  if (b < 1024) return b + " B";
+  if (b < 1048576) return (b/1024).toFixed(1) + " KB";
+  return (b/1048576).toFixed(1) + " MB";
 }
 
 /* ── ÜYELİK BAŞVURULARI ── */
@@ -1615,7 +1912,7 @@ window.saveDownloadPackages = async () => {
 };
 
 window.publishUpdate = async (platform) => {
-  platform = (platform === "android") ? "android" : "windows";
+  platform = (platform === "android") ? "android" : (platform === "ios") ? "ios" : "windows";
   const ids = updIds(platform);
   const versionCode = parseInt(document.getElementById(ids.code).value, 10);
   const versionName = (document.getElementById(ids.name).value || "").trim();
@@ -1629,13 +1926,14 @@ window.publishUpdate = async (platform) => {
   const editId = editingReleaseId[platform];
   const isEdit = !!editId;
   if (!isEdit && !file) {
-    toast(platform === "android" ? "APK seçin" : "ZIP seçin", "error");
+    toast(platform === "android" ? "APK seçin" : platform === "ios" ? "IPA seçin" : "ZIP seçin", "error");
     return;
   }
   if (file) {
     const lower = file.name.toLowerCase();
     if (platform === "windows" && !lower.endsWith(".zip")) { toast("Windows için .zip yükleyin", "error"); return; }
     if (platform === "android" && !lower.endsWith(".apk")) { toast("Android için .apk yükleyin", "error"); return; }
+    if (platform === "ios" && !lower.endsWith(".ipa")) { toast("iOS için .ipa yükleyin", "error"); return; }
   }
 
   try {
@@ -1683,7 +1981,8 @@ window.publishUpdate = async (platform) => {
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || data.detail || "publish_failed");
       st.textContent = isEdit ? "Yeniden yayınlandı ✅" : "Yayınlandı ✅";
-      toast((isEdit ? "Yeniden yayın: " : "Yayınlandı: ") + (platform === "android" ? "Android " : "Windows ") + versionName);
+      const platLabel = platform === "android" ? "Android " : platform === "ios" ? "iOS " : "Windows ";
+      toast((isEdit ? "Yeniden yayın: " : "Yayınlandı: ") + platLabel + versionName);
     }
 
     document.getElementById(ids.file).value = "";
@@ -1697,14 +1996,14 @@ window.publishUpdate = async (platform) => {
 };
 
 window.refreshCurrentReleaseHint = (platform) => {
-  const plats = platform ? [platform] : ["windows", "android"];
+  const plats = platform ? [platform] : ["windows", "android", "ios"];
   for (const plat of plats) {
     const ids = updIds(plat);
     const el = document.getElementById(ids.current);
     if (!el) continue;
     const items = allReleasesList.filter(x => (x.platform || "").toLowerCase() === plat);
     if (!items.length) {
-      el.textContent = plat === "windows" ? "Windows kaydı yok" : "Android kaydı yok";
+      el.textContent = plat === "windows" ? "Windows kaydı yok" : plat === "ios" ? "iOS kaydı yok" : "Android kaydı yok";
       continue;
     }
     items.sort((a, b) => (b.version_code || 0) - (a.version_code || 0));
@@ -1732,14 +2031,14 @@ function setEditModeUI(platform, on, label = "") {
   const opt = document.getElementById(ids.optional);
   if (banner) banner.classList.toggle("on", !!on);
   if (txt && on) txt.textContent = label;
-  const pubLabel = platform === "android" ? "📦 Android yayınla" : "📦 Windows yayınla";
+  const pubLabel = platform === "android" ? "📦 Android yayınla" : platform === "ios" ? "&#xF8FF; iOS yayınla" : "📦 Windows yayınla";
   if (btn) btn.textContent = on ? "💾 Kaydet / Yeniden yayınla" : pubLabel;
   if (opt) opt.style.display = on ? "inline" : "none";
   // versionCode düzenlenebilir: artırınca kullanıcıya tekrar güncelleme çıkar
 }
 
 window.cancelEditRelease = (platform) => {
-  platform = (platform === "android") ? "android" : "windows";
+  platform = (platform === "android") ? "android" : (platform === "ios") ? "ios" : "windows";
   editingReleaseId[platform] = null;
   setEditModeUI(platform, false);
   const st = document.getElementById(updIds(platform).status);
@@ -1749,7 +2048,8 @@ window.cancelEditRelease = (platform) => {
 window.editRelease = (id) => {
   const it = allReleasesList.find(x => x.id === id);
   if (!it) { toast("Sürüm bulunamadı", "error"); return; }
-  const platform = (it.platform || "windows").toLowerCase() === "android" ? "android" : "windows";
+  const raw = (it.platform || "windows").toLowerCase();
+  const platform = raw === "android" ? "android" : raw === "ios" ? "ios" : "windows";
   showUpdPlat(platform);
   const ids = updIds(platform);
   editingReleaseId[platform] = id;
@@ -1765,7 +2065,7 @@ window.editRelease = (id) => {
 };
 
 window.toggleReleaseActive = async (id) => {
-  const it = allReleasesList.find(x => x.id === id);
+  const it = allReleasesList.find(x => x.id === id);  // platform-agnostic
   if (!it) return;
   const next = !it.active;
   try {
@@ -1786,7 +2086,8 @@ window.toggleReleaseActive = async (id) => {
 
 window.deleteRelease = async (id) => {
   const it = allReleasesList.find(x => x.id === id);
-  const plat = (it?.platform || "").toLowerCase() === "android" ? "android" : "windows";
+  const raw = (it?.platform || "").toLowerCase();
+  const plat = raw === "android" ? "android" : raw === "ios" ? "ios" : "windows";
   const label = it ? `${it.version_name} (code ${it.version_code})` : id;
   if (!(await uiConfirm(`${label} sürüm kaydını silmek istiyor musunuz?\n(Storage dosyası kalabilir.)`, {
     title: "Sürümü sil", danger: true, confirmText: "Sil"
@@ -1816,7 +2117,7 @@ function formatReleaseWhen(iso) {
 }
 
 window.loadReleases = async () => {
-  const boxes = ["releases-list-windows", "releases-list-android"].map(id => document.getElementById(id)).filter(Boolean);
+  const boxes = ["releases-list-windows", "releases-list-android", "releases-list-ios"].map(id => document.getElementById(id)).filter(Boolean);
   try {
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
     if (!apiJwt) {
@@ -1830,9 +2131,10 @@ window.loadReleases = async () => {
     if (!resp.ok) throw new Error(data.error || "list_failed");
     allReleasesList = data.items || [];
     allReleasesList.sort((a, b) => (b.version_code || 0) - (a.version_code || 0));
-    currentReleasesPage = { windows: 0, android: 0 };
+    currentReleasesPage = { windows: 0, android: 0, ios: 0 };
     renderReleasesPage("windows");
     renderReleasesPage("android");
+    renderReleasesPage("ios");
     refreshCurrentReleaseHint();
   } catch (e) {
     boxes.forEach(b => { b.innerHTML = `<div class="empty-state">Hata: ${e.message}</div>`; });
@@ -1840,21 +2142,21 @@ window.loadReleases = async () => {
 };
 
 function renderReleasesPage(platform) {
-  platform = (platform === "android") ? "android" : "windows";
+  platform = (platform === "android") ? "android" : (platform === "ios") ? "ios" : "windows";
   const box = document.getElementById(`releases-list-${platform}`);
   if (!box) return;
   const list = allReleasesList.filter(x => (x.platform || "").toLowerCase() === platform);
   const total = list.length;
   if (!total) {
-    box.innerHTML = `<div class="empty-state">${platform === "android" ? "Android sürümü yok" : "Windows sürümü yok"}</div>`;
+    box.innerHTML = `<div class="empty-state">${platform === "android" ? "Android sürümü yok" : platform === "ios" ? "iOS sürümü yok" : "Windows sürümü yok"}</div>`;
     return;
   }
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   if (currentReleasesPage[platform] >= totalPages) currentReleasesPage[platform] = totalPages - 1;
   const pageIdx = currentReleasesPage[platform];
   const page = list.slice(pageIdx * PAGE_SIZE, (pageIdx + 1) * PAGE_SIZE);
-  const icon = platform === "android" ? "🤖" : "💻";
-  const platLabel = platform === "android" ? "Android" : "Windows";
+  const icon = platform === "android" ? "🤖" : platform === "ios" ? "&#xF8FF;" : "💻";
+  const platLabel = platform === "android" ? "Android" : platform === "ios" ? "iOS" : "Windows";
 
   let html = `<div class="rel-list">` + page.map(it => {
     const inactive = it.active === false;
@@ -1916,7 +2218,7 @@ window.copyReleaseUrl = async (id) => {
 };
 
 window.goReleasesPage = (platform, p) => {
-  platform = (platform === "android") ? "android" : "windows";
+  platform = (platform === "android") ? "android" : (platform === "ios") ? "ios" : "windows";
   currentReleasesPage[platform] = p;
   renderReleasesPage(platform);
 };
@@ -2820,6 +3122,11 @@ window.saveUser = async () => {
 
     if (data.aktif === false) {
       data.authPasswordSetAt = serverTimestamp();
+      data.pasifNeden = data.pasifNeden || "admin_pasif";
+    } else {
+      // Yeniden aktif: istemci yerel 6-deneme kilidini GetAktifAsync ile temizler
+      data.pasifNeden = "";
+      data.aktifAt = serverTimestamp();
     }
 
     await setDoc(doc(db, "yetkili_kullanicilar", email), data, { merge: true });
