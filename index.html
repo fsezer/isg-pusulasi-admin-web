@@ -350,12 +350,14 @@
       <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetki Yönetimi</div>
       <div class="nav-item nav-sub" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span> Yetkisiz Girişler</div>
       <div class="nav-item nav-sub" onclick="showTab('customer-pcs')" id="nav-customer-pcs"><span class="icon">💻</span> Müşteri PC’leri</div>
+      <div class="nav-item nav-sub" onclick="showTab('device-slots')" id="nav-device-slots"><span class="icon">🖥️</span> Cihaz Kurulumları</div>
       <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> Uzman AI</div>
       <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📊</span> AI Kullanım</div>
       <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Başvurular</div>
       <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span> Tanıtım İndirmeleri</div>
       <div class="nav-item nav-sub" onclick="showTab('leads')" id="nav-leads"><span class="icon">📧</span> İndirme Talepleri</div>
       <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span> Geri Bildirimler</div>
+      <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span> Duyurular</div>
       <div class="nav-item" onclick="showTab('kota')" id="nav-kota"><span class="icon">📈</span> Kota / Kullanım</div>
       <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span> Sürüm & Güncelleme</div>
       <div class="nav-item" onclick="showTab('settings')" id="nav-settings"><span class="icon">⚙️</span> Sistem Ayarları</div>
@@ -464,6 +466,23 @@
       </div>
       <input type="text" id="custpc-search-input" class="form-control" placeholder="🔍 E-posta, PC adı veya makine ara…" oninput="filterCustomerPcs()" style="max-width:480px;margin-bottom:14px;" />
       <div id="customer-pcs-list"></div>
+    </div>
+
+    <!-- CİHAZ KURULUM SLOTLARı (üyelik — indirme limitinden ayrı) -->
+    <div class="tab-content" id="tab-device-slots">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">🖥️ Cihaz Kurulumları</div>
+          <div class="page-subtitle">Üyelik başına PC kurulum kotası (varsayılan 3) · Tanıtım “3 indirme hakkı”ndan ayrı</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadDeviceSlots()">🔄 Yenile</button>
+      </div>
+      <div class="rel-hint" style="margin-bottom:14px;">
+        Yeni makinede girişte slot doluysa API <code>device_slot_limit</code> döner. Buradan <b>max_slots</b> artırın.
+      </div>
+      <input type="text" id="device-slots-search" class="form-control" placeholder="🔍 E-posta veya makine ara…" oninput="deviceSlotsSearchDebounce()" style="max-width:420px;margin-bottom:14px;" />
+      <div id="device-slots-list"><div class="empty-state">Yükleniyor…</div></div>
+      <div class="pager" id="device-slots-pager"></div>
     </div>
 
     <!-- UZMAN AI AYARLARI -->
@@ -634,6 +653,7 @@
         <b>Kesin kural:</b> Windows ve Android ayrı paneller. Uyarı: uzak <b>versionCode</b> &gt; kullanıcının son uyguladığı kod.
         Admin’de sadece versionCode’u artırıp kaydedersen (aynı zip/apk bile) kullanıcıya <b>yine güncelleme çıkar</b>;
         yükledikten sonra aynı kod tekrar sorulmaz. Anlamlı yayında her iki paneli de güncelle.
+        <br /><b>OS alanları:</b> <code>os_family</code> / <code>min_os</code> (windows10, windows7, android_api, ios; linux/macos placeholder).
       </div>
 
       <div class="upd-subtabs" role="tablist">
@@ -683,6 +703,19 @@
           <div class="form-group">
             <label class="form-label">Notlar</label>
             <textarea class="form-control" id="upd-win-notes" rows="2" placeholder="Windows changelog"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">OS Ailesi</label>
+            <select class="form-control" id="upd-win-os-family">
+              <option value="windows10">windows10</option>
+              <option value="windows7">windows7</option>
+              <option value="linux">linux (placeholder)</option>
+              <option value="macos">macos (placeholder)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min OS</label>
+            <input type="text" class="form-control" id="upd-win-min-os" placeholder="Windows 10" />
           </div>
           <div class="toggle-row" style="margin-bottom:10px;">
             <div><span class="toggle-label">Zorunlu</span><span class="toggle-sub">Ertelemeye izin yok</span></div>
@@ -740,6 +773,16 @@
             <label class="form-label">Notlar</label>
             <textarea class="form-control" id="upd-and-notes" rows="2" placeholder="Mobil changelog"></textarea>
           </div>
+          <div class="form-group">
+            <label class="form-label">OS Ailesi</label>
+            <select class="form-control" id="upd-and-os-family">
+              <option value="android_api">android_api</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min OS</label>
+            <input type="text" class="form-control" id="upd-and-min-os" placeholder="API 26 / Android 8" />
+          </div>
           <div class="toggle-row" style="margin-bottom:10px;">
             <div><span class="toggle-label">Zorunlu</span><span class="toggle-sub">Ertelemeye izin yok</span></div>
             <div class="toggle" id="upd-and-force" onclick="this.classList.toggle('on')"></div>
@@ -795,6 +838,16 @@
           <div class="form-group">
             <label class="form-label">Notlar</label>
             <textarea class="form-control" id="upd-ios-notes" rows="2" placeholder="iOS changelog"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">OS Ailesi</label>
+            <select class="form-control" id="upd-ios-os-family">
+              <option value="ios">ios</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min OS</label>
+            <input type="text" class="form-control" id="upd-ios-min-os" placeholder="iOS 15" />
           </div>
           <div class="toggle-row" style="margin-bottom:10px;">
             <div><span class="toggle-label">Zorunlu</span><span class="toggle-sub">Ertelemeye izin yok</span></div>
@@ -858,6 +911,43 @@
       </div>
       <div id="feedback-list"><div class="empty-state">Yükleniyor…</div></div>
       <div class="pager" id="feedback-pager"></div>
+    </div>
+
+    <!-- DUYURULAR -->
+    <div class="tab-content" id="tab-announcements">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">📢 Duyurular</div>
+          <div class="page-subtitle">Atlası istemcide bir kez gösterilir · Tamam / Vazgeç / Link tıklama istatistikleri</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadAnnouncements()">🔄 Yenile</button>
+      </div>
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-header"><div class="card-title">Yeni duyuru</div></div>
+        <div class="form-group">
+          <label class="form-label">Başlık</label>
+          <input type="text" class="form-control" id="ann-title" placeholder="Duyuru başlığı" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Metin</label>
+          <textarea class="form-control" id="ann-body" rows="3" placeholder="Duyuru gövdesi"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Görsel URL (opsiyonel)</label>
+          <input type="url" class="form-control" id="ann-image" placeholder="https://…" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Link URL (opsiyonel)</label>
+          <input type="url" class="form-control" id="ann-link" placeholder="https://…" />
+        </div>
+        <div class="toggle-row" style="margin-bottom:14px;">
+          <div><span class="toggle-label">Aktif</span><span class="toggle-sub">Pasifse istemci görmez</span></div>
+          <div class="toggle on" id="ann-active" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <button class="btn btn-primary" onclick="createAnnouncement()">📢 Duyuru Yayınla</button>
+        <div id="ann-status" class="form-hint" style="margin-top:10px;"></div>
+      </div>
+      <div id="announcements-list"><div class="empty-state">Yükleniyor…</div></div>
     </div>
 
     <!-- KOTA / KULLANIM -->
@@ -1291,6 +1381,8 @@ function updIds(platform) {
     code: `upd-${p}-code`,
     name: `upd-${p}-name`,
     notes: `upd-${p}-notes`,
+    osFamily: `upd-${p}-os-family`,
+    minOs: `upd-${p}-min-os`,
     file: `upd-${p}-file`,
     force: `upd-${p}-force`,
     active: `upd-${p}-active`,
@@ -1518,6 +1610,8 @@ window.showTab = (tab) => {
   if (tab === "leads") loadLeads();
   if (tab === "feedback") loadFeedback();
   if (tab === "kota") loadUsage();
+  if (tab === "device-slots") loadDeviceSlots();
+  if (tab === "announcements") loadAnnouncements();
 };
 
 window.showUpdPlat = (plat) => {
@@ -1642,6 +1736,233 @@ window.setFeedbackStatus = async (id, status) => {
     toast(status === "done" ? "Tamamlandı olarak işaretlendi" : "Açık olarak işaretlendi");
     await loadFeedback();
   } catch (e) { toast("Hata: " + e.message, "error"); }
+};
+
+/* ── CİHAZ KURULUM SLOTLARı ── */
+let deviceSlotsPage = 0;
+let deviceSlotsTotal = 0;
+let _deviceSlotsSearchTimer;
+window.deviceSlotsSearchDebounce = () => {
+  clearTimeout(_deviceSlotsSearchTimer);
+  _deviceSlotsSearchTimer = setTimeout(() => { deviceSlotsPage = 0; loadDeviceSlots(); }, 300);
+};
+
+window.loadDeviceSlots = async (page) => {
+  if (page !== undefined) deviceSlotsPage = page;
+  const box = document.getElementById("device-slots-list");
+  const pager = document.getElementById("device-slots-pager");
+  if (!box) return;
+  box.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const q = encodeURIComponent(document.getElementById("device-slots-search")?.value?.trim() || "");
+    const resp = await fetch(`${API_BASE}/v1/admin/device-slots?q=${q}&page=${deviceSlotsPage}&page_size=50`, {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    deviceSlotsTotal = data.total || 0;
+    const items = data.items || [];
+    if (!items.length) {
+      box.innerHTML = "<div class='empty-state'>Henüz slot kaydı yok. Windows girişlerinde otomatik oluşur.</div>";
+      if (pager) pager.innerHTML = "";
+      return;
+    }
+    box.innerHTML = items.map(it => {
+      const email = esc(it.email || "");
+      const used = it.used ?? 0;
+      const max = it.max_slots ?? 3;
+      const full = used >= max;
+      return `<div class="user-card-item">
+        <div class="user-card-header">
+          <div>
+            <div class="user-name-text">${email}</div>
+            <div class="user-meta-text">Kullanım: <b>${used} / ${max}</b>
+              ${full ? '<span class="badge badge-danger">Dolu</span>' : '<span class="badge badge-success">Boş slot var</span>'}
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="number" class="form-control" id="slot-max-${email}" value="${max}" min="1" max="50" style="width:72px;" />
+            <button class="btn btn-primary btn-sm" onclick="bumpDeviceSlots('${email}')">Slot Kaydet</button>
+            <button class="btn btn-ghost btn-sm" onclick="expandDeviceSlot('${email}')">Makineler</button>
+          </div>
+        </div>
+        <div id="slot-machines-${email}" style="display:none;margin-top:10px;"></div>
+      </div>`;
+    }).join("");
+    const pages = Math.max(1, Math.ceil(deviceSlotsTotal / 50));
+    if (pager) {
+      pager.innerHTML = pages > 1
+        ? `<button class="btn btn-ghost btn-sm" ${deviceSlotsPage===0?"disabled":""} onclick="loadDeviceSlots(${deviceSlotsPage-1})">‹ Önceki</button>
+           <span style="color:var(--text2);">Sayfa ${deviceSlotsPage+1} / ${pages}</span>
+           <button class="btn btn-ghost btn-sm" ${deviceSlotsPage>=pages-1?"disabled":""} onclick="loadDeviceSlots(${deviceSlotsPage+1})">Sonraki ›</button>`
+        : "";
+    }
+  } catch (e) {
+    box.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+  }
+};
+
+window.bumpDeviceSlots = async (email) => {
+  const el = document.getElementById("slot-max-" + email);
+  const maxSlots = parseInt(el?.value, 10);
+  if (!maxSlots || maxSlots < 1) { toast("Geçerli slot sayısı girin", "error"); return; }
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/device-slots/" + encodeURIComponent(email), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ max_slots: maxSlots })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "update_failed");
+    toast("Slot güncellendi: " + email + " → " + maxSlots);
+    loadDeviceSlots();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.expandDeviceSlot = async (email) => {
+  const box = document.getElementById("slot-machines-" + email);
+  if (!box) return;
+  if (box.style.display !== "none" && box.innerHTML) {
+    box.style.display = "none";
+    return;
+  }
+  box.style.display = "block";
+  box.innerHTML = "Yükleniyor…";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/device-slots/" + encodeURIComponent(email), {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "lookup_failed");
+    const machines = data.item?.machines || [];
+    if (!machines.length) { box.innerHTML = "<div class='form-hint'>Kayıtlı makine yok</div>"; return; }
+    box.innerHTML = machines.map(m => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
+        <span class="mono">${esc(m)}</span>
+        <button class="btn btn-ghost btn-sm" onclick="deleteDeviceMachine('${esc(email)}','${esc(m)}')">Kaldır</button>
+      </div>`).join("");
+  } catch (e) { box.innerHTML = `<div class="form-hint" style="color:var(--danger)">${esc(e.message)}</div>`; }
+};
+
+window.deleteDeviceMachine = async (email, machineId) => {
+  if (!(await uiConfirm("Bu makineyi slot listesinden kaldırmak istiyor musunuz?", { title: "Makine kaldır", danger: true }))) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(`${API_BASE}/v1/admin/device-slots/${encodeURIComponent(email)}/machines/${encodeURIComponent(machineId)}`, {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "delete_failed");
+    toast("Makine kaldırıldı");
+    expandDeviceSlot(email);
+    loadDeviceSlots();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+/* ── DUYURULAR ── */
+window.loadAnnouncements = async () => {
+  const box = document.getElementById("announcements-list");
+  if (!box) return;
+  box.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { box.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; return; }
+    const resp = await fetch(API_BASE + "/v1/admin/announcements", {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
+    const items = data.items || [];
+    if (!items.length) { box.innerHTML = "<div class='empty-state'>Henüz duyuru yok</div>"; return; }
+    box.innerHTML = items.map(it => {
+      const id = esc(it.id || "");
+      const active = it.active !== false;
+      return `<div class="user-card-item">
+        <div class="user-card-header">
+          <div>
+            <div class="user-name-text">${esc(it.title || "")}</div>
+            <div class="user-meta-text">${esc((it.body || "").slice(0, 160))}</div>
+            <div class="user-meta-text" style="margin-top:6px;">
+              Tamam: <b>${it.ok_count || 0}</b> · Vazgeç: <b>${it.cancel_count || 0}</b> · Link: <b>${it.link_count || 0}</b>
+              ${it.link_url ? ` · <a href="${esc(it.link_url)}" target="_blank" rel="noopener">Link</a>` : ""}
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${active ? '<span class="badge badge-success">Aktif</span>' : '<span class="badge badge-gray">Pasif</span>'}
+            <button class="btn btn-ghost btn-sm" onclick="toggleAnnouncement('${id}', ${active ? "false" : "true"})">${active ? "Pasifleştir" : "Aktifleştir"}</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${id}')">Sil</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  } catch (e) {
+    box.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+  }
+};
+
+window.createAnnouncement = async () => {
+  const title = (document.getElementById("ann-title")?.value || "").trim();
+  const body = (document.getElementById("ann-body")?.value || "").trim();
+  const image_url = (document.getElementById("ann-image")?.value || "").trim();
+  const link_url = (document.getElementById("ann-link")?.value || "").trim();
+  const active = document.getElementById("ann-active")?.classList.contains("on");
+  const st = document.getElementById("ann-status");
+  if (!title) { toast("Başlık gerekli", "error"); return; }
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    st.textContent = "Kaydediliyor…";
+    const resp = await fetch(API_BASE + "/v1/admin/announcements", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ title, body, image_url, link_url, active })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "create_failed");
+    st.textContent = "Yayınlandı ✅";
+    document.getElementById("ann-title").value = "";
+    document.getElementById("ann-body").value = "";
+    document.getElementById("ann-image").value = "";
+    document.getElementById("ann-link").value = "";
+    toast("Duyuru oluşturuldu");
+    loadAnnouncements();
+  } catch (e) {
+    st.textContent = "";
+    toast(e.message, "error");
+  }
+};
+
+window.toggleAnnouncement = async (id, active) => {
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/announcements/" + encodeURIComponent(id), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ active })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "update_failed");
+    loadAnnouncements();
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.deleteAnnouncement = async (id) => {
+  if (!(await uiConfirm("Bu duyuruyu silmek istiyor musunuz?", { title: "Duyuru sil", danger: true }))) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/announcements/" + encodeURIComponent(id), {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "delete_failed");
+    toast("Silindi");
+    loadAnnouncements();
+  } catch (e) { toast(e.message, "error"); }
 };
 
 /* ── KOTA / KULLANIM ── */
@@ -1917,6 +2238,8 @@ window.publishUpdate = async (platform) => {
   const versionCode = parseInt(document.getElementById(ids.code).value, 10);
   const versionName = (document.getElementById(ids.name).value || "").trim();
   const notes = (document.getElementById(ids.notes).value || "").trim();
+  const osFamily = (document.getElementById(ids.osFamily)?.value || "").trim();
+  const minOs = (document.getElementById(ids.minOs)?.value || "").trim();
   const force = document.getElementById(ids.force).classList.contains("on");
   const active = document.getElementById(ids.active).classList.contains("on");
   const file = document.getElementById(ids.file).files[0];
@@ -1956,7 +2279,7 @@ window.publishUpdate = async (platform) => {
       const resp = await fetch(API_BASE + "/v1/updates/releases/" + encodeURIComponent(editId), {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
-        body: JSON.stringify({ version_code: versionCode, version_name: versionName, notes, force_update: force, active })
+        body: JSON.stringify({ version_code: versionCode, version_name: versionName, notes, force_update: force, active, os_family: osFamily, min_os: minOs })
       });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data.error || data.detail || "update_failed");
@@ -1975,7 +2298,9 @@ window.publishUpdate = async (platform) => {
           download_url: downloadUrl,
           notes,
           force_update: force,
-          active
+          active,
+          os_family: osFamily,
+          min_os: minOs
         })
       });
       const data = await resp.json();
@@ -2056,6 +2381,8 @@ window.editRelease = (id) => {
   document.getElementById(ids.code).value = String(it.version_code || "");
   document.getElementById(ids.name).value = it.version_name || "";
   document.getElementById(ids.notes).value = it.notes || "";
+  if (document.getElementById(ids.osFamily)) document.getElementById(ids.osFamily).value = it.os_family || (platform === "android" ? "android_api" : platform === "ios" ? "ios" : "windows10");
+  if (document.getElementById(ids.minOs)) document.getElementById(ids.minOs).value = it.min_os || "";
   document.getElementById(ids.force).classList.toggle("on", !!it.force_update);
   document.getElementById(ids.active).classList.toggle("on", it.active !== false);
   document.getElementById(ids.file).value = "";
@@ -2179,6 +2506,7 @@ function renderReleasesPage(platform) {
               <div class="rel-badges">
                 ${it.force_update ? '<span class="badge badge-warning">Zorunlu</span>' : '<span class="badge badge-gray">İsteğe bağlı</span>'}
                 ${inactive ? '<span class="badge badge-gray">Pasif</span>' : '<span class="badge badge-success">Aktif</span>'}
+                ${it.min_os || it.os_family ? `<span class="badge badge-primary">${esc([it.os_family, it.min_os].filter(Boolean).join(" · "))}</span>` : ""}
               </div>
             </div>
           </div>
