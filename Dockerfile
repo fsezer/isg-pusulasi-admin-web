@@ -1,4 +1,4 @@
-# İSG Pusulası Admin Web — Docker Image
+# İSG Atlası Admin Web — Docker Image
 # Hem local geliştirme hem Cloud Run deploy için hazır
 
 FROM nginx:alpine

@@ -3,7 +3,7 @@ description: Cloud/GCP deploy — admin@istiklalyazilim.com; oturum düşerse Ch
 alwaysApply: true
 ---
 
-# Google Cloud / Deploy (İSG Pusulası)
+# Google Cloud / Deploy (İSG Atlası)
 
 - Cloud hesabı **asla değişmez**: `admin@istiklalyazilim.com`.
 - Deploy / `gcloud` oturumu düşmüşse kullanıcıya “sen login ol” deme.
