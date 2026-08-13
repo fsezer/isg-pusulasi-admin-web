@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>İSG Atlası — Admin SaaS Yönetim Portalı</title>
+  <title>İSG Atlası Super Admin</title>
   <link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32" />
   <link rel="shortcut icon" type="image/png" href="/assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
@@ -63,7 +63,7 @@
     .sidebar-header { padding: 22px 20px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
     .sidebar-brand { font-size: 14px; font-weight: 700; line-height: 1.2; }
     .sidebar-brand span { display: block; font-size: 11px; font-weight: 400; color: var(--text2); margin-top: 2px; }
-    .sidebar-nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .sidebar-nav { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 10px; display: flex; flex-direction: column; gap: 4px; }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text2); user-select: none; }
     .nav-item:hover { background: var(--surface2); color: var(--text); }
     .nav-item.active { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
@@ -311,8 +311,7 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo"><img src="/assets/app_logo.png" alt="İSG Atlası" /></div>
-    <div class="login-title">İSG Atlası SaaS Admin</div>
-    <div class="login-sub">Süper admin e-posta ve şifre ile giriş yapın (Google yok)</div>
+    <div class="login-title">İSG Atlası Super Admin Giriş</div>
     <div class="form-group" style="text-align:left;margin-top:8px;">
       <label class="form-label">E-posta</label>
       <input type="email" class="form-control" id="login-email" placeholder="admin@firma.com" autocomplete="username" />
@@ -324,7 +323,6 @@
     <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doSignIn()">Giriş Yap</button>
     <div class="login-denied" id="login-denied">⛔ Bu hesabın admin yetkisi yoktur. Erişim reddedildi.</div>
   </div>
-  <div style="font-size:12px;color:#475569;">İSG Atlası SaaS Admin Portal v3.2</div>
 </div>
 
 <!-- Zorunlu şifre değişimi (admin) -->
@@ -343,7 +341,7 @@
   <nav class="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo"><img src="/assets/app_logo.png" alt="İSG Atlası" /></div>
-      <div class="sidebar-brand">İSG Atlası <span>SaaS Admin Portal</span></div>
+      <div class="sidebar-brand">İSG Atlası <span>v2.0.1</span></div>
     </div>
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
