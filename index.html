@@ -353,6 +353,7 @@
       <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📊</span> AI Kullanım</div>
       <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Başvurular</div>
       <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span> Tanıtım İndirmeleri</div>
+      <div class="nav-item nav-sub" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span> Fiyatlandırma Paketleri</div>
       <div class="nav-item nav-sub" onclick="showTab('leads')" id="nav-leads"><span class="icon">📧</span> İndirme Talepleri</div>
       <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span> Geri Bildirimler</div>
       <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span> Duyurular</div>
@@ -638,6 +639,27 @@
       <div class="card">
         <div class="card-header"><div class="card-title">Yükleme geçmişi</div></div>
         <div id="download-history-list" class="empty-state">Henüz kayıt yok</div>
+      </div>
+    </div>
+
+    <!-- FİYATLANDIRMA PAKETLERİ (tanıtım sitesi) -->
+    <div class="tab-content" id="tab-pricing">
+      <div class="page-header-row">
+        <div>
+          <div class="page-title">💰 Fiyatlandırma Paketleri</div>
+          <div class="page-subtitle">isgatlasi.com/fiyatlar.html — Normal · Pro · Max kart içerikleri</div>
+        </div>
+        <button class="btn btn-ghost" onclick="loadPricingPackagesAdmin()">🔄 Yenile</button>
+      </div>
+      <div class="rel-hint" style="margin-bottom:16px;">
+        Özellik satırları: <code>+ dahil</code> · <code>- yok</code> (satır başına bir madde). Max kartında <b>featured</b> ve etiket otomatik vurgulanır.
+      </div>
+      <div class="grid-3" id="pricing-admin-grid">
+        <div class="card"><div class="empty-state">Yükleniyor…</div></div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-success" onclick="savePricingPackagesAdmin()">Kaydet / Siteye Yayınla</button>
+        <div id="pricing-admin-status" class="form-hint"></div>
       </div>
     </div>
 
@@ -1173,7 +1195,9 @@
         <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Lisans Tipi</label>
           <select class="form-control" id="user-lisansTipi" onchange="onLisansTipiChange()">
-            <option value="normal">Normal (1 yıl)</option>
+            <option value="normal">Normal Paket (1 yıl)</option>
+            <option value="pro">Pro Paket (1 yıl)</option>
+            <option value="max">Max Paket (1 yıl)</option>
             <option value="deneme">Deneme</option>
             <option value="ozel">Özel</option>
           </select>
@@ -1202,7 +1226,7 @@
           </select>
         </div>
       </div>
-      <div class="form-hint" id="lisans-hint" style="margin-top:8px;">Normal: bitiş bugünden +1 yıl. Deneme: 1–14 gün. Özel: tarih seçin. Bitişten sonra 1 gün tolerans.</div>
+      <div class="form-hint" id="lisans-hint" style="margin-top:8px;">Normal / Pro / Max: bitiş bugünden +1 yıl. Deneme: 1–14 gün. Özel: tarih seçin. Bitişten sonra 1 gün tolerans.</div>
     </div>
 
     <!-- PAKET & MODÜL -->
@@ -1428,13 +1452,24 @@ window.setTema = async (tema) => {
 };
 
 /* ── LICENSE HELPER ── */
+function lisansTipiLabel(tipi) {
+  const t = (tipi === "özel" ? "ozel" : (tipi || "")).toLowerCase();
+  return ({
+    normal: "Normal Paket",
+    pro: "Pro Paket",
+    max: "Max Paket",
+    deneme: "Deneme",
+    ozel: "Özel",
+  })[t] || (tipi ? String(tipi) : "—");
+}
+
 function formatLisans(u) {
   const d = u.lisansBitis || u.lisansBitisTarihi || "";
-  if (!d) return "Süresiz";
+  const tipLabel = lisansTipiLabel(u.lisansTipi);
+  if (!d) return tipLabel + " · Süresiz";
   const today = new Date().toISOString().slice(0, 10);
   const expired = d < today;
-  const prefix = u.lisansTipi === 'deneme' ? 'Deneme · ' : '';
-  return prefix + d + (expired ? ' ⚠️ Süresi Doldu' : '');
+  return tipLabel + " · " + d + (expired ? " ⚠️ Süresi Doldu" : "");
 }
 
 /* ── AKTIF/PASIF SEGMENTED CONTROL ── */
@@ -1456,7 +1491,7 @@ window.onLisansTipiChange = () => {
   const denemeGrp = document.getElementById('deneme-gun-group');
   if (bitisGrp) bitisGrp.style.display = tipi === 'ozel' ? '' : 'none';
   if (denemeGrp) denemeGrp.style.display = tipi === 'deneme' ? '' : 'none';
-  if (tipi === 'normal') {
+  if (tipi === 'normal' || tipi === 'pro' || tipi === 'max') {
     const end = new Date();
     end.setFullYear(end.getFullYear() + 1);
     const el = document.getElementById('user-lisansBitis');
@@ -1610,6 +1645,7 @@ window.showTab = (tab) => {
   if (tab === "kota") loadUsage();
   if (tab === "device-slots") loadDeviceSlots();
   if (tab === "announcements") loadAnnouncements();
+  if (tab === "pricing") loadPricingPackagesAdmin();
 };
 
 window.showUpdPlat = (plat) => {
@@ -1622,7 +1658,7 @@ window.showUpdPlat = (plat) => {
 async function loadAll() {
   await Promise.all([
     loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics(),
-    loadApplications(), loadDownloadPackages(), loadTheme(),
+    loadApplications(), loadDownloadPackages(), loadPricingPackagesAdmin(), loadTheme(),
     loadUnauthorized(), loadBlockedMachines(), loadCustomerPcs()
   ]);
 }
@@ -1763,30 +1799,31 @@ window.loadDeviceSlots = async (page) => {
     deviceSlotsTotal = data.total || 0;
     const items = data.items || [];
     if (!items.length) {
-      box.innerHTML = "<div class='empty-state'>Henüz slot kaydı yok. Windows girişlerinde otomatik oluşur.</div>";
+      box.innerHTML = "<div class='empty-state'>Kullanıcı yok</div>";
       if (pager) pager.innerHTML = "";
       return;
     }
     box.innerHTML = items.map(it => {
-      const email = esc(it.email || "");
+      const email = it.email || "";
       const used = it.used ?? 0;
       const max = it.max_slots ?? 3;
       const full = used >= max;
       return `<div class="user-card-item">
         <div class="user-card-header">
           <div>
-            <div class="user-name-text">${email}</div>
-            <div class="user-meta-text">Kullanım: <b>${used} / ${max}</b>
+            <div class="user-name-text">${esc(email)}</div>
+            <div class="user-meta-text">Windows PC: <b>${used} / ${max}</b>
               ${full ? '<span class="badge badge-danger">Dolu</span>' : '<span class="badge badge-success">Boş slot var</span>'}
             </div>
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="number" class="form-control" id="slot-max-${email}" value="${max}" min="1" max="50" style="width:72px;" />
-            <button class="btn btn-primary btn-sm" onclick="bumpDeviceSlots('${email}')">Slot Kaydet</button>
-            <button class="btn btn-ghost btn-sm" onclick="expandDeviceSlot('${email}')">Makineler</button>
+            <input type="number" class="form-control slot-max-input" data-email="${esc(email)}" value="${max}" min="1" max="50" style="width:72px;" />
+            <button class="btn btn-primary btn-sm" data-email="${esc(email)}" onclick="bumpDeviceSlots(this.dataset.email)">Slot Kaydet</button>
+            <button class="btn btn-ghost btn-sm" data-email="${esc(email)}" onclick="openDeviceSlot(this.dataset.email, ${max})">Aç</button>
+            <button class="btn btn-ghost btn-sm" data-email="${esc(email)}" onclick="expandDeviceSlot(this.dataset.email)">Makineler</button>
           </div>
         </div>
-        <div id="slot-machines-${email}" style="display:none;margin-top:10px;"></div>
+        <div class="slot-machines" data-email="${esc(email)}" style="display:none;margin-top:10px;"></div>
       </div>`;
     }).join("");
     const pages = Math.max(1, Math.ceil(deviceSlotsTotal / 50));
@@ -1803,7 +1840,7 @@ window.loadDeviceSlots = async (page) => {
 };
 
 window.bumpDeviceSlots = async (email) => {
-  const el = document.getElementById("slot-max-" + email);
+  const el = document.querySelector(`.slot-max-input[data-email="${CSS.escape(email)}"]`);
   const maxSlots = parseInt(el?.value, 10);
   if (!maxSlots || maxSlots < 1) { toast("Geçerli slot sayısı girin", "error"); return; }
   try {
@@ -1820,8 +1857,24 @@ window.bumpDeviceSlots = async (email) => {
   } catch (e) { toast(e.message, "error"); }
 };
 
+window.openDeviceSlot = async (email, maxSlots) => {
+  const next = Math.max(1, (Number(maxSlots) || 3) + 1);
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/device-slots/" + encodeURIComponent(email), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ max_slots: next })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "update_failed");
+    toast("Slot açıldı: " + email + " → " + next);
+    loadDeviceSlots();
+  } catch (e) { toast(e.message, "error"); }
+};
+
 window.expandDeviceSlot = async (email) => {
-  const box = document.getElementById("slot-machines-" + email);
+  const box = document.querySelector(`.slot-machines[data-email="${CSS.escape(email)}"]`);
   if (!box) return;
   if (box.style.display !== "none" && box.innerHTML) {
     box.style.display = "none";
@@ -1841,7 +1894,7 @@ window.expandDeviceSlot = async (email) => {
     box.innerHTML = machines.map(m => `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);">
         <span class="mono">${esc(m)}</span>
-        <button class="btn btn-ghost btn-sm" onclick="deleteDeviceMachine('${esc(email)}','${esc(m)}')">Kaldır</button>
+        <button class="btn btn-ghost btn-sm" data-email="${esc(email)}" data-mid="${esc(m)}" onclick="deleteDeviceMachine(this.dataset.email, this.dataset.mid)">Kaldır</button>
       </div>`).join("");
   } catch (e) { box.innerHTML = `<div class="form-hint" style="color:var(--danger)">${esc(e.message)}</div>`; }
 };
@@ -2169,6 +2222,163 @@ function renderDownloadHistory(list) {
 window.goDlHistoryPage = (p) => {
   currentDlHistoryPage = p;
   renderDownloadHistory(downloadHistoryList);
+};
+
+/* ── FİYATLANDIRMA PAKETLERİ (tanıtım sitesi) ── */
+const PRICING_PKG_ORDER = ["normal", "pro", "max"];
+const PRICING_PKG_DEFAULTS = {
+  normal: {
+    title: "Normal",
+    subtitle: "Bireysel Temel Saha & Ofis",
+    priceIncVat: 14000,
+    priceExVat: 11666.67,
+    tag: "",
+    featured: false,
+    features: [
+      { text: "Bireysel İSG Saha & Ofis Yönetimi", included: true },
+      { text: "Güncel Mevzuat & Form Arşivi", included: true },
+      { text: "Bireysel Lisans & Standart Destek", included: true },
+      { text: "Sesli Modül (Yok)", included: false },
+      { text: "Yapay Zeka & Görsel AI (Yok)", included: false },
+    ],
+  },
+  pro: {
+    title: "Pro",
+    subtitle: "Bireysel AI Destekli Uzman",
+    priceIncVat: 27000,
+    priceExVat: 22500,
+    tag: "",
+    featured: false,
+    features: [
+      { text: "Normal paketin tüm özellikleri", included: true },
+      { text: "Sesli Not Alma & Hızlı Saha Raporu", included: true },
+      { text: "Yapay Zekâ (AI) İSG Danışmanı", included: true },
+      { text: "Görsel AI Fotoğraf Analizi (50 Adet)", included: true },
+      { text: "Öncelikli Bireysel Destek", included: true },
+    ],
+  },
+  max: {
+    title: "Max",
+    subtitle: "Sınırsız AI & Tam Erişim",
+    priceIncVat: 35000,
+    priceExVat: 29166.67,
+    tag: "En Avantajlı & Sınırsız",
+    featured: true,
+    features: [
+      { text: "SINIRSIZ Yapay Zeka (AI) Asistanı", included: true, bold: true },
+      { text: "SINIRSIZ Görsel AI Risk Tespiti", included: true, bold: true },
+      { text: "SINIRSIZ Sesli Saha Notu Modülü", included: true, bold: true },
+      { text: "Tüm Sahalar & Şirketler İçin Sınırsız", included: true },
+      { text: "7/24 VIP Bireysel Destek", included: true },
+    ],
+  },
+};
+
+function pricingFeaturesToText(features) {
+  return (features || []).map(f => `${f.included ? "+" : "-"} ${f.text}`).join("\n");
+}
+
+function pricingParseFeaturesText(text) {
+  return String(text || "").split("\n").map(l => l.trim()).filter(Boolean).map(line => {
+    if (line.startsWith("-")) return { text: line.slice(1).trim(), included: false };
+    if (line.startsWith("+")) return { text: line.slice(1).trim(), included: true };
+    return { text: line, included: true };
+  });
+}
+
+function mergePricingPackages(raw) {
+  const out = {};
+  PRICING_PKG_ORDER.forEach(key => {
+    const base = PRICING_PKG_DEFAULTS[key];
+    const over = raw?.[key] || {};
+    out[key] = {
+      ...base,
+      ...over,
+      features: Array.isArray(over.features) && over.features.length ? over.features : base.features,
+    };
+  });
+  return out;
+}
+
+function renderPricingAdminForm(packages) {
+  const grid = document.getElementById("pricing-admin-grid");
+  if (!grid) return;
+  grid.innerHTML = PRICING_PKG_ORDER.map(key => {
+    const p = packages[key];
+    return `<div class="card">
+      <div class="card-header"><div class="card-title">${esc(key.toUpperCase())} Paket</div></div>
+      <div class="form-group">
+        <label class="form-label">Başlık</label>
+        <input type="text" class="form-control" id="pricing-title-${key}" value="${esc(p.title)}" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Alt başlık</label>
+        <input type="text" class="form-control" id="pricing-sub-${key}" value="${esc(p.subtitle)}" />
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Fiyat (KDV dahil TL)</label>
+          <input type="number" class="form-control" id="pricing-inc-${key}" value="${p.priceIncVat}" min="0" step="1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fiyat (KDV hariç TL)</label>
+          <input type="number" class="form-control" id="pricing-ex-${key}" value="${p.priceExVat}" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Etiket (opsiyonel)</label>
+        <input type="text" class="form-control" id="pricing-tag-${key}" value="${esc(p.tag || "")}" />
+      </div>
+      <div class="toggle-row" style="margin-bottom:12px;">
+        <div><span class="toggle-label">Öne çıkan kart</span></div>
+        <div class="toggle${p.featured ? " on" : ""}" id="pricing-featd-${key}" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Özellikler (+ dahil / − yok)</label>
+        <textarea class="form-control" id="pricing-feat-${key}" rows="7">${esc(pricingFeaturesToText(p.features))}</textarea>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+window.loadPricingPackagesAdmin = async () => {
+  const grid = document.getElementById("pricing-admin-grid");
+  if (!grid) return;
+  try {
+    const snap = await getDoc(doc(db, "sistem_ayarlari", "fiyatlandirma_paketleri"));
+    const packages = mergePricingPackages(snap.exists() ? (snap.data().packages || snap.data()) : null);
+    renderPricingAdminForm(packages);
+  } catch (e) {
+    grid.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Yüklenemedi: ${esc(e.message)}</p></div>`;
+  }
+};
+
+window.savePricingPackagesAdmin = async () => {
+  const st = document.getElementById("pricing-admin-status");
+  if (st) st.textContent = "Kaydediliyor…";
+  try {
+    const packages = {};
+    PRICING_PKG_ORDER.forEach(key => {
+      packages[key] = {
+        title: (document.getElementById(`pricing-title-${key}`)?.value || "").trim(),
+        subtitle: (document.getElementById(`pricing-sub-${key}`)?.value || "").trim(),
+        priceIncVat: parseFloat(document.getElementById(`pricing-inc-${key}`)?.value) || 0,
+        priceExVat: parseFloat(document.getElementById(`pricing-ex-${key}`)?.value) || 0,
+        tag: (document.getElementById(`pricing-tag-${key}`)?.value || "").trim(),
+        featured: document.getElementById(`pricing-featd-${key}`)?.classList.contains("on") === true,
+        features: pricingParseFeaturesText(document.getElementById(`pricing-feat-${key}`)?.value),
+      };
+    });
+    await setDoc(doc(db, "sistem_ayarlari", "fiyatlandirma_paketleri"), {
+      packages,
+      guncelleme: serverTimestamp(),
+    }, { merge: true });
+    if (st) st.textContent = "Kaydedildi — tanıtım sitesi güncellenecek.";
+    toast("Fiyatlandırma paketleri kaydedildi.");
+  } catch (e) {
+    if (st) st.textContent = "";
+    toast(e.message, "error");
+  }
 };
 
 window.saveDownloadPackages = async () => {
@@ -2884,6 +3094,7 @@ window.renderUserCards = (list) => {
     if (uzmanAi) badges.push('<span class="badge badge-primary">🤖 Uzman AI</span>');
     if (resimAi) badges.push('<span class="badge badge-warning">📸 Görsel AI</span>');
     if (sesliAi) badges.push('<span class="badge badge-primary">🎙️ Sesli AI</span>');
+    badges.push(`<span class="badge badge-gray">📦 ${esc(lisansTipiLabel(u.lisansTipi))}</span>`);
     badges.push(`<span class="badge badge-gray">🗓️ ${esc(lisansStr)}</span>`);
     const resetBtn = limit === -1
       ? ""
@@ -3260,7 +3471,7 @@ window.openUserModal = () => {
   document.getElementById("user-sehir").value = "";
   document.getElementById("user-meslek").selectedIndex = 0;
   document.getElementById("user-limit").value = "-1";
-  document.getElementById("user-lisansTipi").value = "normal";
+  document.getElementById("user-lisansTipi").value = "max";
   document.getElementById("user-lisansBitis").value = "";
   document.getElementById("user-denemeGun").value = "7";
   onLisansTipiChange();
@@ -3291,8 +3502,9 @@ window.editUser = async (email) => {
     if (d.meslek) document.getElementById("user-meslek").value = d.meslek;
     document.getElementById("user-limit").value = d.aiSorguLimiti ?? -1;
 
-    const tipi = d.lisansTipi || "normal";
-    document.getElementById("user-lisansTipi").value = (tipi === "özel" ? "ozel" : tipi);
+    let tipi = d.lisansTipi || "max";
+    if (tipi === "özel") tipi = "ozel";
+    document.getElementById("user-lisansTipi").value = tipi;
     document.getElementById("user-lisansBitis").value = d.lisansBitis || "";
     document.getElementById("user-denemeGun").value = d.denemeGun ? String(d.denemeGun) : "7";
     onLisansTipiChange();
@@ -3353,7 +3565,7 @@ window.saveUser = async () => {
   let denemeGun = null;
   const today = new Date().toISOString().slice(0, 10);
 
-  if (lisansTipi === "normal") {
+  if (lisansTipi === "normal" || lisansTipi === "pro" || lisansTipi === "max") {
     const endDate = new Date();
     endDate.setFullYear(endDate.getFullYear() + 1);
     lisansBitis = endDate.toISOString().slice(0, 10);
