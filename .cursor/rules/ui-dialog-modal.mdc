@@ -1,0 +1,6 @@
+# Admin panel — uyarı UI (KESİN)
+
+- Sağ alt toast **yok**.
+- Tüm uyarı / onay / hata / başarı: ortada `uiAlert` / `uiConfirm` modal (`#ui-dialog`).
+- İkon + anlamlı başlık zorunlu (Hata / Tamam / Onay vb.).
+- `toast()` varsa `uiAlert`’e yönlendirir; yeni kodda doğrudan `uiAlert` / `uiConfirm` kullan.

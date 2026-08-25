@@ -7,6 +7,8 @@ alwaysApply: true
 
 Windows Agent ve Android Mobil **aynı ürün ailesi** ama **ayrı güncelleme kanallarıdır**. Karıştırma.
 
+Admin paneli kendi sürümü (`ADMIN_VERSION` / sidebar `vol`) ayrıdır — admin revizesinde `version-bump.mdc` uygula.
+
 ## Admin UI
 
 - **Sürüm & Güncelleme** menüsünde iki panel: **Windows (.zip)** | **Android (.apk)**

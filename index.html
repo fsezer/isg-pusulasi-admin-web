@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="/assets/favicon-32.png" sizes="32x32" />
   <link rel="shortcut icon" type="image/png" href="/assets/favicon-32.png" />
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -28,6 +28,8 @@
       --radius: 16px;
       --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.25);
       --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+      --font: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      --font-display: "Sora", "Plus Jakarta Sans", system-ui, sans-serif;
     }
 
     /* LIGHT THEME */
@@ -52,7 +54,10 @@
     [data-theme="light"] .top-header { background: rgba(255, 255, 255, 0.85); border-color: rgba(0,0,0,0.08); }
     [data-theme="light"] .kpi-card { background: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
 
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.55; font-size: 14px; font-weight: 500; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    h1, h2, h3, .login-title, .sidebar-brand-name, .top-header-label, .modal-title, .ui-dialog-title, .card-title, .page-title, .upd-plat-title, .kpi-value {
+      font-family: var(--font-display);
+    }
 
     /* LOGIN */
     #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245,158,11,0.14) 0%, transparent 70%), var(--bg); gap: 32px; padding: 20px; }
@@ -70,48 +75,48 @@
 
     /* LAYOUT & SIDEBAR */
     #app { display: none; min-height: 100vh; }
-    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; transition: transform 0.25s ease; }
-    .sidebar-header { padding: 22px 20px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-    .sidebar-brand { font-size: 15px; font-weight: 800; line-height: 1.2; letter-spacing: -0.3px; }
-    .sidebar-brand span { display: inline-block; font-size: 10px; font-weight: 700; color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 12px; margin-left: 6px; border: 1px solid rgba(245,158,11,0.3); }
+    .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 100; transition: width 0.25s ease, transform 0.25s ease; }
+    body.sidebar-collapsed .sidebar { width: 76px; }
+    body.sidebar-collapsed .sidebar-brand,
+    body.sidebar-collapsed .nav-item-label { display: none; }
+    body.sidebar-collapsed .nav-item { justify-content: center; padding: 12px 8px; }
+    body.sidebar-collapsed .nav-item.nav-sub { padding-left: 8px; }
+    body.sidebar-collapsed .sidebar-header { justify-content: center; padding: 18px 10px; }
+    body.sidebar-collapsed .top-header,
+    body.sidebar-collapsed .main { margin-left: 76px; }
+    .sidebar-header { padding: 18px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+    .sidebar-brand { font-size: 15px; font-weight: 800; line-height: 1.15; letter-spacing: -0.3px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .sidebar-brand-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.4px; }
+    .sidebar-brand-vol { font-family: var(--font); font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.3px; }
     
     .sidebar-nav { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 12px; display: flex; flex-direction: column; gap: 2px; }
-    
-    /* NAV GROUPING */
-    .nav-group { margin-bottom: 14px; }
-    .nav-group-title { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text2); opacity: 0.7; padding: 8px 12px 6px; }
-    
-    .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s ease; color: var(--text2); user-select: none; }
+    .nav-group { margin-bottom: 8px; }
+    .nav-item { display: flex; align-items: center; gap: 11px; padding: 10px 14px; border-radius: 12px; font-size: 13.5px; font-weight: 600; letter-spacing: -0.15px; cursor: pointer; transition: all 0.18s ease; color: var(--text2); user-select: none; }
     .nav-item:hover { background: var(--surface2); color: var(--text); transform: translateX(2px); }
     .nav-item.active { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(245,158,11,0.35); font-weight: 700; box-shadow: 0 4px 14px rgba(245,158,11,0.1); }
     .nav-item .icon { font-size: 16px; width: 20px; text-align: center; display: inline-flex; align-items: center; justify-content: center; }
     .nav-item.nav-sub { padding-left: 32px; font-size: 12.5px; }
 
-    .sidebar-footer { padding: 14px 12px; border-top: 1px solid var(--border); }
-    .user-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: var(--surface2); border: 1px solid var(--border); }
-    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #d97706); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #000; flex-shrink: 0; overflow: hidden; box-shadow: 0 2px 8px rgba(245,158,11,0.3); }
-    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .user-info { flex: 1; min-width: 0; }
-    .user-name { font-size: 12.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .user-email-small { font-size: 10px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .btn-signout { background: none; border: none; color: var(--text2); cursor: pointer; padding: 7px; border-radius: 8px; font-size: 15px; transition: all 0.15s; }
-    .btn-signout:hover { color: var(--danger); background: rgba(239,68,68,0.12); }
-    
     /* TOP HEADER BAR */
-    .top-header { position: sticky; top: 0; z-index: 90; height: 68px; background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); margin-left: 260px; padding: 0 36px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .top-header-search { display: flex; align-items: center; gap: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 14px; width: 340px; max-width: 100%; transition: all 0.2s; }
-    .top-header-search:focus-within { border-color: rgba(245,158,11,0.5); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .top-header-search input { border: none; background: transparent; color: var(--text); font-size: 13px; font-family: inherit; outline: none; width: 100%; }
-    .top-header-actions { display: flex; align-items: center; gap: 12px; }
-    .theme-toggle-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s; }
-    .theme-toggle-btn:hover { background: var(--border); transform: translateY(-1px); }
+    .top-header { position: sticky; top: 0; z-index: 90; height: 64px; background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); margin-left: 260px; padding: 0 22px 0 16px; display: flex; align-items: center; gap: 12px; transition: margin-left 0.25s ease; }
+    .sidebar-toggle-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; }
+    .sidebar-toggle-btn:hover { border-color: rgba(245,158,11,0.4); color: var(--accent); }
+    .sidebar-toggle-btn svg { width: 18px; height: 18px; display: block; }
+    body.sidebar-collapsed .sidebar-toggle-btn .icon-collapse { display: none; }
+    body:not(.sidebar-collapsed) .sidebar-toggle-btn .icon-expand { display: none; }
+    .top-header-title { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+    .top-header-icon { font-size: 22px; line-height: 1; }
+    .top-header-label { font-size: 17px; font-weight: 700; letter-spacing: -0.35px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .top-header-right { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+    .top-settings-btn { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); cursor: pointer; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; }
+    .top-settings-btn:hover, .top-settings-btn.active { color: var(--accent); border-color: rgba(245,158,11,0.4); background: var(--accent-glow); }
 
     /* MAIN CONTENT */
-    .main { margin-left: 260px; padding: 28px 36px 40px; min-height: calc(100vh - 68px); }
-    .page-header { margin-bottom: 24px; }
-    .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
-    .page-subtitle { font-size: 13px; color: var(--text2); margin-top: 3px; }
-    .page-header-row { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
+    .main { margin-left: 260px; padding: 28px 36px 40px; min-height: calc(100vh - 64px); transition: margin-left 0.25s ease; }
+    .page-header-row { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+    .settings-account { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .settings-account-mail { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; word-break: break-all; }
+    .settings-account-label { font-size: 11px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
 
     .tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
     .tab-content.active { display: block; }
@@ -139,6 +144,7 @@
     .form-control:focus { outline: none; border-color: rgba(245,158,11,0.5); box-shadow: 0 0 0 3px var(--accent-glow); }
     textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.5; }
     .form-hint { font-size: 11px; color: var(--text2); margin-top: 5px; }
+    .pricing-ex-readout { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-top: 4px; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -182,17 +188,53 @@
     .kpi-sparkline { position: absolute; right: -10px; bottom: -10px; width: 140px; height: 60px; opacity: 0.7; pointer-events: none; z-index: 1; }
 
     /* DASHBOARD CHART & WIDGETS */
-    .dashboard-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-bottom: 24px; }
-    @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } }
-    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column; justify-content: space-between; margin-bottom: 24px; }
     .chart-svg-wrap { width: 100%; height: 200px; margin-top: 10px; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    @media (max-width: 1024px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .stats-grid { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 108px;
+    }
+    .stat-card .stat-icon { font-size: 22px; line-height: 1; margin-bottom: 4px; }
+    .stat-card .stat-value { font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+    .stat-card .stat-label { font-size: 12px; font-weight: 600; color: var(--text2); }
+
+    .dashboard-recent-card { margin-bottom: 24px; }
+    .dashboard-recent-meta { margin: -4px 0 14px; }
+    .dashboard-recent-list { display: flex; flex-direction: column; gap: 10px; }
+    .dashboard-recent-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .dashboard-recent-row:hover { border-color: rgba(245,158,11,0.35); }
+    .dashboard-recent-main { min-width: 0; flex: 1; }
+    .dashboard-recent-name { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dashboard-recent-sub { font-size: 11px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dashboard-recent-when { font-size: 11px; color: var(--text2); flex-shrink: 0; }
 
     .user-card-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.15s; }
     .user-card-item:hover { border-color: rgba(245,158,11,0.3); }
     .user-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .user-main-info { display: flex; align-items: center; gap: 14px; }
     .user-avatar-lg { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; }
-    .user-name-text { font-size: 15px; font-weight: 700; }
+    .user-name-text { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.25px; }
     .user-meta-text { font-size: 12px; color: var(--text2); margin-top: 2px; }
     
     .tier-badges { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -338,11 +380,6 @@
     .spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; animation: slideIn 0.3s ease; max-width: 340px; box-shadow: var(--shadow-lg); }
-    .toast-success { background: rgba(16,185,129,0.95); color: white; }
-    .toast-error { background: rgba(239,68,68,0.95); color: white; }
-    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); }
     .empty-icon { font-size: 44px; margin-bottom: 12px; }
     .privacy-notice { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25); border-radius: 12px; padding: 14px 16px; font-size: 12px; color: #93c5fd; margin-bottom: 20px; line-height: 1.6; }
@@ -384,90 +421,61 @@
 </div>
 
 <div id="app">
-  <nav class="sidebar">
+  <nav class="sidebar" id="app-sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo"><img src="/assets/app_logo.png" alt="İSG Atlası" /></div>
-      <div class="sidebar-brand">İSG Atlası <span>v2.0.1</span></div>
+      <div class="sidebar-brand">
+        <span class="sidebar-brand-name">İSG Atlası</span>
+        <span class="sidebar-brand-vol" id="sidebar-admin-vol">vol —</span>
+      </div>
     </div>
     <div class="sidebar-nav">
-      <!-- 1. GÖSTERGE PANESİ -->
       <div class="nav-group">
-        <div class="nav-group-title">GÖSTERGE PANESİ</div>
-        <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
+        <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span><span class="nav-item-label">Dashboard</span></div>
       </div>
-
-      <!-- 2. MÜŞTERİLER & CİHAZLAR -->
       <div class="nav-group">
-        <div class="nav-group-title">MÜŞTERİLER & CİHAZLAR</div>
-        <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span> Müşteri & Yetkiler</div>
-        <div class="nav-item nav-sub" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span> Yetkisiz Girişler</div>
-        <div class="nav-item nav-sub" onclick="showTab('customer-pcs')" id="nav-customer-pcs"><span class="icon">💻</span> Müşteri PC’leri</div>
-        <div class="nav-item nav-sub" onclick="showTab('device-slots')" id="nav-device-slots"><span class="icon">🖥️</span> Cihaz Kurulumları</div>
+        <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span><span class="nav-item-label">Müşteri & Yetkiler</span></div>
+        <div class="nav-item nav-sub" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span><span class="nav-item-label">Yetkisiz Girişler</span></div>
+        <div class="nav-item nav-sub" onclick="showTab('customer-pcs')" id="nav-customer-pcs"><span class="icon">💻</span><span class="nav-item-label">Müşteri PC’leri</span></div>
+        <div class="nav-item nav-sub" onclick="showTab('device-slots')" id="nav-device-slots"><span class="icon">🖥️</span><span class="nav-item-label">Cihaz Kurulumları</span></div>
       </div>
-
-      <!-- 3. UZMAN AI ENGINE -->
       <div class="nav-group">
-        <div class="nav-group-title">UZMAN AI ENGINE</div>
-        <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span> Uzman AI Ayarları</div>
-        <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span> AI Kullanım & Analiz</div>
+        <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span><span class="nav-item-label">Uzman AI Ayarları</span></div>
+        <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span><span class="nav-item-label">AI Kullanım & Analiz</span></div>
       </div>
-
-      <!-- 4. İÇERİK & BAŞVURULAR -->
       <div class="nav-group">
-        <div class="nav-group-title">İÇERİK & BAŞVURULAR</div>
-        <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span> Üyelik Başvuruları</div>
-        <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span> Tanıtım İndirmeleri</div>
-        <div class="nav-item nav-sub" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span> Fiyatlandırma Paketleri</div>
-        <div class="nav-item nav-sub" onclick="showTab('leads')" id="nav-leads"><span class="icon">📧</span> İndirme Talepleri</div>
-        <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span> Geri Bildirimler</div>
-        <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span> Duyurular</div>
+        <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span><span class="nav-item-label">Üyelik Başvuruları</span></div>
+        <div class="nav-item" onclick="showTab('downloads')" id="nav-downloads"><span class="icon">📦</span><span class="nav-item-label">Tanıtım İndirmeleri</span></div>
+        <div class="nav-item nav-sub" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span><span class="nav-item-label">Fiyatlandırma</span></div>
+        <div class="nav-item nav-sub" onclick="showTab('leads')" id="nav-leads"><span class="icon">📧</span><span class="nav-item-label">İndirme Talepleri</span></div>
+        <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span><span class="nav-item-label">Geri Bildirimler</span></div>
+        <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span><span class="nav-item-label">Duyurular</span></div>
       </div>
-
-      <!-- 5. SÜREÇ & SİSTEM -->
       <div class="nav-group">
-        <div class="nav-group-title">SÜREÇ & SİSTEM</div>
-        <div class="nav-item" onclick="showTab('kota')" id="nav-kota"><span class="icon">📊</span> Depolama & Kota</div>
-        <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span> Sürüm & Güncelleme</div>
-        <div class="nav-item" onclick="showTab('settings')" id="nav-settings"><span class="icon">⚙️</span> Sistem Ayarları</div>
-      </div>
-    </div>
-    
-    <div class="sidebar-footer">
-      <div class="user-card">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <div class="user-info">
-          <div class="user-name" id="user-name">Admin</div>
-          <div class="user-email-small" id="user-email-small">fsezer.mail@gmail.com</div>
-        </div>
-        <button class="btn-signout" onclick="doSignOut()" title="Çıkış">🚪</button>
+        <div class="nav-item" onclick="showTab('kota')" id="nav-kota"><span class="icon">📊</span><span class="nav-item-label">Depolama & Kota</span></div>
+        <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span><span class="nav-item-label">Sürüm & Güncelleme</span></div>
       </div>
     </div>
   </nav>
 
   <!-- TOP HEADER BAR -->
   <header class="top-header">
-    <div class="top-header-search">
-      <span style="opacity:0.6;">🔍</span>
-      <input type="text" id="global-header-search" placeholder="İSG Atlası paneline ara..." oninput="onHeaderSearch(this.value)" />
+    <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Menüyü Aç / Kapat" aria-label="Menüyü Aç / Kapat">
+      <svg class="icon-collapse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M14 9l-3 3 3 3"/></svg>
+      <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M12 9l3 3-3 3"/></svg>
+    </button>
+    <div class="top-header-title">
+      <span class="top-header-icon" id="top-header-icon">📊</span>
+      <span class="top-header-label" id="top-header-label">Dashboard</span>
     </div>
-    <div class="top-header-actions">
-      <button type="button" class="theme-toggle-btn" id="header-theme-toggle" onclick="toggleGlobalTheme()" title="Açık / Koyu Tema">
-        <span id="theme-toggle-icon">☀️</span> <span id="theme-toggle-text">Açık Tema</span>
-      </button>
-      <div style="width:1px;height:24px;background:var(--border);margin:0 4px;"></div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="badge badge-warning" style="font-size:11px;padding:4px 10px;">👑 Super Admin</span>
-      </div>
+    <div class="top-header-right">
+      <button type="button" class="top-settings-btn" id="top-settings-btn" onclick="showTab('settings')" title="Ayarlar" aria-label="Ayarlar">⚙️</button>
     </div>
   </header>
 
   <main class="main">
     <!-- DASHBOARD -->
     <div class="tab-content active" id="tab-dashboard">
-      <div class="page-header">
-        <div class="page-title">Yönetim Paneli</div>
-        <div class="page-subtitle">Özet sistem performansı — canlı durum takibi</div>
-      </div>
 
       <!-- DYNAMIC KPI CARDS WITH SPARKLINES -->
       <div class="kpi-grid">
@@ -528,88 +536,16 @@
         </div>
       </div>
 
-      <!-- DASHBOARD CHART & SYSTEM STATUS WIDGET -->
-      <div class="dashboard-grid">
-        <div class="chart-card">
-          <div class="card-header" style="margin-bottom:6px;">
-            <div>
-              <div class="card-title">📈 AI Sorgu & Kullanım Trendi</div>
-              <div style="font-size:12px;color:var(--text2);margin-top:2px;">Günlük AI asistan ve mevzuat sorgu yoğunluğu</div>
-            </div>
-            <span class="badge badge-warning">Canlı Veri</span>
-          </div>
-          <div class="chart-svg-wrap">
-            <svg width="100%" height="100%" viewBox="0 0 500 180" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="chartGrad1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
-                  <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0"/>
-                </linearGradient>
-                <linearGradient id="chartGrad2" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
-                  <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
-                </linearGradient>
-              </defs>
-              <path d="M0,140 Q100,60 200,100 T400,30 T500,70 L500,180 L0,180 Z" fill="url(#chartGrad1)"/>
-              <path d="M0,140 Q100,60 200,100 T400,30 T500,70" fill="none" stroke="#f59e0b" stroke-width="3"/>
-              
-              <path d="M0,160 Q120,90 250,130 T450,70 T500,110 L500,180 L0,180 Z" fill="url(#chartGrad2)"/>
-              <path d="M0,160 Q120,90 250,130 T450,70 T500,110" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="4,4"/>
-              
-              <circle cx="200" cy="100" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
-              <circle cx="400" cy="30" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
-            </svg>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:8px;">
-            <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
-          </div>
+      <div class="card dashboard-recent-card">
+        <div class="card-header">
+          <div class="card-title">📥 Yeni Kayıtlar</div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="showTab('applications')">Tümü →</button>
         </div>
-
-        <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;justify-content:space-between;">
-          <div>
-            <div class="card-header">
-              <div class="card-title">🚀 Canlı Sürüm Durumu</div>
-              <span class="badge badge-success">Aktif</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:12px;margin-top:6px;">
-              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <span style="font-size:20px;">💻</span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;">Windows Agent</div>
-                    <div style="font-size:11px;color:var(--text2);">Uzak Güncelleme Kanalı</div>
-                  </div>
-                </div>
-                <span class="badge badge-primary">v2.1.8</span>
-              </div>
-              
-              <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <span style="font-size:20px;">🤖</span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;">Android APK</div>
-                    <div style="font-size:11px;color:var(--text2);">Mobil Asistan Sürümü</div>
-                  </div>
-                </div>
-                <span class="badge badge-success">v1.3.4</span>
-              </div>
-
-              <div class="clickable" onclick="showTab('customer-pcs')" style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <span style="font-size:20px;">💻</span>
-                  <div>
-                    <div style="font-size:13px;font-weight:700;">Müşteri PC Kayıtları</div>
-                    <div style="font-size:11px;color:var(--text2);">Toplam Aktif Cihaz</div>
-                  </div>
-                </div>
-                <span class="badge badge-warning" id="stat-customer-pcs">-</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-top:16px;">
-            <button class="btn btn-ghost" style="width:100%;" onclick="showTab('updates')">Sürümleri Yönet →</button>
-          </div>
+        <div class="dashboard-recent-meta">
+          <span class="badge badge-warning" id="stat-applications-new">0 yeni</span>
+        </div>
+        <div id="dashboard-applications-list" class="dashboard-recent-list">
+          <div class="empty-state" style="padding:16px 0;">Yükleniyor…</div>
         </div>
       </div>
     </div>
@@ -617,8 +553,6 @@
     <!-- MÜŞTERİ YÖNETİMİ -->
     <div class="tab-content" id="tab-users">
       <div class="page-header-row">
-        <div><div class="page-title">👤 Müşteri & Paket Yönetimi</div><div class="page-subtitle">Uygulamaya erişim izni verilen İSG Uzmanları ve paket tanımları</div></div>
-
         <button class="btn btn-primary" onclick="openUserModal()">+ Müşteri Ekle</button>
       </div>
       <div class="users-toolbar">
@@ -642,11 +576,7 @@
     <!-- YETKİSİZ GİRİŞLER -->
     <div class="tab-content" id="tab-unauthorized">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">🚫 Yetkisiz Girişler</div>
-          <div class="page-subtitle">Müşteri olmayan e-posta denemeleri · Makine engelle / engeli kaldır</div>
         </div>
-      </div>
       <div class="filter-chips" style="margin-bottom:16px;">
         <button type="button" class="filter-chip active" id="chip-unauth-attempts" onclick="setUnauthSection('attempts')">Denemeler</button>
         <button type="button" class="filter-chip" id="chip-unauth-blocked" onclick="setUnauthSection('blocked')">Engellenen makineler</button>
@@ -664,11 +594,7 @@
     <!-- MÜŞTERİ PC KAYITLARI -->
     <div class="tab-content" id="tab-customer-pcs">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">💻 Müşteri PC’leri</div>
-          <div class="page-subtitle">Başarılı Windows girişlerinde kaydedilen makineler · Engelle / sil</div>
         </div>
-      </div>
       <input type="text" id="custpc-search-input" class="form-control" placeholder="🔍 E-posta, PC adı veya makine ara…" oninput="filterCustomerPcs()" style="max-width:480px;margin-bottom:14px;" />
       <div id="customer-pcs-list"></div>
     </div>
@@ -676,14 +602,7 @@
     <!-- CİHAZ KURULUM SLOTLARı (üyelik — indirme limitinden ayrı) -->
     <div class="tab-content" id="tab-device-slots">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">🖥️ Cihaz Kurulumları</div>
-          <div class="page-subtitle">Üyelik başına PC kurulum kotası (varsayılan 3) · Tanıtım “3 indirme hakkı”ndan ayrı</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadDeviceSlots()">🔄 Yenile</button>
-      </div>
-      <div class="rel-hint" style="margin-bottom:14px;">
-        Yeni makinede girişte slot doluysa API <code>device_slot_limit</code> döner. Buradan <b>max_slots</b> artırın.
       </div>
       <input type="text" id="device-slots-search" class="form-control" placeholder="🔍 E-posta veya makine ara…" oninput="deviceSlotsSearchDebounce()" style="max-width:420px;margin-bottom:14px;" />
       <div id="device-slots-list"><div class="empty-state">Yükleniyor…</div></div>
@@ -693,10 +612,6 @@
     <!-- UZMAN AI AYARLARI -->
     <div class="tab-content" id="tab-rules">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">🤖 Uzman AI</div>
-          <div class="page-subtitle">Mobildeki sohbet asistanı (Grigori'deki Nokta gibi). Gemini anahtarı buradan — aynı Google AI kredinizden düşer.</div>
-        </div>
         <button class="btn btn-primary" onclick="openRuleModal()">+ Özel kural</button>
       </div>
 
@@ -705,7 +620,6 @@
         <div class="form-group">
           <label class="form-label">API Key</label>
           <input type="password" class="form-control" id="ai-gemini-key" placeholder="AIza…" autocomplete="off" />
-          <div class="form-hint">Boş bırakırsanız kayıtlı anahtar değişmez. Mobil bu anahtarı Firestore'dan okur (cihazda tutulmaz).</div>
         </div>
         <div id="ai-key-status" class="form-hint" style="margin-top:-6px;margin-bottom:10px;"></div>
       </div>
@@ -715,7 +629,6 @@
         <div class="form-group">
           <label class="form-label">Sistem talimatı</label>
           <textarea class="form-control" id="ai-global-prompt" rows="4" placeholder="Sen İSG Uzmanısın…"></textarea>
-          <div class="form-hint">Kısa tutun. Örn: "Sen İSG uzmanısın. Türkçe, net ve saha odaklı cevap ver."</div>
         </div>
       </div>
 
@@ -744,10 +657,6 @@
 
       <div class="card">
         <div class="card-header"><div class="card-title">4) Özel kurallar (isteğe bağlı)</div></div>
-        <div class="form-hint" style="margin-bottom:12px;">
-          Aksiyon = "denetim aç" gibi komutlarda otomatik kayıt · Engelleme = istenmeyen konular · Mevzuat = sabit metin cevapları.
-          Çoğu kullanımda 1–2 kural yeter; boş bırakılabilir.
-        </div>
         <div id="rules-list"></div>
       </div>
     </div>
@@ -755,10 +664,6 @@
     <!-- AI KULLANIM -->
     <div class="tab-content" id="tab-analytics">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">📊 AI Kullanım</div>
-          <div class="page-subtitle">Müşteri başına kaç sorgu harcandı / kota doldu mu?</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadAnalytics()">Yenile</button>
       </div>
 
@@ -767,6 +672,39 @@
         <div class="stat-card"><div class="stat-icon">♾️</div><div class="stat-value" id="stat-unlimited-users">0</div><div class="stat-label">Sınırsız paket</div></div>
         <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-limited-users">0</div><div class="stat-label">Kotalı müşteri</div></div>
         <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-value" id="stat-quota-exceeded">0</div><div class="stat-label">Kotası dolan</div></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="card-header" style="margin-bottom:6px;">
+          <div>
+            <div class="card-title">📈 AI Sorgu & Kullanım Trendi</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">Günlük AI asistan ve mevzuat sorgu yoğunluğu</div>
+          </div>
+          <span class="badge badge-warning">Canlı Veri</span>
+        </div>
+        <div class="chart-svg-wrap">
+          <svg width="100%" height="100%" viewBox="0 0 500 180" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGrad1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0"/>
+              </linearGradient>
+              <linearGradient id="chartGrad2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,140 Q100,60 200,100 T400,30 T500,70 L500,180 L0,180 Z" fill="url(#chartGrad1)"/>
+            <path d="M0,140 Q100,60 200,100 T400,30 T500,70" fill="none" stroke="#f59e0b" stroke-width="3"/>
+            <path d="M0,160 Q120,90 250,130 T450,70 T500,110 L500,180 L0,180 Z" fill="url(#chartGrad2)"/>
+            <path d="M0,160 Q120,90 250,130 T450,70 T500,110" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-dasharray="4,4"/>
+            <circle cx="200" cy="100" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+            <circle cx="400" cy="30" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:8px;">
+          <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+        </div>
       </div>
 
       <div class="card">
@@ -778,10 +716,6 @@
     <!-- ÜYELİK BAŞVURULARI -->
     <div class="tab-content" id="tab-applications">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">📥 Üyelik Başvuruları</div>
-          <div class="page-subtitle">Tanıtım sitesinden gelen başvurular. Onaylayınca Müşteri olarak ekleyebilirsiniz.</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadApplications()">Yenile</button>
       </div>
       <div id="applications-list" class="empty-state">Yükleniyor…</div>
@@ -789,10 +723,6 @@
 
     <!-- TANITIM İNDİRMELERİ -->
     <div class="tab-content" id="tab-downloads">
-      <div class="page-header">
-        <div class="page-title">📦 Tanıtım Sitesi İndirmeleri</div>
-        <div class="page-subtitle">Tanıtım sitesindeki Agent / APK / mağaza linkleri</div>
-      </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Paket yükle veya URL</div></div>
         <div class="grid-2">
@@ -848,39 +778,27 @@
       </div>
     </div>
 
-    <!-- FİYATLANDIRMA PAKETLERİ (tanıtım sitesi) -->
+    <!-- FİYATLANDIRMA -->
     <div class="tab-content" id="tab-pricing">
-      <div class="page-header-row">
-        <div>
-          <div class="page-title">💰 Fiyatlandırma Paketleri</div>
-          <div class="page-subtitle">isgatlasi.com/fiyatlar.html — Normal · Pro · Max kart içerikleri</div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header"><div class="card-title">Görünüm</div></div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Aylık fiyat satırı (≈ TL/ay)</label>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="toggle" id="pricing-show-monthly" onclick="this.classList.toggle('on')"></div>
+          </div>
         </div>
-        <button class="btn btn-ghost" onclick="loadPricingPackagesAdmin()">🔄 Yenile</button>
-      </div>
-      <div class="rel-hint" style="margin-bottom:16px;">
-        Özellik satırları: <code>+ dahil</code> · <code>- yok</code> (satır başına bir madde). Max kartında <b>featured</b> ve etiket otomatik vurgulanır.
       </div>
       <div class="grid-3" id="pricing-admin-grid">
         <div class="card"><div class="empty-state">Yükleniyor…</div></div>
       </div>
-      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-success" onclick="savePricingPackagesAdmin()">Kaydet / Siteye Yayınla</button>
-        <div id="pricing-admin-status" class="form-hint"></div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-success" id="pricing-save-btn" onclick="savePricingPackagesAdmin()">Kaydet</button>
       </div>
     </div>
 
     <!-- SÜRÜM & GÜNCELLEME -->
     <div class="tab-content" id="tab-updates">
-      <div class="page-header">
-        <div class="page-title">🚀 Sürüm & Uzaktan Güncelleme</div>
-        <div class="page-subtitle">Windows Agent ve Android Mobil — tamamen ayrı kanallar (karıştırma)</div>
-      </div>
-      <div class="rel-hint">
-        <b>Kesin kural:</b> Windows ve Android ayrı paneller. Uyarı: uzak <b>versionCode</b> &gt; kullanıcının son uyguladığı kod.
-        Admin’de sadece versionCode’u artırıp kaydedersen (aynı zip/apk bile) kullanıcıya <b>yine güncelleme çıkar</b>;
-        yükledikten sonra aynı kod tekrar sorulmaz. Anlamlı yayında her iki paneli de güncelle.
-        <br /><b>OS alanları:</b> <code>os_family</code> / <code>min_os</code> (windows10, windows7, android_api, ios; linux/macos placeholder).
-      </div>
 
       <div class="upd-subtabs" role="tablist">
         <button type="button" class="upd-subtab on" id="upd-tab-windows" onclick="showUpdPlat('windows')">
@@ -1099,10 +1017,6 @@
     <!-- İNDİRME TALEPLERİ -->
     <div class="tab-content" id="tab-leads">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">📧 İndirme Talepleri</div>
-          <div class="page-subtitle">Tanıtım sitesinden indirme isteyen e-postalar · Limit 3 indirme/kişi</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadLeads()">🔄 Yenile</button>
       </div>
       <div class="users-toolbar">
@@ -1115,10 +1029,6 @@
     <!-- GERİ BİLDİRİMLER -->
     <div class="tab-content" id="tab-feedback">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">💬 Geri Bildirimler</div>
-          <div class="page-subtitle">Uygulamadan gelen kullanıcı geri bildirimleri</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadFeedback()">🔄 Yenile</button>
       </div>
       <div class="users-toolbar">
@@ -1142,10 +1052,6 @@
     <!-- DUYURULAR -->
     <div class="tab-content" id="tab-announcements">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">📢 Duyurular</div>
-          <div class="page-subtitle">Uygulamada bir kez gösterilir · Tamam / Vazgeç / Link tıklama istatistikleri</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadAnnouncements()">🔄 Yenile</button>
       </div>
       <div class="card" style="margin-bottom:18px;">
@@ -1179,10 +1085,6 @@
     <!-- KOTA / KULLANIM -->
     <div class="tab-content" id="tab-kota">
       <div class="page-header-row">
-        <div>
-          <div class="page-title">📈 Kota / Kullanım</div>
-          <div class="page-subtitle">Kullanıcı bazlı sync ve depolama istatistikleri</div>
-        </div>
         <button class="btn btn-ghost" onclick="loadUsage()">🔄 Yenile</button>
       </div>
       <div class="users-toolbar">
@@ -1192,17 +1094,23 @@
       <div class="pager" id="usage-pager"></div>
     </div>
 
-    <!-- SİSTEM AYARLARI -->
+    <!-- AYARLAR -->
     <div class="tab-content" id="tab-settings">
-      <div class="page-header">
-        <div class="page-title">⚙️ Sistem Ayarları</div>
-        <div class="page-subtitle">SuperAdmin hesap yönetimi ve arayüz ayarları.</div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hesap</div></div>
+        <div class="settings-account">
+          <div>
+            <div class="settings-account-label">Aktif Oturum</div>
+            <div class="settings-account-mail" id="settings-active-email">—</div>
+          </div>
+          <button type="button" class="btn btn-danger" onclick="doSignOut()">Çıkış Yap</button>
+        </div>
       </div>
 
       <!-- TEMA -->
       <div class="card">
         <div class="card-header"><div class="card-title">🎨 Tema</div></div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:14px;">Arayüz renk modu. Ayar Firestore'a ve yerel belleğe kaydedilir.</div>
         <div class="seg-ctrl" style="max-width:260px;">
           <button type="button" class="seg-btn tema-btn" id="tema-acik" onclick="setTema('light')">☀️ Açık</button>
           <button type="button" class="seg-btn tema-btn" id="tema-koyu" onclick="setTema('dark')">🌙 Koyu</button>
@@ -1212,7 +1120,6 @@
       <!-- SUPERADMIN -->
       <div class="card">
         <div class="card-header"><div class="card-title">👑 SuperAdmin Hesapları</div></div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">Bu listedeki e-posta adresleri admin paneline giriş yapabilir. En az 1 SuperAdmin her zaman zorunludur.</div>
         <div id="superadmin-list" style="margin-bottom:16px;"></div>
         <div class="grid-2">
           <div class="form-group" style="margin-bottom:0;">
@@ -1220,12 +1127,17 @@
             <input type="email" id="new-superadmin-email" class="form-control" placeholder="admin@firma.com" />
           </div>
           <div class="form-group" style="margin-bottom:0;">
-            <label class="form-label">Geçici şifre (Auth hesabı)</label>
+            <label class="form-label">Geçici şifre</label>
             <input type="password" id="new-superadmin-password" class="form-control" placeholder="En az 8 karakter" autocomplete="new-password" />
           </div>
         </div>
-        <div class="form-hint" style="margin:10px 0;">Şifre verilirse Firebase Auth hesabı oluşur; ilk girişte şifre değişimi zorunlu.</div>
-        <button class="btn btn-primary" onclick="addSuperAdmin()">+ SuperAdmin ekle</button>
+        <button class="btn btn-primary" style="margin-top:14px;" onclick="addSuperAdmin()">+ SuperAdmin ekle</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">SQL Veri Aktarımı</div></div>
+        <p class="form-hint" style="margin-bottom:12px;">Firestore ürün verisini SQL’e bir kez kopyalar (Firestore silinmez). Yalnızca bu düğme ile çalışır.</p>
+        <button type="button" class="btn btn-ghost" onclick="importFirestoreToSql().then(()=>loadAll()).catch(()=>{})">Firestore → SQL Aktar</button>
       </div>
     </div>
 
@@ -1258,7 +1170,6 @@
         <input type="text" class="form-control" id="user-password-input" placeholder="8 haneli rakam — boş = şifre dokunulmaz" autocomplete="new-password" inputmode="numeric" style="flex:1;font-family:ui-monospace,monospace;letter-spacing:1px;" />
         <button type="button" class="btn btn-ghost" onclick="fillTempPassword()" title="8 haneli üret">Üret</button>
       </div>
-      <div class="form-hint">«Üret» ile 8 haneli geçici şifre gelir. Kaydedince Auth şifresi <b>gerçekten değişir</b>; eski şifre çalışmaz. Müşteri ilk girişte değiştirmek zorunda.</div>
     </div>
 
     <div class="grid-2">
@@ -1432,7 +1343,6 @@
           </select>
         </div>
       </div>
-      <div class="form-hint" id="lisans-hint" style="margin-top:8px;">Normal / Pro / Max: bitiş bugünden +1 yıl. Deneme: 1–14 gün. Özel: tarih seçin. Bitişten sonra 1 gün tolerans.</div>
     </div>
 
     <!-- PAKET & MODÜL -->
@@ -1465,7 +1375,6 @@
     <div class="form-group">
       <label class="form-label">AI Sorgu Limiti</label>
       <input type="number" class="form-control" id="user-limit" placeholder="-1 (Sınırsız) veya ör: 50" value="-1" />
-      <div class="form-hint">-1 girerseniz sınırsız hak verilir. Sayı girerseniz sorgu sayısı o limite ulaşınca durur.</div>
     </div>
 
     <div style="display:flex;gap:10px;justify-content:flex-end;">
@@ -1497,7 +1406,6 @@
     <div class="form-group">
       <label class="form-label">Tetikleyici Anahtar Kelimeler</label>
       <input type="text" class="form-control" id="rule-keywords" placeholder="baret yok, kkd eksik, ihlal var, baret takmamış" />
-      <div class="form-hint">Virgülle ayırın. Kullanıcı bunlardan birini söylediğinde kural çalışır.</div>
     </div>
 
     <div class="grid-2">
@@ -1530,13 +1438,10 @@
   </div>
 </div>
 
-<div id="toast-container"></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDocs, getDoc, addDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import { getFirestore, collection, doc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Apply theme from localStorage immediately on load
 (function() {
@@ -1544,7 +1449,29 @@ import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "http
   document.documentElement.setAttribute('data-theme', t);
 })();
 
-const API_BASE = "https://isg-pusulasi-api-kvfsvqx7na-ew.a.run.app";
+/** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
+const ADMIN_VERSION = "2.0.2";
+(() => {
+  const el = document.getElementById("sidebar-admin-vol");
+  if (el) el.textContent = "vol " + ADMIN_VERSION;
+})();
+
+const API_BASE_LIVE = "https://isg-pusulasi-api-kvfsvqx7na-ew.a.run.app";
+const h = location.hostname;
+const p = location.port;
+const isLocalAdmin =
+  h === "localhost" ||
+  h === "127.0.0.1" ||
+  h.endsWith(".local") ||
+  /^192\.168\./.test(h) ||
+  /^10\./.test(h) ||
+  p === "3010" ||
+  p === "8080" ||
+  p === "8082" ||
+  p === "5710";
+// Lokal admin → lokal API. Canlı panel Cloud Run. Override: localStorage.isg_api_base
+const API_BASE = localStorage.getItem("isg_api_base")
+  || (isLocalAdmin ? "http://localhost:8081" : API_BASE_LIVE);
 let apiJwt = null;
 
 const firebaseConfig = {
@@ -1560,7 +1487,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
 const secondaryApp = initializeApp(firebaseConfig, "Secondary");
 const secondaryAuth = getAuth(secondaryApp);
 
@@ -1646,20 +1572,19 @@ async function loadTheme() {
   const localTema = localStorage.getItem('admin_tema') || 'dark';
   applyTema(localTema);
   try {
-    const snap = await getDoc(doc(db, "sistem_ayarlari", "ui"));
-    if (snap.exists()) {
-      const t = snap.data().tema || 'dark';
-      applyTema(t);
-    }
-  } catch(e) {}
+    const d = await apiJSON("/v1/admin/site-settings/ui");
+    if (d && d.tema) applyTema(d.tema);
+  } catch (e) {}
 }
 
 window.setTema = async (tema) => {
   applyTema(tema);
   try {
-    await setDoc(doc(db, "sistem_ayarlari", "ui"), { tema }, { merge: true });
+    await apiJSON("/v1/admin/site-settings/ui", { method: "PUT", body: JSON.stringify({ tema }) });
     toast("Tema kaydedildi");
-  } catch(e) { toast(e.message, "error"); }
+  } catch (e) {
+    toast("Tema yerelde kaydedildi");
+  }
 };
 
 window.toggleGlobalTheme = async () => {
@@ -1695,7 +1620,7 @@ function lisansTipiLabel(tipi) {
 }
 
 function formatLisans(u) {
-  const d = u.lisansBitis || u.lisansBitisTarihi || "";
+  const d = isoDateOnly(u.lisansBitis || u.lisansBitisTarihi || "");
   const tipLabel = lisansTipiLabel(u.lisansTipi);
   if (!d) return tipLabel + " · Süresiz";
   const today = new Date().toISOString().slice(0, 10);
@@ -1730,22 +1655,25 @@ window.onLisansTipiChange = () => {
   }
 };
 
-/* ── SUPERADMIN ── */
+/* ── SUPERADMIN (SQL site_settings) ── */
 async function loadSuperAdmins() {
   try {
-    const snap = await getDoc(doc(db, "sistem_ayarlari", "superAdminlar"));
-    if (snap.exists()) {
-      const d = snap.data();
-      superAdminList = d.liste || [];
-      adminMustChangeMap = d.mustChangePassword || {};
-    } else {
-      superAdminList = [];
-      adminMustChangeMap = {};
-    }
-  } catch(e) {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { superAdminList = []; adminMustChangeMap = {}; return; }
+    const d = await apiJSON("/v1/admin/site-settings/superAdminlar");
+    superAdminList = Array.isArray(d.liste) ? d.liste : [];
+    adminMustChangeMap = d.mustChangePassword && typeof d.mustChangePassword === "object" ? d.mustChangePassword : {};
+  } catch (e) {
     superAdminList = [];
     adminMustChangeMap = {};
   }
+}
+
+async function saveSuperAdminsDoc() {
+  await apiJSON("/v1/admin/site-settings/superAdminlar", {
+    method: "PUT",
+    body: JSON.stringify({ liste: superAdminList, mustChangePassword: adminMustChangeMap })
+  });
 }
 
 async function isSuperAdmin(email) {
@@ -1761,35 +1689,38 @@ function adminNeedsPwdChange(email) {
 async function clearAdminMustChange(email) {
   const e = (email || "").toLowerCase();
   adminMustChangeMap[e] = false;
-  await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
-    liste: superAdminList,
-    mustChangePassword: adminMustChangeMap
-  }, { merge: true });
+  await saveSuperAdminsDoc();
 }
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = (user.email || "").toLowerCase();
-    await loadSuperAdmins();
-    if (superAdminList.length === 0) {
-      superAdminList = [email];
-      adminMustChangeMap[email] = false;
-      await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
-        liste: superAdminList,
-        mustChangePassword: adminMustChangeMap
-      });
-    }
-    if (!superAdminList.map(e => e.toLowerCase()).includes(email)) {
+    try {
+      await ensureApiSession(user);
+    } catch (e) {
+      const msg = String(e.message || e);
       await fbSignOut(auth);
       document.getElementById("login-denied").style.display = "block";
+      if (msg.includes("not_superadmin")) {
+        toast("SuperAdmin değilsiniz", "error");
+      } else {
+        toast("API oturumu: " + msg, "error");
+      }
       return;
     }
+    await loadSuperAdmins();
     if (adminNeedsPwdChange(email)) {
       document.getElementById("force-pwd-modal").classList.add("open");
       return;
     }
-    showApp(user); loadAll();
-    ensureApiSession(user).then(() => loadReleases()).catch(e => console.warn("API session", e));
+    showApp(user);
+    try {
+      await loadAll();
+      await loadReleases();
+    } catch (e) {
+      console.warn("loadAll", e);
+      toast("Yükleme hatası: " + (e.message || e), "error");
+    }
   } else { showLogin(); }
 });
 
@@ -1802,13 +1733,112 @@ async function ensureApiSession(user) {
       device_type: "admin",
       machine_id: "admin-web",
       id_token: idToken,
+      firebase_uid: user.uid,
+      email: (user.email || "").toLowerCase(),
       display_name: user.displayName || "Admin"
     })
   });
   const data = await resp.json();
   if (!resp.ok || !data.token) throw new Error(data.error || "api_session_failed");
   apiJwt = data.token;
+  if (data.session?.must_change_password) {
+    adminMustChangeMap[(user.email || "").toLowerCase()] = true;
+  }
   return apiJwt;
+}
+
+async function apiJSON(path, opts = {}) {
+  if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+  if (!apiJwt) throw new Error("API oturumu yok");
+  const headers = Object.assign({ Authorization: "Bearer " + apiJwt }, opts.headers || {});
+  if (opts.body != null && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
+  const resp = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  const text = await resp.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch (_) { data = text; }
+  if (!resp.ok) {
+    const msg = (data && (data.detail || data.error)) || ("HTTP " + resp.status);
+    throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+  }
+  return data;
+}
+
+/** GCS signed upload — POST /v1/storage/sign-upload → PUT put_url */
+async function apiSignUploadFile(file, objectType, extra = {}) {
+  if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+  if (!apiJwt) throw new Error("API oturumu yok");
+  const contentType = file.type || "application/octet-stream";
+  const signBody = Object.assign({
+    object_type: objectType,
+    file_name: file.name || "file.bin",
+    content_type: contentType
+  }, extra);
+  const signed = await apiJSON("/v1/storage/sign-upload", {
+    method: "POST",
+    body: JSON.stringify(signBody)
+  });
+  const putUrl = signed.put_url;
+  if (!putUrl) throw new Error(signed.note || signed.error || "put_url yok");
+  const putResp = await fetch(putUrl, {
+    method: "PUT",
+    headers: { "Content-Type": contentType },
+    body: file
+  });
+  if (!putResp.ok) throw new Error("Yükleme başarısız (HTTP " + putResp.status + ")");
+  const getUrl = (signed.get_url || "").trim();
+  const objectPath = (signed.object || "").trim();
+  return {
+    getUrl: getUrl || objectPath,
+    objectPath,
+    status: signed.status || ""
+  };
+}
+
+function isoDateOnly(v) {
+  if (!v) return "";
+  const s = String(v);
+  return s.length >= 10 ? s.slice(0, 10) : s;
+}
+
+function toRfc3339Date(d) {
+  const s = isoDateOnly(d);
+  if (!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  return s + "T00:00:00Z";
+}
+
+function formatTsLocal(v) {
+  if (!v) return "—";
+  if (typeof v?.toDate === "function") return v.toDate().toLocaleString("tr-TR");
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("tr-TR");
+}
+
+function fsTsToIso(v) {
+  if (!v) return null;
+  if (typeof v?.toDate === "function") return v.toDate().toISOString();
+  if (typeof v === "string") return v;
+  if (typeof v === "number") return new Date(v).toISOString();
+  return null;
+}
+
+function mapLicenseItem(it) {
+  const email = String(it.email || "").toLowerCase();
+  return {
+    ...it,
+    id: email,
+    email,
+    lisansBitis: isoDateOnly(it.lisansBitis) || "",
+    lisansBaslangic: isoDateOnly(it.lisansBaslangic) || "",
+  };
+}
+
+function isUuid(s) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(s || ""));
+}
+
+function ruleImageReqToUi(v) {
+  if (v === true || v === "resim_zorunlu") return "resim_zorunlu";
+  return "farketsmez";
 }
 
 window.doSignIn = async () => {
@@ -1844,8 +1874,15 @@ window.submitForcePwd = async () => {
     pendingAdminTempPassword = "";
     document.getElementById("force-pwd-modal").classList.remove("open");
     toast("Şifre güncellendi");
-    showApp(user); loadAll();
-    ensureApiSession(user).then(() => loadReleases()).catch(() => {});
+    showApp(user);
+    try {
+      await ensureApiSession(user);
+      await loadAll();
+      await loadReleases();
+    } catch (e) {
+      console.warn("API session", e);
+      toast("API oturumu açılamadı: " + (e.message || e), "error");
+    }
   } catch (e) {
     err.textContent = e.message || "Şifre değiştirilemedi";
   }
@@ -1854,15 +1891,52 @@ window.submitForcePwd = async () => {
 function showApp(user) {
   document.getElementById("login-screen").style.display = "none";
   document.getElementById("app").style.display = "block";
-  document.getElementById("user-name").textContent = user.displayName || "Fatih Sezer";
-  document.getElementById("user-email-small").textContent = user.email;
-  const av = document.getElementById("user-avatar");
-  if (user.photoURL) av.innerHTML = `<img src="${user.photoURL}" />`;
-  else av.textContent = "A";
+  if (localStorage.getItem("admin_sidebar_collapsed") === "1") {
+    document.body.classList.add("sidebar-collapsed");
+  }
+  const mailEl = document.getElementById("settings-active-email");
+  if (mailEl) mailEl.textContent = user?.email || "—";
+  updateTopHeader("dashboard");
 }
 function showLogin() {
   document.getElementById("login-screen").style.display = "flex";
   document.getElementById("app").style.display = "none";
+}
+
+window.toggleSidebar = () => {
+  document.body.classList.toggle("sidebar-collapsed");
+  localStorage.setItem(
+    "admin_sidebar_collapsed",
+    document.body.classList.contains("sidebar-collapsed") ? "1" : "0"
+  );
+};
+
+const TAB_META = {
+  dashboard: { icon: "📊", label: "Dashboard" },
+  users: { icon: "👤", label: "Müşteri & Yetkiler" },
+  unauthorized: { icon: "🚫", label: "Yetkisiz Girişler" },
+  "customer-pcs": { icon: "💻", label: "Müşteri PC’leri" },
+  "device-slots": { icon: "🖥️", label: "Cihaz Kurulumları" },
+  rules: { icon: "🤖", label: "Uzman AI Ayarları" },
+  analytics: { icon: "📈", label: "AI Kullanım & Analiz" },
+  applications: { icon: "📥", label: "Üyelik Başvuruları" },
+  downloads: { icon: "📦", label: "Tanıtım İndirmeleri" },
+  pricing: { icon: "💰", label: "Fiyatlandırma" },
+  leads: { icon: "📧", label: "İndirme Talepleri" },
+  feedback: { icon: "💬", label: "Geri Bildirimler" },
+  announcements: { icon: "📢", label: "Duyurular" },
+  kota: { icon: "📊", label: "Depolama & Kota" },
+  updates: { icon: "🚀", label: "Sürüm & Güncelleme" },
+  settings: { icon: "⚙️", label: "Ayarlar" }
+};
+
+function updateTopHeader(tab) {
+  const meta = TAB_META[tab] || { icon: "📋", label: tab };
+  const iconEl = document.getElementById("top-header-icon");
+  const labelEl = document.getElementById("top-header-label");
+  if (iconEl) iconEl.textContent = meta.icon;
+  if (labelEl) labelEl.textContent = meta.label;
+  document.getElementById("top-settings-btn")?.classList.toggle("active", tab === "settings");
 }
 
 window.showTab = (tab) => {
@@ -1870,6 +1944,7 @@ window.showTab = (tab) => {
   document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
   document.getElementById("tab-" + tab)?.classList.add("active");
   document.getElementById("nav-" + tab)?.classList.add("active");
+  updateTopHeader(tab);
   if (tab === "updates") loadReleases();
   if (tab === "leads") loadLeads();
   if (tab === "feedback") loadFeedback();
@@ -1877,6 +1952,8 @@ window.showTab = (tab) => {
   if (tab === "device-slots") loadDeviceSlots();
   if (tab === "announcements") loadAnnouncements();
   if (tab === "pricing") loadPricingPackagesAdmin();
+  if (tab === "analytics") loadAnalytics();
+  if (tab === "applications") loadApplications();
 };
 
 window.showUpdPlat = (plat) => {
@@ -1887,6 +1964,9 @@ window.showUpdPlat = (plat) => {
 };
 
 async function loadAll() {
+  if (!apiJwt && auth.currentUser) {
+    try { await ensureApiSession(auth.currentUser); } catch (e) { console.warn("API session", e); }
+  }
   await Promise.all([
     loadUsers(), loadRules(), renderSuperAdminList(), loadAiSettings(), loadAnalytics(),
     loadApplications(), loadDownloadPackages(), loadPricingPackagesAdmin(), loadTheme(),
@@ -2301,33 +2381,101 @@ function fmtBytes(b) {
   return (b/1048576).toFixed(1) + " MB";
 }
 
-/* ── ÜYELİK BAŞVURULARI ── */
+/* ── ÜYELİK BAŞVURULARI (SQL API — Firestore kullanılmaz / silinmez) ── */
+const APPLY_PLATFORM_LABELS = {
+  windows_android: "Windows + Android",
+  windows_ios: "Windows + iOS",
+  macos_android: "macOS + Android",
+  macos_ios: "macOS + iOS",
+  linux_android: "Linux + Android",
+  linux_ios: "Linux + iOS"
+};
+
+function platformLabel(code) {
+  return APPLY_PLATFORM_LABELS[code] || code || "—";
+}
+
+function formatBasvuruWhen(v) {
+  if (!v) return "—";
+  try {
+    const d = typeof v === "string" || typeof v === "number" ? new Date(v) : (v?.toDate ? v.toDate() : null);
+    if (!d || Number.isNaN(d.getTime())) return "—";
+    return d.toLocaleString("tr-TR");
+  } catch {
+    return "—";
+  }
+}
+
+function renderDashboardApplications(items) {
+  const box = document.getElementById("dashboard-applications-list");
+  const stat = document.getElementById("stat-applications-new");
+  if (!box) return;
+  const fresh = items.filter(it => (it.durum || "yeni") === "yeni");
+  if (stat) stat.textContent = fresh.length + " yeni";
+  const recent = items.slice(0, 6);
+  if (!recent.length) {
+    box.innerHTML = `<div class="empty-state" style="padding:16px 0;">Henüz başvuru yok.</div>`;
+    return;
+  }
+  box.innerHTML = recent.map(it => {
+    const when = formatBasvuruWhen(it.createdAt);
+    const durum = it.durum || "yeni";
+    const badge = durum === "musteri_yapildi" ? "badge-success" : durum === "arsiv" ? "badge-gray" : "badge-warning";
+    return `<div class="dashboard-recent-row" onclick="showTab('applications')">
+      <div class="dashboard-recent-main">
+        <div class="dashboard-recent-name">${esc(it.adSoyad || "—")}</div>
+        <div class="dashboard-recent-sub">${esc(it.email || "")} · ${esc(it.sehir || "—")} · ${esc(platformLabel(it.platform))}</div>
+      </div>
+      <span class="badge ${badge}">${esc(durum)}</span>
+      <span class="dashboard-recent-when">${when}</span>
+    </div>`;
+  }).join("");
+}
+
 window.loadApplications = async () => {
   const box = document.getElementById("applications-list");
-  if (!box) return;
-  box.innerHTML = `<div class="empty-state">Yükleniyor…</div>`;
+  if (box) box.innerHTML = `<div class="empty-state">Yükleniyor…</div>`;
+  const dash = document.getElementById("dashboard-applications-list");
+  if (dash) dash.innerHTML = `<div class="empty-state" style="padding:16px 0;">Yükleniyor…</div>`;
   try {
-    const snap = await getDocs(collection(db, "uyelik_basvurulari"));
-    const items = [];
-    snap.forEach(ds => items.push({ id: ds.id, ...ds.data() }));
-    items.sort((a, b) => {
-      const ta = a.createdAt?.toMillis?.() || 0;
-      const tb = b.createdAt?.toMillis?.() || 0;
-      return tb - ta;
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+  } catch (e) {
+    const msg = `<div class="empty-state">API oturumu yok — lokal API: ${esc(API_BASE)} (${esc(e.message || e)}).</div>`;
+    if (box) box.innerHTML = msg;
+    if (dash) dash.innerHTML = msg;
+    return;
+  }
+  if (!apiJwt) {
+    const msg = `<div class="empty-state">API oturumu yok — önce giriş yapın (lokal API: ${esc(API_BASE)}).</div>`;
+    if (box) box.innerHTML = msg;
+    if (dash) dash.innerHTML = msg;
+    return;
+  }
+  try {
+    const resp = await fetch(`${API_BASE}/v1/admin/uyelik/basvurulari?page=0&page_size=100`, {
+      headers: { "Authorization": "Bearer " + apiJwt }
     });
+    if (!resp.ok) {
+      const t = await resp.text();
+      throw new Error(t || ("HTTP " + resp.status));
+    }
+    const data = await resp.json();
+    const items = Array.isArray(data.items) ? data.items : [];
+    renderDashboardApplications(items);
+    if (!box) return;
     if (!items.length) {
       box.innerHTML = `<div class="empty-state">Henüz başvuru yok. Tanıtım sitesinden gelenler burada listelenir.</div>`;
       return;
     }
     box.innerHTML = items.map(it => {
-      const when = it.createdAt?.toDate ? it.createdAt.toDate().toLocaleString("tr-TR") : "—";
+      const when = formatBasvuruWhen(it.createdAt);
       const durum = it.durum || "yeni";
       const badge = durum === "musteri_yapildi" ? "badge-success" : durum === "arsiv" ? "badge-gray" : "badge-warning";
       return `<div class="rule-item">
         <div class="rule-item-header">
           <div class="rule-item-title">${esc(it.adSoyad || "—")}
             <span class="badge ${badge}">${esc(durum)}</span>
-            <span class="badge badge-primary">${esc(it.platform || "both")}</span>
+            <span class="badge badge-primary">${esc(platformLabel(it.platform))}</span>
           </div>
         </div>
         <div style="font-size:13px;margin:6px 0;">
@@ -2342,13 +2490,20 @@ window.loadApplications = async () => {
       </div>`;
     }).join("");
   } catch (e) {
-    box.innerHTML = `<div class="empty-state" style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>uyelik_basvurulari</code> için authenticated read açın.</div>`;
+    const err = `<div class="empty-state" style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Lokal API (${esc(API_BASE)}) ayakta mı?</div>`;
+    if (box) box.innerHTML = err;
+    if (dash) dash.innerHTML = err;
   }
 };
 
 window.setApplicationStatus = async (id, durum) => {
   try {
-    await setDoc(doc(db, "uyelik_basvurulari", id), { durum, guncelleme: serverTimestamp() }, { merge: true });
+    const resp = await fetch(`${API_BASE}/v1/admin/uyelik/basvurulari/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ durum })
+    });
+    if (!resp.ok) throw new Error(await resp.text() || ("HTTP " + resp.status));
     toast("Durum güncellendi");
     loadApplications();
   } catch (e) { toast(e.message, "error"); }
@@ -2363,7 +2518,11 @@ window.applicationToCustomer = async (id, email, adSoyad, sehir) => {
   document.getElementById("user-sehir").value = sehir || "";
   document.getElementById("user-modal-title").textContent = "Başvurudan müşteri oluştur";
   try {
-    await setDoc(doc(db, "uyelik_basvurulari", id), { durum: "musteri_yapildi", guncelleme: serverTimestamp() }, { merge: true });
+    await fetch(`${API_BASE}/v1/admin/uyelik/basvurulari/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ durum: "musteri_yapildi" })
+    });
   } catch (_) {}
   showTab("users");
   toast("Müşteri formunu doldurup kaydedin (geçici şifre verin)");
@@ -2405,9 +2564,8 @@ setTimeout(wireFileDrops, 0);
 
 window.loadDownloadPackages = async () => {
   try {
-    const snap = await getDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"));
-    if (!snap.exists()) { renderDownloadHistory([]); return; }
-    const d = snap.data();
+    const d = await apiJSON("/v1/site-settings/indirme_paketleri");
+    if (!d || typeof d !== "object") { renderDownloadHistory([]); return; }
     const set = (id, v) => { const el = document.getElementById(id); if (el && v) el.value = v; };
     set("dl-win-url", d.windowsUrl || "");
     set("dl-apk-url", d.androidUrl || "");
@@ -2455,77 +2613,48 @@ window.goDlHistoryPage = (p) => {
   renderDownloadHistory(downloadHistoryList);
 };
 
-/* ── FİYATLANDIRMA PAKETLERİ (tanıtım sitesi) ── */
+/* ── FİYATLANDIRMA (tanıtım sitesi — fiyat + açık/kapa) ── */
 const PRICING_PKG_ORDER = ["normal", "pro", "max"];
+const PRICING_PKG_LABELS = { normal: "Normal", pro: "Pro", max: "Max" };
+const PRICING_VAT_DIVISOR = 1.2;
 const PRICING_PKG_DEFAULTS = {
-  normal: {
-    title: "Normal",
-    subtitle: "Bireysel Temel Saha & Ofis",
-    priceIncVat: 14000,
-    priceExVat: 11666.67,
-    tag: "",
-    featured: false,
-    features: [
-      { text: "Bireysel İSG Saha & Ofis Yönetimi", included: true },
-      { text: "Güncel Mevzuat & Form Arşivi", included: true },
-      { text: "Bireysel Lisans & Standart Destek", included: true },
-      { text: "Sesli Modül (Yok)", included: false },
-      { text: "Yapay Zeka & Görsel AI (Yok)", included: false },
-    ],
-  },
-  pro: {
-    title: "Pro",
-    subtitle: "Bireysel AI Destekli Uzman",
-    priceIncVat: 27000,
-    priceExVat: 22500,
-    tag: "",
-    featured: false,
-    features: [
-      { text: "Normal paketin tüm özellikleri", included: true },
-      { text: "Sesli Not Alma & Hızlı Saha Raporu", included: true },
-      { text: "Yapay Zekâ (AI) İSG Danışmanı", included: true },
-      { text: "Görsel AI Fotoğraf Analizi (50 Adet)", included: true },
-      { text: "Öncelikli Bireysel Destek", included: true },
-    ],
-  },
-  max: {
-    title: "Max",
-    subtitle: "Sınırsız AI & Tam Erişim",
-    priceIncVat: 35000,
-    priceExVat: 29166.67,
-    tag: "En Avantajlı & Sınırsız",
-    featured: true,
-    features: [
-      { text: "SINIRSIZ Yapay Zeka (AI) Asistanı", included: true, bold: true },
-      { text: "SINIRSIZ Görsel AI Risk Tespiti", included: true, bold: true },
-      { text: "SINIRSIZ Sesli Saha Notu Modülü", included: true, bold: true },
-      { text: "Tüm Sahalar & Şirketler İçin Sınırsız", included: true },
-      { text: "7/24 VIP Bireysel Destek", included: true },
-    ],
-  },
+  normal: { priceIncVat: 17400, enabled: true },
+  pro: { priceIncVat: 27000, enabled: true },
+  max: { priceIncVat: 37200, enabled: true },
 };
 
-function pricingFeaturesToText(features) {
-  return (features || []).map(f => `${f.included ? "+" : "-"} ${f.text}`).join("\n");
+function pricingExFromInc(inc) {
+  const n = parseFloat(inc) || 0;
+  return Math.round(n / PRICING_VAT_DIVISOR);
 }
 
-function pricingParseFeaturesText(text) {
-  return String(text || "").split("\n").map(l => l.trim()).filter(Boolean).map(line => {
-    if (line.startsWith("-")) return { text: line.slice(1).trim(), included: false };
-    if (line.startsWith("+")) return { text: line.slice(1).trim(), included: true };
-    return { text: line, included: true };
-  });
+function pricingFmtTl(n) {
+  return new Intl.NumberFormat("tr-TR", { maximumFractionDigits: 0 }).format(n);
 }
+
+function pricingSyncExVat(key) {
+  const incEl = document.getElementById(`pricing-inc-${key}`);
+  const exEl = document.getElementById(`pricing-ex-${key}`);
+  const monthEl = document.getElementById(`pricing-month-${key}`);
+  if (!incEl || !exEl) return;
+  const inc = parseFloat(incEl.value) || 0;
+  const ex = pricingExFromInc(inc);
+  exEl.textContent = `${pricingFmtTl(ex)} TL`;
+  if (monthEl) monthEl.textContent = `≈ ${pricingFmtTl(Math.round(inc / 12))} TL/ay (KDV dahil)`;
+}
+
+window.pricingSyncExVat = pricingSyncExVat;
 
 function mergePricingPackages(raw) {
   const out = {};
   PRICING_PKG_ORDER.forEach(key => {
     const base = PRICING_PKG_DEFAULTS[key];
     const over = raw?.[key] || {};
+    const priceIncVat = over.priceIncVat ?? base.priceIncVat;
     out[key] = {
-      ...base,
-      ...over,
-      features: Array.isArray(over.features) && over.features.length ? over.features : base.features,
+      priceIncVat,
+      priceExVat: over.priceExVat ?? pricingExFromInc(priceIncVat),
+      enabled: over.enabled !== false,
     };
   });
   return out;
@@ -2536,37 +2665,21 @@ function renderPricingAdminForm(packages) {
   if (!grid) return;
   grid.innerHTML = PRICING_PKG_ORDER.map(key => {
     const p = packages[key];
+    const label = PRICING_PKG_LABELS[key] || key.toUpperCase();
     return `<div class="card">
-      <div class="card-header"><div class="card-title">${esc(key.toUpperCase())} Paket</div></div>
+      <div class="card-header"><div class="card-title">${esc(label)}</div></div>
       <div class="form-group">
-        <label class="form-label">Başlık</label>
-        <input type="text" class="form-control" id="pricing-title-${key}" value="${esc(p.title)}" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Alt başlık</label>
-        <input type="text" class="form-control" id="pricing-sub-${key}" value="${esc(p.subtitle)}" />
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label">Fiyat (KDV dahil TL)</label>
-          <input type="number" class="form-control" id="pricing-inc-${key}" value="${p.priceIncVat}" min="0" step="1" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Fiyat (KDV hariç TL)</label>
-          <input type="number" class="form-control" id="pricing-ex-${key}" value="${p.priceExVat}" min="0" step="0.01" />
-        </div>
+        <label class="form-label">Yıllık fiyat (KDV dahil TL)</label>
+        <input type="number" class="form-control" id="pricing-inc-${key}" value="${p.priceIncVat}" min="0" step="1" oninput="pricingSyncExVat('${key}')" />
       </div>
       <div class="form-group">
-        <label class="form-label">Etiket (opsiyonel)</label>
-        <input type="text" class="form-control" id="pricing-tag-${key}" value="${esc(p.tag || "")}" />
+        <label class="form-label">KDV hariç (otomatik · %20)</label>
+        <div id="pricing-ex-${key}" class="pricing-ex-readout">${pricingFmtTl(p.priceExVat)} TL</div>
+        <div id="pricing-month-${key}" class="form-hint" style="margin-top:6px;">≈ ${pricingFmtTl(Math.round(p.priceIncVat / 12))} TL/ay (KDV dahil)</div>
       </div>
-      <div class="toggle-row" style="margin-bottom:12px;">
-        <div><span class="toggle-label">Öne çıkan kart</span></div>
-        <div class="toggle${p.featured ? " on" : ""}" id="pricing-featd-${key}" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="form-group" style="margin-bottom:0;">
-        <label class="form-label">Özellikler (+ dahil / − yok)</label>
-        <textarea class="form-control" id="pricing-feat-${key}" rows="7">${esc(pricingFeaturesToText(p.features))}</textarea>
+      <div class="toggle-row" style="margin-bottom:0;">
+        <div><span class="toggle-label">Paket sitede açık</span><span class="toggle-sub">Kapalıysa fiyatlar sayfasında görünmez</span></div>
+        <div class="toggle${p.enabled !== false ? " on" : ""}" id="pricing-enabled-${key}" onclick="this.classList.toggle('on')"></div>
       </div>
     </div>`;
   }).join("");
@@ -2576,39 +2689,56 @@ window.loadPricingPackagesAdmin = async () => {
   const grid = document.getElementById("pricing-admin-grid");
   if (!grid) return;
   try {
-    const snap = await getDoc(doc(db, "sistem_ayarlari", "fiyatlandirma_paketleri"));
-    const packages = mergePricingPackages(snap.exists() ? (snap.data().packages || snap.data()) : null);
+    const data = await apiJSON("/v1/site-settings/fiyatlandirma_paketleri");
+    const packages = mergePricingPackages(data?.packages || null);
     renderPricingAdminForm(packages);
+    PRICING_PKG_ORDER.forEach(key => pricingSyncExVat(key));
+    const monthlyToggle = document.getElementById("pricing-show-monthly");
+    if (monthlyToggle) {
+      monthlyToggle.classList.toggle("on", data?.showMonthlyPrice === true);
+    }
   } catch (e) {
     grid.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Yüklenemedi: ${esc(e.message)}</p></div>`;
   }
 };
 
 window.savePricingPackagesAdmin = async () => {
-  const st = document.getElementById("pricing-admin-status");
-  if (st) st.textContent = "Kaydediliyor…";
+  const btn = document.getElementById("pricing-save-btn");
+  const prevLabel = btn?.textContent || "Kaydet";
+  if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
   try {
     const packages = {};
     PRICING_PKG_ORDER.forEach(key => {
+      const inc = parseFloat(document.getElementById(`pricing-inc-${key}`)?.value) || 0;
       packages[key] = {
-        title: (document.getElementById(`pricing-title-${key}`)?.value || "").trim(),
-        subtitle: (document.getElementById(`pricing-sub-${key}`)?.value || "").trim(),
-        priceIncVat: parseFloat(document.getElementById(`pricing-inc-${key}`)?.value) || 0,
-        priceExVat: parseFloat(document.getElementById(`pricing-ex-${key}`)?.value) || 0,
-        tag: (document.getElementById(`pricing-tag-${key}`)?.value || "").trim(),
-        featured: document.getElementById(`pricing-featd-${key}`)?.classList.contains("on") === true,
-        features: pricingParseFeaturesText(document.getElementById(`pricing-feat-${key}`)?.value),
+        priceIncVat: inc,
+        priceExVat: pricingExFromInc(inc),
+        enabled: document.getElementById(`pricing-enabled-${key}`)?.classList.contains("on") === true,
       };
     });
-    await setDoc(doc(db, "sistem_ayarlari", "fiyatlandirma_paketleri"), {
-      packages,
-      guncelleme: serverTimestamp(),
-    }, { merge: true });
-    if (st) st.textContent = "Kaydedildi — tanıtım sitesi güncellenecek.";
-    toast("Fiyatlandırma paketleri kaydedildi.");
+    await apiJSON("/v1/admin/site-settings/fiyatlandirma_paketleri", {
+      method: "PUT",
+      body: JSON.stringify({
+        packages,
+        showMonthlyPrice: document.getElementById("pricing-show-monthly")?.classList.contains("on") === true,
+        guncelleme: new Date().toISOString(),
+      })
+    });
+    await uiAlert("Fiyatlar sitede güncellenecek.", {
+      title: "Kaydedildi",
+      kind: "ok",
+      icon: "✅",
+      confirmText: "Tamam",
+    });
   } catch (e) {
-    if (st) st.textContent = "";
-    toast(e.message, "error");
+    await uiAlert(e.message || "Kayıt başarısız.", {
+      title: "Kaydedilemedi",
+      kind: "error",
+      icon: "⛔",
+      confirmText: "Tamam",
+    });
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = prevLabel; }
   }
 };
 
@@ -2630,19 +2760,15 @@ window.saveDownloadPackages = async () => {
 
     if (winFile) {
       st.textContent = "Windows paketi yükleniyor…";
-      const path = `tanitim/downloads/windows/${Date.now()}_${winFile.name}`;
-      const r = storageRef(storage, path);
-      await uploadBytes(r, winFile);
-      windowsUrl = await getDownloadURL(r);
+      const up = await apiSignUploadFile(winFile, "download_package");
+      windowsUrl = up.getUrl;
       document.getElementById("dl-win-url").value = windowsUrl;
       hist.unshift({ kind: "windows", fileName: winFile.name, url: windowsUrl, atMs: now, atLabel, by });
     }
     if (apkFile) {
       st.textContent = "APK yükleniyor…";
-      const path = `tanitim/downloads/android/${Date.now()}_${apkFile.name}`;
-      const r = storageRef(storage, path);
-      await uploadBytes(r, apkFile);
-      androidUrl = await getDownloadURL(r);
+      const up = await apiSignUploadFile(apkFile, "download_package");
+      androidUrl = up.getUrl;
       document.getElementById("dl-apk-url").value = androidUrl;
       hist.unshift({ kind: "android", fileName: apkFile.name, url: androidUrl, atMs: now + 1, atLabel, by });
     }
@@ -2651,11 +2777,14 @@ window.saveDownloadPackages = async () => {
     }
 
     const historyTrim = hist.slice(0, 100);
-    await setDoc(doc(db, "sistem_ayarlari", "indirme_paketleri"), {
-      windowsUrl, androidUrl, playStoreUrl, appStoreUrl, notes,
-      history: historyTrim,
-      guncelleme: serverTimestamp()
-    }, { merge: true });
+    await apiJSON("/v1/admin/site-settings/indirme_paketleri", {
+      method: "PUT",
+      body: JSON.stringify({
+        windowsUrl, androidUrl, playStoreUrl, appStoreUrl, notes,
+        history: historyTrim,
+        guncelleme: new Date().toISOString()
+      })
+    });
     st.textContent = "Yayınlandı";
     toast("Tanıtım indirmeleri kaydedildi");
     document.getElementById("dl-win-file").value = "";
@@ -2707,10 +2836,9 @@ window.publishUpdate = async (platform) => {
 
     if (file) {
       st.textContent = "Storage'a yükleniyor…";
-      objectPath = `releases/${platform}/${versionCode}/${file.name}`;
-      const ref = storageRef(storage, objectPath);
-      await uploadBytes(ref, file, { contentType: file.type || "application/octet-stream" });
-      downloadUrl = await getDownloadURL(ref);
+      const up = await apiSignUploadFile(file, "app_release", { platform });
+      objectPath = up.objectPath;
+      downloadUrl = up.getUrl;
     }
 
     if (isEdit && !file) {
@@ -2997,7 +3125,12 @@ async function loadAnalytics() {
   container.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
 
   try {
-    const snap = await getDocs(collection(db, "yetkili_kullanicilar"));
+    let list = allUsersList;
+    if (!list.length) {
+      const data = await apiJSON("/v1/admin/licenses");
+      list = (data.items || []).map(mapLicenseItem);
+    }
+
     let totalQueries = 0;
     let unlimitedCount = 0;
     let limitedCount = 0;
@@ -3018,9 +3151,8 @@ async function loadAnalytics() {
         <tbody>
     `;
 
-    snap.forEach(ds => {
-      const d = ds.data();
-      const email = d.email || ds.id;
+    list.forEach(d => {
+      const email = d.email || d.id;
       const ad = d.adSoyad || "İsimsiz Müşteri";
       const meslek = d.meslek || "İSG Uzmanı";
       const used = d.kullanilanSorgu || 0;
@@ -3092,21 +3224,16 @@ window.loadAnalytics = loadAnalytics;
 /* ── UZMAN AI AYARLARI ── */
 async function loadAiSettings() {
   try {
-    const snap = await getDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"));
+    const d = await apiJSON("/v1/ai/settings");
     const keyEl = document.getElementById("ai-gemini-key");
     const st = document.getElementById("ai-key-status");
-    if (snap.exists()) {
-      const d = snap.data();
-      document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver. Alakasız konularda nazikçe İSG'ye yönlendir.";
-      document.getElementById("ai-image-policy").value = d.imagePolicy || "teyit_sor";
-      document.getElementById("ai-action-policy").value = d.actionPolicy || "onay_iste";
-      if (keyEl) keyEl.value = "";
-      if (st) st.textContent = d.geminiApiKey
-        ? "Kayıtlı anahtar var (••••" + String(d.geminiApiKey).slice(-4) + "). Değiştirmek için yeni key yazıp Kaydet."
-        : "Henüz anahtar yok — Google AI Studio key yapıştırın.";
-    } else if (st) {
-      st.textContent = "Henüz ayar yok.";
-    }
+    document.getElementById("ai-global-prompt").value = d.systemPrompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver. Alakasız konularda nazikçe İSG'ye yönlendir.";
+    document.getElementById("ai-image-policy").value = d.imagePolicy || "teyit_sor";
+    document.getElementById("ai-action-policy").value = d.actionPolicy || "onay_iste";
+    if (keyEl) keyEl.value = "";
+    if (st) st.textContent = d.geminiApiKey
+      ? "Kayıtlı anahtar var (••••" + String(d.geminiApiKey).slice(-4) + "). Değiştirmek için yeni key yazıp Kaydet."
+      : "Henüz anahtar yok — Google AI Studio key yapıştırın.";
   } catch(e) {
     console.error("AI Ayarları Yükleme Hatası:", e);
   }
@@ -3116,18 +3243,22 @@ window.saveAiSettings = async () => {
   const prompt = document.getElementById("ai-global-prompt").value.trim();
   const imagePolicy = document.getElementById("ai-image-policy").value;
   const actionPolicy = document.getElementById("ai-action-policy").value;
-  const newKey = (document.getElementById("ai-gemini-key").value || "").trim();
-
-  const data = {
-    systemPrompt: prompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver.",
-    imagePolicy: imagePolicy,
-    actionPolicy: actionPolicy,
-    guncelleme: serverTimestamp()
-  };
-  if (newKey) data.geminiApiKey = newKey;
+  let newKey = (document.getElementById("ai-gemini-key").value || "").trim();
 
   try {
-    await setDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"), data, { merge: true });
+    if (!newKey) {
+      const cur = await apiJSON("/v1/ai/settings");
+      newKey = cur.geminiApiKey || "";
+    }
+    await apiJSON("/v1/admin/ai/settings", {
+      method: "PUT",
+      body: JSON.stringify({
+        systemPrompt: prompt || "Sen İSG Uzmanısın. Türkçe, net ve saha odaklı cevap ver.",
+        imagePolicy,
+        actionPolicy,
+        geminiApiKey: newKey
+      })
+    });
     document.getElementById("ai-gemini-key").value = "";
     toast("Uzman AI ayarları kaydedildi");
     loadAiSettings();
@@ -3173,10 +3304,7 @@ window.addSuperAdmin = async () => {
     }
     superAdminList.push(email);
     adminMustChangeMap[email] = true;
-    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
-      liste: superAdminList,
-      mustChangePassword: adminMustChangeMap
-    }, { merge: true });
+    await saveSuperAdminsDoc();
     document.getElementById("new-superadmin-email").value = "";
     document.getElementById("new-superadmin-password").value = "";
     toast("SuperAdmin eklendi — ilk girişte şifre değişimi zorunlu");
@@ -3190,10 +3318,7 @@ window.removeSuperAdmin = async (email) => {
   superAdminList = superAdminList.filter(e => e.toLowerCase() !== email.toLowerCase());
   delete adminMustChangeMap[(email || "").toLowerCase()];
   try {
-    await setDoc(doc(db, "sistem_ayarlari", "superAdminlar"), {
-      liste: superAdminList,
-      mustChangePassword: adminMustChangeMap
-    }, { merge: true });
+    await saveSuperAdminsDoc();
     toast("SuperAdmin kaldırıldı.");
     renderSuperAdminList();
   } catch(e) { toast(e.message, "error"); }
@@ -3205,22 +3330,16 @@ async function loadUsers() {
   if (!c) return;
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
-    const snap = await getDocs(collection(db,"yetkili_kullanicilar"));
+    const data = await apiJSON("/v1/admin/licenses");
+    const items = data.items || [];
     allUsersList = [];
-
-    snap.forEach(ds => {
-      if (!superAdminList.map(e => e.toLowerCase()).includes(ds.id.toLowerCase())) {
-        const d = ds.data();
-        allUsersList.push({ id: ds.id, ...d });
-      }
+    const adminSet = new Set(superAdminList.map(e => e.toLowerCase()));
+    items.forEach(it => {
+      const mapped = mapLicenseItem(it);
+      if (!adminSet.has(mapped.id)) allUsersList.push(mapped);
     });
 
-    // Sort: newest first by guncelleme / createdAt / authPasswordSetAt
-    allUsersList.sort((a, b) => {
-      const ta = a.guncelleme?.toMillis?.() || a.createdAt?.toMillis?.() || a.authPasswordSetAt?.toMillis?.() || 0;
-      const tb = b.guncelleme?.toMillis?.() || b.createdAt?.toMillis?.() || b.authPasswordSetAt?.toMillis?.() || 0;
-      return tb - ta;
-    });
+    allUsersList.sort((a, b) => userUpdatedMs(b) - userUpdatedMs(a));
 
     const passiveCount = allUsersList.filter(u => u.aktif === false).length;
     const statU = document.getElementById("stat-users");
@@ -3251,13 +3370,16 @@ window.openPassiveUsers = () => {
 };
 
 function userUpdatedMs(u) {
-  return u.guncelleme?.toMillis?.() || u.createdAt?.toMillis?.() || u.authPasswordSetAt?.toMillis?.() || u.pasifAt?.toMillis?.() || 0;
+  if (u.guncelleme?.toMillis) return u.guncelleme.toMillis();
+  const p = Date.parse(u.updatedAt || u.createdAt || 0);
+  if (!Number.isNaN(p) && p) return p;
+  return u.createdAt?.toMillis?.() || u.authPasswordSetAt?.toMillis?.() || u.pasifAt?.toMillis?.() || 0;
 }
 
 function userLicenseDay(u) {
-  const d = u.lisansBitis || u.lisansBitisTarihi || "";
-  if (!d || typeof d !== "string") return null;
-  const t = Date.parse(d.slice(0, 10));
+  const d = isoDateOnly(u.lisansBitis || u.lisansBitisTarihi || "");
+  if (!d) return null;
+  const t = Date.parse(d);
   return Number.isNaN(t) ? null : t;
 }
 
@@ -3392,19 +3514,18 @@ async function loadUnauthorized() {
   if (!c) return;
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
-    const snap = await getDocs(collection(db, "yetkisiz_girisler"));
-    allUnauthorizedList = [];
-    snap.forEach(ds => allUnauthorizedList.push({ id: ds.id, ...ds.data() }));
+    const data = await apiJSON("/v1/admin/unauthorized");
+    allUnauthorizedList = (data.items || []).map(it => ({ ...it, id: it.id }));
     allUnauthorizedList.sort((a, b) => {
-      const ta = a.lastAt?.toMillis?.() || 0;
-      const tb = b.lastAt?.toMillis?.() || 0;
+      const ta = Date.parse(a.lastAt || 0) || a.lastAt?.toMillis?.() || 0;
+      const tb = Date.parse(b.lastAt || 0) || b.lastAt?.toMillis?.() || 0;
       return tb - ta;
     });
     const stat = document.getElementById("stat-unauthorized");
     if (stat) stat.textContent = allUnauthorizedList.length;
     filterUnauthorized();
   } catch (e) {
-    c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>yetkisiz_girisler</code> authenticated read/write açın.</p></div>`;
+    c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}</p></div>`;
   }
 }
 
@@ -3435,7 +3556,7 @@ function renderUnauthorizedCards() {
     return;
   }
   let html = pageList.map(x => {
-    const when = x.lastAt?.toDate ? x.lastAt.toDate().toLocaleString("tr-TR") : "—";
+    const when = formatTsLocal(x.lastAt);
     const mid = x.machineId || "";
     const isBlocked = allBlockedMachines.some(b => b.id === mid || b.machineId === mid);
     return `<div class="user-card-item">
@@ -3472,7 +3593,7 @@ window.goUnauthorizedPage = (p) => {
 window.deleteUnauthorized = async (id) => {
   if (!(await uiConfirm("Bu yetkisiz giriş kaydını silmek istiyor musunuz?", { title: "Kaydı sil", danger: true }))) return;
   try {
-    await deleteDoc(doc(db, "yetkisiz_girisler", id));
+    await apiJSON("/v1/admin/unauthorized/" + encodeURIComponent(id), { method: "DELETE" });
     toast("Kayıt silindi");
     loadUnauthorized();
   } catch (e) { toast(e.message, "error"); }
@@ -3481,12 +3602,15 @@ window.deleteUnauthorized = async (id) => {
 async function loadBlockedMachines() {
   const c = document.getElementById("blocked-machines-list");
   try {
-    const snap = await getDocs(collection(db, "engellenen_makineler"));
-    allBlockedMachines = [];
-    snap.forEach(ds => allBlockedMachines.push({ id: ds.id, ...ds.data() }));
+    const data = await apiJSON("/v1/admin/blocked-machines");
+    allBlockedMachines = (data.items || []).map(it => ({
+      ...it,
+      id: it.machineId || it.id,
+      machineId: it.machineId || it.id
+    }));
     allBlockedMachines.sort((a, b) => {
-      const ta = a.blockedAt?.toMillis?.() || 0;
-      const tb = b.blockedAt?.toMillis?.() || 0;
+      const ta = Date.parse(a.blockedAt || 0) || a.blockedAt?.toMillis?.() || 0;
+      const tb = Date.parse(b.blockedAt || 0) || b.blockedAt?.toMillis?.() || 0;
       return tb - ta;
     });
     const stat = document.getElementById("stat-blocked-machines");
@@ -3494,7 +3618,7 @@ async function loadBlockedMachines() {
     filterBlockedMachines();
     if (filteredUnauthorizedList.length) renderUnauthorizedCards();
   } catch (e) {
-    if (c) c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>engellenen_makineler</code> authenticated read/write açın.</p></div>`;
+    if (c) c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}</p></div>`;
   }
 }
 
@@ -3523,7 +3647,7 @@ function renderBlockedMachines() {
     return;
   }
   let html = pageList.map(x => {
-    const when = x.blockedAt?.toDate ? x.blockedAt.toDate().toLocaleString("tr-TR") : "—";
+    const when = formatTsLocal(x.blockedAt);
     const mid = x.machineId || x.id;
     return `<div class="user-card-item">
       <div class="user-card-header">
@@ -3558,17 +3682,16 @@ window.blockMachine = async (machineId, email, unauthId) => {
   if (!(await uiConfirm(`Bu makineyi engellemek istiyor musunuz?\n${machineId}`, { title: "Makineyi engelle", danger: true, confirmText: "Engelle" }))) return;
   try {
     const adminEmail = auth.currentUser?.email || "";
-    await setDoc(doc(db, "engellenen_makineler", machineId), {
-      machineId,
-      email: (email || "").toLowerCase(),
-      reason: "admin_block",
-      blockedAt: serverTimestamp(),
-      blockedBy: adminEmail,
-      sourceUnauthorizedId: unauthId || null
-    }, { merge: true });
-    if (unauthId) {
-      try { await updateDoc(doc(db, "yetkisiz_girisler", unauthId), { blocked: true, blockedAt: serverTimestamp() }); } catch (_) {}
-    }
+    await apiJSON("/v1/admin/blocked-machines", {
+      method: "POST",
+      body: JSON.stringify({
+        machineId,
+        email: (email || "").toLowerCase(),
+        reason: "admin_block",
+        blockedBy: adminEmail,
+        sourceUnauthorizedId: unauthId || ""
+      })
+    });
     toast("Makine engellendi");
     await loadBlockedMachines();
     await loadUnauthorized();
@@ -3581,7 +3704,7 @@ window.unblockMachine = async (machineId) => {
   if (!machineId) return;
   if (!(await uiConfirm("Makine engelini kaldırmak istiyor musunuz?", { title: "Engeli kaldır", confirmText: "Kaldır" }))) return;
   try {
-    await deleteDoc(doc(db, "engellenen_makineler", machineId));
+    await apiJSON("/v1/admin/blocked-machines/" + encodeURIComponent(machineId), { method: "DELETE" });
     toast("Engel kaldırıldı");
     await loadBlockedMachines();
     await loadUnauthorized();
@@ -3595,19 +3718,22 @@ async function loadCustomerPcs() {
   if (!c) return;
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
-    const snap = await getDocs(collection(db, "musteri_makineleri"));
-    allCustomerPcs = [];
-    snap.forEach(ds => allCustomerPcs.push({ id: ds.id, ...ds.data() }));
+    const data = await apiJSON("/v1/admin/customer-pcs");
+    allCustomerPcs = (data.items || []).map(it => ({
+      ...it,
+      id: (it.email || "") + "|" + (it.machineId || ""),
+      machineId: it.machineId
+    }));
     allCustomerPcs.sort((a, b) => {
-      const ta = a.lastLoginAt?.toMillis?.() || a.firstSeenAt?.toMillis?.() || 0;
-      const tb = b.lastLoginAt?.toMillis?.() || b.firstSeenAt?.toMillis?.() || 0;
+      const ta = Date.parse(a.lastLoginAt || a.firstSeenAt || 0) || 0;
+      const tb = Date.parse(b.lastLoginAt || b.firstSeenAt || 0) || 0;
       return tb - ta;
     });
     const stat = document.getElementById("stat-customer-pcs");
     if (stat) stat.textContent = allCustomerPcs.length;
     filterCustomerPcs();
   } catch (e) {
-    c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}. Firestore rules'ta <code>musteri_makineleri</code> authenticated read/write açın.</p></div>`;
+    c.innerHTML = `<div class="empty-state"><p style="color:var(--danger)">Okunamadı: ${esc(e.message)}</p></div>`;
   }
 }
 
@@ -3639,8 +3765,8 @@ function renderCustomerPcs() {
     return;
   }
   let html = pageList.map(x => {
-    const when = x.lastLoginAt?.toDate ? x.lastLoginAt.toDate().toLocaleString("tr-TR") : "—";
-    const first = x.firstSeenAt?.toDate ? x.firstSeenAt.toDate().toLocaleString("tr-TR") : "—";
+    const when = formatTsLocal(x.lastLoginAt);
+    const first = formatTsLocal(x.firstSeenAt);
     const mid = x.machineId || x.id || "";
     const isBlocked = allBlockedMachines.some(b => b.id === mid || b.machineId === mid);
     return `<div class="user-card-item">
@@ -3655,7 +3781,7 @@ function renderCustomerPcs() {
           ${isBlocked ? '<span class="badge badge-danger">Engelli</span>' : '<span class="badge badge-primary">Aktif kayıt</span>'}
           ${!isBlocked && mid ? `<button class="btn btn-danger btn-sm" onclick="blockMachine('${esc(mid)}','${esc(x.email || "")}','')">Engelle</button>` : ""}
           ${isBlocked && mid ? `<button class="btn btn-ghost btn-sm" onclick="unblockMachine('${esc(mid)}')">Engeli kaldır</button>` : ""}
-          <button class="btn btn-ghost btn-sm" onclick="deleteCustomerPc('${esc(x.id)}')">Sil</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteCustomerPc('${esc(x.email || "")}','${esc(mid)}')">Sil</button>
         </div>
       </div>
     </div>`;
@@ -3675,10 +3801,13 @@ window.goCustomerPcPage = (p) => {
   renderCustomerPcs();
 };
 
-window.deleteCustomerPc = async (id) => {
+window.deleteCustomerPc = async (email, machineId) => {
   if (!(await uiConfirm("Bu müşteri PC kaydını silmek istiyor musunuz?", { title: "Kaydı sil", danger: true }))) return;
   try {
-    await deleteDoc(doc(db, "musteri_makineleri", id));
+    await apiJSON(
+      "/v1/admin/customer-pcs/" + encodeURIComponent(email) + "/" + encodeURIComponent(machineId),
+      { method: "DELETE" }
+    );
     toast("PC kaydı silindi");
     loadCustomerPcs();
   } catch (e) { toast(e.message, "error"); }
@@ -3687,9 +3816,10 @@ window.deleteCustomerPc = async (id) => {
 window.resetUsageCount = async (email) => {
   if (!(await uiConfirm(`${email} kullanıcısının harcanan sorgu sayacını 0'a sıfırlamak istiyor musunuz?`, { title: "Sayacı sıfırla", icon: "🔄", confirmText: "Sıfırla" }))) return;
   try {
-    await updateDoc(doc(db,"yetkili_kullanicilar",email), { kullanilanSorgu: 0 });
+    await apiJSON("/v1/admin/licenses/" + encodeURIComponent(email) + "/reset-usage", { method: "POST", body: "{}" });
     toast("Sorgu sayacı sıfırlandı! 🔄");
     loadUsers();
+    loadAnalytics();
   } catch(e) { toast(e.message, "error"); }
 };
 
@@ -3714,9 +3844,8 @@ window.openUserModal = () => {
 
 window.editUser = async (email) => {
   try {
-    const ds = await getDoc(doc(db,"yetkili_kullanicilar",email));
-    if (!ds.exists()) return;
-    const d = ds.data();
+    const d = await apiJSON("/v1/admin/licenses/" + encodeURIComponent(email));
+    if (!d || !d.email) return;
     document.getElementById("user-modal-title").textContent = "Müşteri Paketini Düzenle";
     const emInput = document.getElementById("user-email-input");
     emInput.value = email;
@@ -3736,12 +3865,11 @@ window.editUser = async (email) => {
     let tipi = d.lisansTipi || "max";
     if (tipi === "özel") tipi = "ozel";
     document.getElementById("user-lisansTipi").value = tipi;
-    document.getElementById("user-lisansBitis").value = d.lisansBitis || "";
+    document.getElementById("user-lisansBitis").value = isoDateOnly(d.lisansBitis) || "";
     document.getElementById("user-denemeGun").value = d.denemeGun ? String(d.denemeGun) : "7";
     onLisansTipiChange();
-    // Özelde kayıtlı tarihi koru (normal seçince onChange ezmesin)
     if ((tipi === "ozel" || tipi === "özel") && d.lisansBitis) {
-      document.getElementById("user-lisansBitis").value = d.lisansBitis;
+      document.getElementById("user-lisansBitis").value = isoDateOnly(d.lisansBitis);
     }
 
     setAktifSeg(d.aktif !== false);
@@ -3793,7 +3921,7 @@ window.saveUser = async () => {
 
   const lisansTipi = document.getElementById("user-lisansTipi").value;
   let lisansBitis = "";
-  let denemeGun = null;
+  let denemeGun = 0;
   const today = new Date().toISOString().slice(0, 10);
 
   if (lisansTipi === "normal" || lisansTipi === "pro" || lisansTipi === "max") {
@@ -3813,37 +3941,41 @@ window.saveUser = async () => {
   }
 
   let aktif = getAktifSeg();
-  // Force pasif if license is expired
-  if (lisansBitis && lisansBitis < today) aktif = false;
-
-  const data = {
-    email,
-    adSoyad: ad,
-    sehir,
-    tc,
-    telefon,
-    firma,
-    yedekEmail,
-    adres,
-    iban,
-    meslek,
-    aktif,
-    uzmanAi: document.getElementById("tog-uzman").classList.contains("on"),
-    resimAi: document.getElementById("tog-resim").classList.contains("on"),
-    sesliAi: document.getElementById("tog-sesli").classList.contains("on"),
-    aiSorguLimiti: limit,
-    lisansTipi,
-    lisansBitis,
-    lisansBitisTarihi: lisansBitis,
-    guncelleme: serverTimestamp()
-  };
-  if (denemeGun !== null) data.denemeGun = denemeGun;
+  if (lisansBitis && isoDateOnly(lisansBitis) < today) aktif = false;
 
   try {
-    const existingSnap = await getDoc(doc(db, "yetkili_kullanicilar", email));
-    const ex = existingSnap.exists() ? existingSnap.data() : null;
-    if (!ex?.lisansBaslangic) data.lisansBaslangic = today;
-    if (!ex?.createdAt) data.createdAt = serverTimestamp();
+    let ex = null;
+    try { ex = await apiJSON("/v1/admin/licenses/" + encodeURIComponent(email)); } catch (_) { ex = null; }
+
+    const nowIso = new Date().toISOString();
+    const data = {
+      email,
+      adSoyad: ad,
+      sehir,
+      tc,
+      telefon,
+      firma,
+      yedekEmail,
+      adres,
+      iban,
+      meslek,
+      aktif,
+      uzmanAi: document.getElementById("tog-uzman").classList.contains("on"),
+      resimAi: document.getElementById("tog-resim").classList.contains("on"),
+      sesliAi: document.getElementById("tog-sesli").classList.contains("on"),
+      aiSorguLimiti: limit,
+      kullanilanSorgu: ex?.kullanilanSorgu || 0,
+      lisansTipi,
+      lisansBitis: toRfc3339Date(lisansBitis),
+      lisansBaslangic: toRfc3339Date(isoDateOnly(ex?.lisansBaslangic) || today),
+      denemeGun,
+      mustChangePassword: !!password || !!ex?.mustChangePassword,
+      authPasswordSetAt: password ? nowIso : (ex?.authPasswordSetAt || null),
+      pasifNeden: "",
+      aktifAt: ex?.aktifAt || null,
+      pasifAt: ex?.pasifAt || null,
+      lisansDolduAt: ex?.lisansDolduAt || null
+    };
 
     if (password) {
       if (!/^\d{8}$/.test(password)) {
@@ -3851,7 +3983,7 @@ window.saveUser = async () => {
         return;
       }
       data.mustChangePassword = true;
-      data.authPasswordSetAt = serverTimestamp();
+      data.authPasswordSetAt = nowIso;
 
       let created = false;
       try {
@@ -3890,17 +4022,15 @@ window.saveUser = async () => {
     }
 
     if (data.aktif === false) {
-      data.authPasswordSetAt = serverTimestamp();
-      data.pasifNeden = data.pasifNeden || "admin_pasif";
+      data.pasifNeden = "admin_pasif";
+      data.pasifAt = nowIso;
     } else {
-      // Yeniden aktif: istemci yerel 6-deneme kilidini GetAktifAsync ile temizler
       data.pasifNeden = "";
-      data.aktifAt = serverTimestamp();
+      data.aktifAt = nowIso;
     }
 
-    await setDoc(doc(db, "yetkili_kullanicilar", email), data, { merge: true });
+    await apiJSON("/v1/admin/licenses", { method: "PUT", body: JSON.stringify(data) });
 
-    // Pasif/aktif → cihazları anında düşür (API: revoke + sync_meta + FCM)
     try {
       if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
       if (apiJwt) {
@@ -3926,8 +4056,11 @@ window.saveUser = async () => {
 
 window.deleteUser = async (email) => {
   if (!(await uiConfirm(`${email} müşterisinin erişimini kaldırmak istiyor musunuz?`, { title: "Müşteriyi sil", danger: true, confirmText: "Sil" }))) return;
-  try { await deleteDoc(doc(db,"yetkili_kullanicilar",email)); toast("Müşteri silindi."); loadUsers(); }
-  catch(e) { toast(e.message,"error"); }
+  try {
+    await apiJSON("/v1/admin/licenses/" + encodeURIComponent(email), { method: "DELETE" });
+    toast("Müşteri silindi.");
+    loadUsers();
+  } catch(e) { toast(e.message,"error"); }
 };
 
 /* ── AI KURALLARI ── */
@@ -3957,16 +4090,16 @@ async function loadRules() {
   const c = document.getElementById("rules-list");
   c.innerHTML = `<div style="text-align:center;padding:30px;"><div class="spinner"></div></div>`;
   try {
-    const snap = await getDocs(collection(db,"UzmanKurallar"));
-    // rules count only used on Uzman AI tab if needed
+    const data = await apiJSON("/v1/ai/rules");
+    const items = data.items || [];
     const rulesStat = document.getElementById("stat-rules");
-    if (rulesStat) rulesStat.textContent = snap.size;
-    if (snap.empty) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok. "+ Yeni Kural" butonuna basarak kural ekleyebilirsiniz.</p></div>`; return; }
+    if (rulesStat) rulesStat.textContent = items.length;
+    if (!items.length) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">🤖</div><p>Henüz tanımlı AI kuralı yok. "+ Yeni Kural" butonuna basarak kural ekleyebilirsiniz.</p></div>`; return; }
     c.innerHTML = "";
-    snap.forEach(ds => {
-      const d = ds.data(); const kw = d.tetikleyiciler || [];
+    items.forEach(d => {
+      const kw = d.tetikleyiciler || [];
       const actType = d.action_type || (d.oto_denetim ? "otomatik_kaydet" : "ozel_yanit");
-      const imgReq = d.image_req || "farketsmez";
+      const imgReq = ruleImageReqToUi(d.image_req);
 
       let badgeHtml = '<span class="badge badge-gray">📚 Mevzuat Yanıtı</span>';
       if (actType === "otomatik_kaydet") badgeHtml = '<span class="badge badge-success">⚡ Oto Saha Kaydı</span>';
@@ -3981,8 +4114,8 @@ async function loadRules() {
             <div style="display:flex;gap:6px;align-items:center;">
               ${badgeHtml}
               ${imgBadge}
-              <button class="btn btn-ghost btn-sm" onclick="editRule('${ds.id}')">✏️</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteRule('${ds.id}')">🗑️</button>
+              <button class="btn btn-ghost btn-sm" onclick="editRule('${esc(d.id)}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteRule('${esc(d.id)}')">🗑️</button>
             </div>
           </div>
           <div class="rule-tags">${kw.map(k => `<span class="tag">${esc(k)}</span>`).join("")}</div>
@@ -4003,15 +4136,16 @@ window.openRuleModal = () => {
 
 window.editRule = async (id) => {
   try {
-    const ds = await getDoc(doc(db,"UzmanKurallar",id));
-    if (!ds.exists()) return;
-    const d = ds.data(); editingRuleId = id;
+    const data = await apiJSON("/v1/ai/rules");
+    const d = (data.items || []).find(r => r.id === id);
+    if (!d) return;
+    editingRuleId = id;
     document.getElementById("rule-modal-title").textContent = "AI Kuralını Düzenle";
     document.getElementById("rule-name").value = d.kural_adi || "";
     document.getElementById("rule-keywords").value = (d.tetikleyiciler || []).join(", ");
     document.getElementById("rule-response").value = d.yanit || "";
     document.getElementById("rule-action-type").value = d.action_type || (d.oto_denetim ? "otomatik_kaydet" : "ozel_yanit");
-    document.getElementById("rule-image-req").value = d.image_req || "farketsmez";
+    document.getElementById("rule-image-req").value = ruleImageReqToUi(d.image_req);
     document.getElementById("rule-modal").classList.add("open");
   } catch(e) { toast(e.message,"error"); }
 };
@@ -4027,31 +4161,181 @@ window.saveRule = async () => {
 
   const keywords = kwRaw.split(",").map(k => k.trim().toLowerCase()).filter(Boolean);
   const data = {
+    id: editingRuleId || "",
     kural_adi: name,
     tetikleyiciler: keywords,
     yanit: response,
     oto_denetim: actionType === "otomatik_kaydet",
     action_type: actionType,
-    image_req: imageReq,
-    guncelleme: serverTimestamp()
+    image_req: imageReq === "resim_zorunlu"
   };
 
   try {
-    if (editingRuleId) {
-      await setDoc(doc(db,"UzmanKurallar",editingRuleId), data, { merge: true });
-      toast("AI Kuralı güncellendi! ✅");
-    } else {
-      await addDoc(collection(db,"UzmanKurallar"), data);
-      toast("Yeni AI Kuralı eklendi! 🎉");
-    }
+    await apiJSON("/v1/admin/ai/rules", { method: "PUT", body: JSON.stringify(data) });
+    toast(editingRuleId ? "AI Kuralı güncellendi! ✅" : "Yeni AI Kuralı eklendi! 🎉");
     closeModal("rule-modal"); loadRules();
   } catch(e) { toast(e.message,"error"); }
 };
 
 window.deleteRule = async (id) => {
   if (!(await uiConfirm("Bu AI kuralını silmek istiyor musunuz?", { title: "Kuralı sil", danger: true, confirmText: "Sil" }))) return;
-  try { await deleteDoc(doc(db,"UzmanKurallar",id)); toast("Kural silindi."); loadRules(); }
-  catch(e) { toast(e.message,"error"); }
+  try {
+    await apiJSON("/v1/admin/ai/rules/" + encodeURIComponent(id), { method: "DELETE" });
+    toast("Kural silindi.");
+    loadRules();
+  } catch(e) { toast(e.message,"error"); }
+};
+
+/* ── Firestore → SQL one-shot import (FS silinmez) ── */
+window.importFirestoreToSql = async () => {
+  toast("Firestore → SQL aktarımı başladı…");
+  try {
+    const licSnap = await getDocs(collection(db, "yetkili_kullanicilar"));
+    const licenseItems = [];
+    licSnap.forEach(ds => {
+      const d = ds.data() || {};
+      const email = String(d.email || ds.id || "").toLowerCase();
+      if (!email || !email.includes("@")) return;
+      const lb = isoDateOnly(d.lisansBitis || d.lisansBitisTarihi || "");
+      const lbas = isoDateOnly(d.lisansBaslangic || "");
+      licenseItems.push({
+        email,
+        adSoyad: d.adSoyad || "",
+        sehir: d.sehir || "",
+        tc: d.tc || "",
+        telefon: d.telefon || "",
+        firma: d.firma || "",
+        yedekEmail: d.yedekEmail || "",
+        adres: d.adres || "",
+        iban: d.iban || "",
+        meslek: d.meslek || "",
+        aktif: d.aktif !== false,
+        uzmanAi: d.uzmanAi !== false,
+        resimAi: d.resimAi === true,
+        sesliAi: d.sesliAi !== false,
+        aiSorguLimiti: d.aiSorguLimiti ?? -1,
+        kullanilanSorgu: d.kullanilanSorgu || 0,
+        lisansTipi: d.lisansTipi === "özel" ? "ozel" : (d.lisansTipi || "max"),
+        lisansBitis: toRfc3339Date(lb),
+        lisansBaslangic: toRfc3339Date(lbas),
+        denemeGun: d.denemeGun || 0,
+        mustChangePassword: !!d.mustChangePassword,
+        authPasswordSetAt: fsTsToIso(d.authPasswordSetAt),
+        pasifNeden: d.pasifNeden || "",
+        aktifAt: fsTsToIso(d.aktifAt),
+        pasifAt: fsTsToIso(d.pasifAt),
+        lisansDolduAt: fsTsToIso(d.lisansDolduAt)
+      });
+    });
+    if (licenseItems.length) {
+      toast(`Lisanslar aktarılıyor (${licenseItems.length})…`);
+      await apiJSON("/v1/admin/licenses/bulk", { method: "POST", body: JSON.stringify({ items: licenseItems }) });
+    }
+
+    const blocked = [];
+    const unauth = [];
+    const machines = [];
+    (await getDocs(collection(db, "engellenen_makineler"))).forEach(ds => {
+      const d = ds.data() || {};
+      blocked.push({
+        machineId: d.machineId || ds.id,
+        email: (d.email || "").toLowerCase(),
+        reason: d.reason || "admin_block",
+        blockedAt: fsTsToIso(d.blockedAt) || new Date().toISOString(),
+        blockedBy: d.blockedBy || "",
+        sourceUnauthorizedId: d.sourceUnauthorizedId || ""
+      });
+    });
+    (await getDocs(collection(db, "yetkisiz_girisler"))).forEach(ds => {
+      const d = ds.data() || {};
+      unauth.push({
+        id: ds.id,
+        email: (d.email || "").toLowerCase(),
+        machineId: d.machineId || "",
+        platform: d.platform || "windows",
+        attemptCount: d.attemptCount || 1,
+        blocked: !!d.blocked
+      });
+    });
+    (await getDocs(collection(db, "musteri_makineleri"))).forEach(ds => {
+      const d = ds.data() || {};
+      machines.push({
+        email: (d.email || "").toLowerCase(),
+        machineId: d.machineId || ds.id,
+        computerName: d.computerName || "",
+        adSoyad: d.adSoyad || "",
+        platform: d.platform || "windows",
+        firstSeenAt: fsTsToIso(d.firstSeenAt) || new Date().toISOString(),
+        lastLoginAt: fsTsToIso(d.lastLoginAt) || new Date().toISOString()
+      });
+    });
+    if (blocked.length || unauth.length || machines.length) {
+      toast("Güvenlik kayıtları aktarılıyor…");
+      await apiJSON("/v1/admin/security/bulk", {
+        method: "POST",
+        body: JSON.stringify({ blocked, unauthorized: unauth, machines })
+      });
+    }
+
+    try {
+      const aiSnap = await getDoc(doc(db, "sistem_ayarlari", "ai_ayarlari"));
+      if (aiSnap.exists()) {
+        const d = aiSnap.data();
+        toast("AI ayarları aktarılıyor…");
+        await apiJSON("/v1/admin/ai/settings", {
+          method: "PUT",
+          body: JSON.stringify({
+            systemPrompt: d.systemPrompt || "",
+            imagePolicy: d.imagePolicy || "teyit_sor",
+            actionPolicy: d.actionPolicy || "onay_iste",
+            geminiApiKey: d.geminiApiKey || ""
+          })
+        });
+      }
+    } catch (_) {}
+
+    try {
+      const rulesSnap = await getDocs(collection(db, "UzmanKurallar"));
+      for (const ds of rulesSnap.docs) {
+        const d = ds.data() || {};
+        const actType = d.action_type || (d.oto_denetim ? "otomatik_kaydet" : "ozel_yanit");
+        await apiJSON("/v1/admin/ai/rules", {
+          method: "PUT",
+          body: JSON.stringify({
+            id: isUuid(ds.id) ? ds.id : "",
+            kural_adi: d.kural_adi || "Kural",
+            tetikleyiciler: d.tetikleyiciler || [],
+            yanit: d.yanit || "",
+            oto_denetim: actType === "otomatik_kaydet",
+            action_type: actType,
+            image_req: d.image_req === true || d.image_req === "resim_zorunlu"
+          })
+        });
+      }
+      if (!rulesSnap.empty) toast(`AI kuralları aktarıldı (${rulesSnap.size})`);
+    } catch (_) {}
+
+    for (const key of ["indirme_paketleri", "fiyatlandirma_paketleri", "ui"]) {
+      try {
+        const snap = await getDoc(doc(db, "sistem_ayarlari", key));
+        if (!snap.exists()) continue;
+        const raw = snap.data() || {};
+        const payload = { ...raw };
+        delete payload.guncelleme;
+        toast(`Site ayarı: ${key}`);
+        await apiJSON("/v1/admin/site-settings/" + key, {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+      } catch (_) {}
+    }
+
+    localStorage.setItem("sql_import_done", "1");
+    toast("Firestore → SQL aktarımı tamamlandı (FS silinmedi)");
+  } catch (e) {
+    toast("Aktarım hatası: " + (e.message || e), "error");
+    throw e;
+  }
 };
 
 /* ── HELPERS ── */
@@ -4115,13 +4399,13 @@ window.uiAlert = (message, opts = {}) => showUiDialog({
   cancelText: null
 });
 
-function toast(msg, type="success") {
-  const c = document.getElementById("toast-container");
-  const t = document.createElement("div");
-  t.className = `toast toast-${type === "error" ? "error" : type === "ok" ? "success" : type}`;
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3800);
+function toast(msg, type = "success") {
+  const err = type === "error";
+  void uiAlert(String(msg || ""), {
+    title: err ? "Hata" : "Tamam",
+    kind: err ? "error" : "ok",
+    icon: err ? "⛔" : "✅"
+  });
 }
 </script>
 </body>
