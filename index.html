@@ -1450,7 +1450,7 @@ import { getFirestore, collection, doc, getDocs, getDoc } from "https://www.gsta
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "2.0.2";
+const ADMIN_VERSION = "2.0.4";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = "vol " + ADMIN_VERSION;
@@ -2406,6 +2406,22 @@ function formatBasvuruWhen(v) {
   }
 }
 
+function odemeBadge(odeme) {
+  const d = odeme || "odenmedi";
+  if (d === "odendi") return `<span class="badge badge-success">Ödendi</span>`;
+  if (d === "beklemede") return `<span class="badge badge-warning">Ödeme Bekliyor</span>`;
+  if (d === "basarisiz") return `<span class="badge badge-danger">Ödenmedi</span>`;
+  return `<span class="badge badge-gray">Ödenmedi</span>`;
+}
+
+function paketLabel(it) {
+  const p = (it.paketBaslik || it.paket || "").trim();
+  if (!p) return "—";
+  const fiyat = Number(it.fiyatTl || 0);
+  const fiyatTxt = fiyat > 0 ? ` · ${fiyat.toLocaleString("tr-TR")} TL` : "";
+  return `${p}${fiyatTxt}`;
+}
+
 function renderDashboardApplications(items) {
   const box = document.getElementById("dashboard-applications-list");
   const stat = document.getElementById("stat-applications-new");
@@ -2424,8 +2440,9 @@ function renderDashboardApplications(items) {
     return `<div class="dashboard-recent-row" onclick="showTab('applications')">
       <div class="dashboard-recent-main">
         <div class="dashboard-recent-name">${esc(it.adSoyad || "—")}</div>
-        <div class="dashboard-recent-sub">${esc(it.email || "")} · ${esc(it.sehir || "—")} · ${esc(platformLabel(it.platform))}</div>
+        <div class="dashboard-recent-sub">${esc(it.email || "")} · ${esc(paketLabel(it))} · ${esc(platformLabel(it.platform))}</div>
       </div>
+      ${odemeBadge(it.odemeDurum)}
       <span class="badge ${badge}">${esc(durum)}</span>
       <span class="dashboard-recent-when">${when}</span>
     </div>`;
@@ -2471,20 +2488,26 @@ window.loadApplications = async () => {
       const when = formatBasvuruWhen(it.createdAt);
       const durum = it.durum || "yeni";
       const badge = durum === "musteri_yapildi" ? "badge-success" : durum === "arsiv" ? "badge-gray" : "badge-warning";
+      const odemeAt = formatBasvuruWhen(it.odemeAt);
+      const payId = it.iyzicoPaymentId ? `<b>Ödeme ID:</b> ${esc(it.iyzicoPaymentId)} · ` : "";
       return `<div class="rule-item">
         <div class="rule-item-header">
           <div class="rule-item-title">${esc(it.adSoyad || "—")}
+            ${odemeBadge(it.odemeDurum)}
             <span class="badge ${badge}">${esc(durum)}</span>
             <span class="badge badge-primary">${esc(platformLabel(it.platform))}</span>
+            <span class="badge badge-gray">📦 ${esc(paketLabel(it))}</span>
           </div>
         </div>
         <div style="font-size:13px;margin:6px 0;">
           <b>E-posta:</b> ${esc(it.email || "")} · <b>Tel:</b> ${esc(it.telefon || "—")} · <b>Şehir:</b> ${esc(it.sehir || "—")}
         </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">${esc(it.mesaj || "")}</div>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">${when}</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${esc(it.mesaj || "")}</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">
+          ${payId}<b>Başvuru:</b> ${when}${it.odemeAt ? ` · <b>Ödeme:</b> ${odemeAt}` : ""}
+        </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" onclick="applicationToCustomer('${esc(it.id)}','${esc(it.email)}','${esc(it.adSoyad)}','${esc(it.sehir)}')">Müşteri yap</button>
+          <button class="btn btn-primary btn-sm" onclick="applicationToCustomer('${esc(it.id)}','${esc(it.email)}','${esc(it.adSoyad)}','${esc(it.sehir)}','${esc(it.paket || "")}')">Müşteri yap</button>
           <button class="btn btn-ghost btn-sm" onclick="setApplicationStatus('${esc(it.id)}','arsiv')">Arşivle</button>
         </div>
       </div>`;
@@ -2509,13 +2532,21 @@ window.setApplicationStatus = async (id, durum) => {
   } catch (e) { toast(e.message, "error"); }
 };
 
-window.applicationToCustomer = async (id, email, adSoyad, sehir) => {
+window.applicationToCustomer = async (id, email, adSoyad, sehir, paket) => {
   email = (email || "").trim().toLowerCase();
   if (!email) { toast("E-posta yok", "error"); return; }
   openUserModal();
   document.getElementById("user-email-input").value = email;
   document.getElementById("user-adsoyad").value = adSoyad || "";
   document.getElementById("user-sehir").value = sehir || "";
+  const tip = ["normal", "pro", "max"].includes(String(paket || "").toLowerCase())
+    ? String(paket).toLowerCase()
+    : "max";
+  const tipEl = document.getElementById("user-lisansTipi");
+  if (tipEl) {
+    tipEl.value = tip;
+    try { onLisansTipiChange(); } catch (_) {}
+  }
   document.getElementById("user-modal-title").textContent = "Başvurudan müşteri oluştur";
   try {
     await fetch(`${API_BASE}/v1/admin/uyelik/basvurulari/${encodeURIComponent(id)}`, {
