@@ -781,7 +781,8 @@
     <!-- FİYATLANDIRMA -->
     <div class="tab-content" id="tab-pricing">
       <div class="card" style="margin-bottom:16px;">
-        <div class="card-header"><div class="card-title">Görünüm</div></div>
+        <div class="card-header"><div class="card-title">Tanıtım sitesi fiyatları</div></div>
+        <p class="form-hint" style="margin:0 0 14px;">Bireysel Max (KDV dahil) ve kurumsal kişi başı birim fiyat. Kaydet → sitede anında yansır.</p>
         <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Aylık fiyat satırı (≈ TL/ay)</label>
           <div style="display:flex;align-items:center;gap:10px;">
@@ -789,7 +790,7 @@
           </div>
         </div>
       </div>
-      <div class="grid-3" id="pricing-admin-grid">
+      <div class="grid-2" id="pricing-admin-grid">
         <div class="card"><div class="empty-state">Yükleniyor…</div></div>
       </div>
       <div style="margin-top:16px;">
@@ -1450,7 +1451,7 @@ import { getFirestore, collection, doc, getDocs, getDoc } from "https://www.gsta
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.0.0";
+const ADMIN_VERSION = "4.0.1";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = "vol " + ADMIN_VERSION;
@@ -2644,15 +2645,12 @@ window.goDlHistoryPage = (p) => {
   renderDownloadHistory(downloadHistoryList);
 };
 
-/* ── FİYATLANDIRMA (tanıtım sitesi — fiyat + açık/kapa) ── */
-const PRICING_PKG_ORDER = ["normal", "pro", "max"];
-const PRICING_PKG_LABELS = { normal: "Normal", pro: "Pro", max: "Max" };
+/* ── FİYATLANDIRMA (tanıtım — tek Max + kurumsal birim) ── */
 const PRICING_VAT_DIVISOR = 1.2;
 const PRICING_PKG_DEFAULTS = {
-  normal: { priceIncVat: 17400, enabled: true },
-  pro: { priceIncVat: 27000, enabled: true },
-  max: { priceIncVat: 37200, enabled: true },
+  max: { priceIncVat: 27000, enabled: true },
 };
+const PRICING_CORP_DEFAULT = { unitPriceIncVat: 14000, minSeats: 5 };
 
 function pricingExFromInc(inc) {
   const n = parseFloat(inc) || 0;
@@ -2677,43 +2675,67 @@ function pricingSyncExVat(key) {
 window.pricingSyncExVat = pricingSyncExVat;
 
 function mergePricingPackages(raw) {
-  const out = {};
-  PRICING_PKG_ORDER.forEach(key => {
-    const base = PRICING_PKG_DEFAULTS[key];
-    const over = raw?.[key] || {};
-    const priceIncVat = over.priceIncVat ?? base.priceIncVat;
-    out[key] = {
+  const base = PRICING_PKG_DEFAULTS.max;
+  const over = raw?.max || {};
+  // Eski Pro fiyatına düş (Max eski 37200 ise Pro seviyesine çek)
+  let priceIncVat = over.priceIncVat ?? base.priceIncVat;
+  if (priceIncVat === 37200 || priceIncVat === 35000) priceIncVat = 27000;
+  return {
+    max: {
       priceIncVat,
       priceExVat: over.priceExVat ?? pricingExFromInc(priceIncVat),
       enabled: over.enabled !== false,
-    };
-  });
-  return out;
+    },
+  };
 }
 
-function renderPricingAdminForm(packages) {
+function mergePricingCorporate(raw) {
+  const over = raw?.corporate || raw?.kurumsal || {};
+  let unit = over.unitPriceIncVat ?? PRICING_CORP_DEFAULT.unitPriceIncVat;
+  if (!unit || unit <= 0) unit = PRICING_CORP_DEFAULT.unitPriceIncVat;
+  return {
+    unitPriceIncVat: unit,
+    unitPriceExVat: over.unitPriceExVat ?? pricingExFromInc(unit),
+    minSeats: over.minSeats >= 2 ? Number(over.minSeats) : PRICING_CORP_DEFAULT.minSeats,
+  };
+}
+
+function renderPricingAdminForm(packages, corp) {
   const grid = document.getElementById("pricing-admin-grid");
   if (!grid) return;
-  grid.innerHTML = PRICING_PKG_ORDER.map(key => {
-    const p = packages[key];
-    const label = PRICING_PKG_LABELS[key] || key.toUpperCase();
-    return `<div class="card">
-      <div class="card-header"><div class="card-title">${esc(label)}</div></div>
+  const p = packages.max;
+  const c = corp;
+  grid.innerHTML = `
+    <div class="card">
+      <div class="card-header"><div class="card-title">Max (tek paket)</div></div>
+      <p class="form-hint" style="margin-bottom:12px;">Bireysel lisans — Windows + Mobil, tam özellik seti.</p>
       <div class="form-group">
         <label class="form-label">Yıllık fiyat (KDV dahil TL)</label>
-        <input type="number" class="form-control" id="pricing-inc-${key}" value="${p.priceIncVat}" min="0" step="1" oninput="pricingSyncExVat('${key}')" />
+        <input type="number" class="form-control" id="pricing-inc-max" value="${p.priceIncVat}" min="0" step="1" oninput="pricingSyncExVat('max')" />
       </div>
       <div class="form-group">
         <label class="form-label">KDV hariç (otomatik · %20)</label>
-        <div id="pricing-ex-${key}" class="pricing-ex-readout">${pricingFmtTl(p.priceExVat)} TL</div>
-        <div id="pricing-month-${key}" class="form-hint" style="margin-top:6px;">≈ ${pricingFmtTl(Math.round(p.priceIncVat / 12))} TL/ay (KDV dahil)</div>
+        <div id="pricing-ex-max" class="pricing-ex-readout">${pricingFmtTl(p.priceExVat)} TL</div>
+        <div id="pricing-month-max" class="form-hint" style="margin-top:6px;">≈ ${pricingFmtTl(Math.round(p.priceIncVat / 12))} TL/ay (KDV dahil)</div>
       </div>
-      <div class="toggle-row" style="margin-bottom:0;">
-        <div><span class="toggle-label">Paket sitede açık</span><span class="toggle-sub">Kapalıysa fiyatlar sayfasında görünmez</span></div>
-        <div class="toggle${p.enabled !== false ? " on" : ""}" id="pricing-enabled-${key}" onclick="this.classList.toggle('on')"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Kurumsal (birim fiyat)</div></div>
+      <p class="form-hint" style="margin-bottom:12px;">Minimum ${c.minSeats} kullanıcı. Her koltuk bu birim fiyatla çarpılır.</p>
+      <div class="form-group">
+        <label class="form-label">Kişi başı yıllık (KDV dahil TL)</label>
+        <input type="number" class="form-control" id="pricing-inc-kurumsal" value="${c.unitPriceIncVat}" min="0" step="1" oninput="pricingSyncExVat('kurumsal')" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">KDV hariç (otomatik · %20)</label>
+        <div id="pricing-ex-kurumsal" class="pricing-ex-readout">${pricingFmtTl(c.unitPriceExVat)} TL</div>
+        <div id="pricing-month-kurumsal" class="form-hint" style="margin-top:6px;">≈ ${pricingFmtTl(Math.round(c.unitPriceIncVat / 12))} TL/ay (KDV dahil)</div>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Minimum kullanıcı</label>
+        <input type="number" class="form-control" id="pricing-corp-min" value="${c.minSeats}" min="2" step="1" />
       </div>
     </div>`;
-  }).join("");
 }
 
 window.loadPricingPackagesAdmin = async () => {
@@ -2721,9 +2743,16 @@ window.loadPricingPackagesAdmin = async () => {
   if (!grid) return;
   try {
     const data = await apiJSON("/v1/site-settings/fiyatlandirma_paketleri");
-    const packages = mergePricingPackages(data?.packages || null);
-    renderPricingAdminForm(packages);
-    PRICING_PKG_ORDER.forEach(key => pricingSyncExVat(key));
+    const packages = mergePricingPackages(data?.packages || data || null);
+    // Eski kayıttan Pro fiyatını Max'e taşı
+    if ((!data?.packages?.max?.priceIncVat) && data?.packages?.pro?.priceIncVat) {
+      packages.max.priceIncVat = Number(data.packages.pro.priceIncVat);
+      packages.max.priceExVat = pricingExFromInc(packages.max.priceIncVat);
+    }
+    const corp = mergePricingCorporate(data);
+    renderPricingAdminForm(packages, corp);
+    pricingSyncExVat("max");
+    pricingSyncExVat("kurumsal");
     const monthlyToggle = document.getElementById("pricing-show-monthly");
     if (monthlyToggle) {
       monthlyToggle.classList.toggle("on", data?.showMonthlyPrice === true);
@@ -2738,19 +2767,28 @@ window.savePricingPackagesAdmin = async () => {
   const prevLabel = btn?.textContent || "Kaydet";
   if (btn) { btn.disabled = true; btn.textContent = "Kaydediliyor…"; }
   try {
-    const packages = {};
-    PRICING_PKG_ORDER.forEach(key => {
-      const inc = parseFloat(document.getElementById(`pricing-inc-${key}`)?.value) || 0;
-      packages[key] = {
-        priceIncVat: inc,
-        priceExVat: pricingExFromInc(inc),
-        enabled: document.getElementById(`pricing-enabled-${key}`)?.classList.contains("on") === true,
-      };
-    });
+    const maxInc = parseFloat(document.getElementById("pricing-inc-max")?.value) || 0;
+    const corpInc = parseFloat(document.getElementById("pricing-inc-kurumsal")?.value) || 0;
+    const minSeats = parseInt(document.getElementById("pricing-corp-min")?.value, 10) || 5;
     await apiJSON("/v1/admin/site-settings/fiyatlandirma_paketleri", {
       method: "PUT",
       body: JSON.stringify({
-        packages,
+        packages: {
+          max: {
+            priceIncVat: maxInc,
+            priceExVat: pricingExFromInc(maxInc),
+            enabled: true,
+          },
+          // eski paketleri kapalı tut (site göstermez)
+          normal: { enabled: false },
+          pro: { enabled: false },
+          deneme: { enabled: false },
+        },
+        corporate: {
+          unitPriceIncVat: corpInc,
+          unitPriceExVat: pricingExFromInc(corpInc),
+          minSeats: Math.max(2, minSeats),
+        },
         showMonthlyPrice: document.getElementById("pricing-show-monthly")?.classList.contains("on") === true,
         guncelleme: new Date().toISOString(),
       })
