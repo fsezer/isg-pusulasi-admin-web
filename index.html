@@ -1451,7 +1451,7 @@ import { getFirestore, collection, doc, getDocs, getDoc } from "https://www.gsta
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.0.1";
+const ADMIN_VERSION = "4.0.2";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = "vol " + ADMIN_VERSION;
@@ -2501,7 +2501,7 @@ window.loadApplications = async () => {
           </div>
         </div>
         <div style="font-size:13px;margin:6px 0;">
-          <b>E-posta:</b> ${esc(it.email || "")} · <b>Tel:</b> ${esc(it.telefon || "—")} · <b>Şehir:</b> ${esc(it.sehir || "—")}
+          <b>E-posta:</b> ${esc(it.email || "")} · <b>Tel:</b> ${esc(it.telefon || "—")} · <b>Şehir:</b> ${esc(it.sehir || "—")}${it.ilce ? " / " + esc(it.ilce) : ""}
         </div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${esc(it.mesaj || "")}</div>
         <div style="font-size:11px;color:var(--text2);margin-bottom:10px;">
