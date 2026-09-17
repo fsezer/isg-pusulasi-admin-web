@@ -4,3 +4,11 @@
 - Tüm uyarı / onay / hata / başarı: ortada `uiAlert` / `uiConfirm` modal (`#ui-dialog`).
 - İkon + anlamlı başlık zorunlu (Hata / Tamam / Onay vb.).
 - `toast()` varsa `uiAlert`’e yönlendirir; yeni kodda doğrudan `uiAlert` / `uiConfirm` kullan.
+
+## Tekrarlama yok
+
+- Aynı işi iki kontrolle verme: **Vazgeç** varken üst **çarpı (X)** yok.
+- Soft başarı: buton/X yok; tıkla veya kısa süre sonra kapanır.
+- Onay (Çıkış vb.): yalnız **Vazgeç** + onay butonu; backdrop tıklayınca kapanmaz.
+
+Form / liste tasarımı: `admin-ui-design.mdc`.

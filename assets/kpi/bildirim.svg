@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="gN" x1="18" y1="12" x2="110" y2="116" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#818CF8"/><stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#gN)" opacity="0.16"/>
+  <!-- bell body -->
+  <path d="M40 58c0-13.3 10.7-24 24-24s24 10.7 24 24v18l8 12H32l8-12V58z" fill="#EEF2FF" stroke="#4F46E5" stroke-width="4" stroke-linejoin="round"/>
+  <!-- clapper -->
+  <path d="M54 96a10 10 0 0020 0" fill="#6366F1"/>
+  <!-- hanger -->
+  <path d="M58 34a6 6 0 0112 0" stroke="#4F46E5" stroke-width="4" stroke-linecap="round"/>
+  <!-- unread badge -->
+  <circle cx="92" cy="38" r="16" fill="#F59E0B"/>
+  <circle cx="92" cy="38" r="6" fill="#0F172A"/>
+</svg>

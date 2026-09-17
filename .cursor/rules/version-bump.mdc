@@ -5,8 +5,8 @@ alwaysApply: true
 
 # Sürüm (İSG Atlası Admin Web)
 
-- **Güncel baseline:** `2.0.2` (sidebar `vol`)
-- Dosya: `index.html` → `ADMIN_VERSION` sabiti + sidebar `.sidebar-brand-vol`
+- **Güncel baseline:** `4.6.3` (sidebar sürüm metni — `vol` yok)
+- Dosya: `index.html` → `ADMIN_VERSION` sabiti + sidebar `.sidebar-version` (`#sidebar-admin-vol`)
 
 ## Format (zorunlu)
 
@@ -15,6 +15,6 @@ alwaysApply: true
 ## Uygulama
 
 - Admin paneli ile ilgili **her anlamlı revizede** (UI, API bağlama, auth, yayın formu, SQL cutover vb.) patch +1.
-- Sidebar `vol X.Y.Z` = `ADMIN_VERSION`; sabit eski `vol 2.0.1` bırakma.
+- Sidebar’da yalnız `X.Y.Z` göster (`ADMIN_VERSION`); başına `vol` yazma.
 - Bu sürüm **Windows/Android `app_releases` değil** — yalnız admin paneli kendisi.
 - Windows + Mobil uzaktan güncelleme paketleri ayrı (`dual-platform-updates.mdc`).

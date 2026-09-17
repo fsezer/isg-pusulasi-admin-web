@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="gB" x1="18" y1="10" x2="110" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34D399"/><stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#gB)" opacity="0.16"/>
+  <!-- clipboard board -->
+  <rect x="32" y="28" width="64" height="80" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="4"/>
+  <rect x="48" y="18" width="32" height="18" rx="6" fill="#10B981"/>
+  <!-- form lines -->
+  <rect x="44" y="48" width="40" height="6" rx="3" fill="#6EE7B7"/>
+  <rect x="44" y="62" width="34" height="6" rx="3" fill="#A7F3D0"/>
+  <rect x="44" y="76" width="38" height="6" rx="3" fill="#A7F3D0"/>
+  <!-- check stamp -->
+  <circle cx="90" cy="94" r="18" fill="#F59E0B"/>
+  <path d="M82 94l5 5 11-12" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
