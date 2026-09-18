@@ -1568,6 +1568,7 @@
         <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span><span class="nav-item-label">Dashboard</span></div>
         <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span><span class="nav-item-label">Analiz</span></div>
         <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span><span class="nav-item-label">Duyurular</span></div>
+        <div class="nav-item" onclick="showTab('news')" id="nav-news"><span class="icon">📰</span><span class="nav-item-label">Haberler</span></div>
         <div class="nav-item" onclick="showTab('firmalar')" id="nav-firmalar"><span class="icon">🏢</span><span class="nav-item-label">Firmalar</span></div>
         <div class="nav-item" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span><span class="nav-item-label">Fiyatlandırma</span></div>
         <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span><span class="nav-item-label">Geri Bildirimler</span></div>
@@ -1608,7 +1609,7 @@
           <span class="dash-clock-hand dash-clock-hand-h" id="dash-hand-h"></span>
           <span class="dash-clock-hand dash-clock-hand-m" id="dash-hand-m"></span>
           <span class="dash-clock-hand dash-clock-hand-s" id="dash-hand-s"></span>
-        </div>
+          </div>
         <div class="dash-clock-copy">
           <div class="dash-clock-row">
             <h2 class="dash-clock-time" id="dash-clock-time">—:—</h2>
@@ -1617,7 +1618,7 @@
           <p class="dash-clock-date" id="dash-clock-date">—</p>
           <p class="dash-clock-foot" id="dash-clock-foot">İnternet Saati · Europe/Istanbul</p>
         </div>
-      </div>
+        </div>
 
       <!-- KPI: müşteri / pasif / yeni başvuru -->
       <div class="kpi-grid">
@@ -1630,7 +1631,7 @@
         <button type="button" class="kpi-card kpi-passive" onclick="openPassiveUsers()" title="Pasif Müşteriler">
           <span class="kpi-visual" aria-hidden="true"><img src="/assets/kpi/pasif.svg" alt="" /></span>
           <span class="kpi-value" id="stat-passive">—</span>
-          <span class="kpi-title">Pasife Alınan</span>
+            <span class="kpi-title">Pasife Alınan</span>
         </button>
 
         <button type="button" class="kpi-card kpi-apps" onclick="showTab('applications')" title="Üyelik Başvuruları">
@@ -1646,11 +1647,11 @@
         <button type="button" class="kpi-card kpi-unauth" onclick="openUnauthorizedFromDash()" title="Yetkisiz Giriş Denemeleri">
           <span class="kpi-visual" aria-hidden="true"><img src="/assets/kpi/yetkisiz.svg" alt="" /></span>
           <span class="kpi-value" id="stat-unauthorized">—</span>
-          <span class="kpi-title">Yetkisiz Giriş</span>
+            <span class="kpi-title">Yetkisiz Giriş</span>
         </button>
-      </div>
+        </div>
 
-    </div>
+      </div>
 
     <!-- YETKİSİZ GİRİŞLER -->
     <div class="tab-content" id="tab-unauthorized">
@@ -1660,7 +1661,7 @@
         </div>
         <div id="unauthorized-list"></div>
         <div class="pager" id="unauthorized-pager"></div>
-      </div>
+        </div>
       <div id="unauth-blocked-wrap" style="display:none;">
         <div class="users-toolbar">
           <input type="text" id="blocked-search-input" class="form-control" placeholder="🔍 Makine veya e-posta ara…" oninput="filterBlockedMachines()" />
@@ -1688,7 +1689,7 @@
     <div class="tab-content" id="tab-firmalar">
       <div class="users-toolbar">
         <input type="text" id="firma-search-input" class="form-control" placeholder="🔍 Firma ara…" oninput="filterFirmalar()" />
-      </div>
+        </div>
       <div id="firmalar-list"></div>
       <div class="pager" id="firmalar-pager"></div>
     </div>
@@ -1703,13 +1704,13 @@
                 <svg viewBox="0 0 24 24" fill="none"><path d="M8 11V8a4 4 0 118 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="5" y="11" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
               </span>
               <div class="card-title">Gemini Key</div>
-            </div>
+      </div>
             <div class="form-group" style="margin-bottom:8px;">
-              <label class="form-label">API Key</label>
-              <input type="password" class="form-control" id="ai-gemini-key" placeholder="AIza…" autocomplete="off" />
-            </div>
+          <label class="form-label">API Key</label>
+          <input type="password" class="form-control" id="ai-gemini-key" placeholder="AIza…" autocomplete="off" />
+        </div>
             <div id="ai-key-status" class="form-hint"></div>
-          </div>
+      </div>
 
           <div class="card settings-card settings-card-ai-policy">
             <div class="card-header">
@@ -1717,22 +1718,22 @@
                 <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
               </span>
               <div class="card-title">Politikalar</div>
-            </div>
-            <div class="form-group">
+        </div>
+          <div class="form-group">
               <label class="form-label">Fotoğraf</label>
-              <select class="form-control" id="ai-image-policy">
+            <select class="form-control" id="ai-image-policy">
                 <option value="teyit_sor">Önce Sor</option>
                 <option value="direkt_analiz">Direkt Analiz</option>
-              </select>
-            </div>
+            </select>
+          </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label">Kayıt / Denetim</label>
-              <select class="form-control" id="ai-action-policy">
+            <select class="form-control" id="ai-action-policy">
                 <option value="onay_iste">Onay İste</option>
                 <option value="direkt_kaydet">Direkt Kaydet</option>
-              </select>
-            </div>
+            </select>
           </div>
+        </div>
         </div>
 
         <div class="card settings-card settings-card-ai-prompt">
@@ -1743,7 +1744,7 @@
             <div class="card-title">Sistem Talimatı</div>
           </div>
           <textarea class="form-control" id="ai-global-prompt" rows="4" placeholder="Sen İSG Uzmanısın…"></textarea>
-        </div>
+      </div>
 
         <div class="card settings-card settings-card-ai-rules">
           <div class="card-header">
@@ -1752,7 +1753,7 @@
             </span>
             <div class="card-title">Özel Kurallar</div>
           </div>
-          <div id="rules-list"></div>
+        <div id="rules-list"></div>
         </div>
       </div>
     </div>
@@ -1764,7 +1765,7 @@
       </div>
       <div id="analytics-table-container"></div>
       <div class="pager" id="analytics-pager"></div>
-    </div>
+      </div>
 
     <!-- ÜYELİK BAŞVURULARI -->
     <div class="tab-content" id="tab-applications">
@@ -1774,7 +1775,7 @@
       </div>
       <div id="applications-list" class="empty-state">Yükleniyor…</div>
       <div class="pager" id="applications-pager"></div>
-    </div>
+      </div>
 
 
     <!-- FİYATLANDIRMA -->
@@ -1782,13 +1783,13 @@
       <div class="pricing-board">
         <div class="pricing-grid" id="pricing-admin-grid">
           <div class="pricing-panel"><div class="empty-state">Yükleniyor…</div></div>
-        </div>
+          </div>
         <div class="pricing-month-card">
           <span class="pricing-month-card-label">Aylık Olarak Göstersin Mi</span>
           <div class="toggle" id="pricing-show-monthly" onclick="this.classList.toggle('on')"></div>
         </div>
-      </div>
-    </div>
+        </div>
+        </div>
 
     <!-- SÜRÜM & GÜNCELLEME -->
     <div class="tab-content" id="tab-updates">
@@ -1801,7 +1802,7 @@
       </div>
       <div id="releases-list" class="empty-state">Yükleniyor…</div>
       <div class="pager" id="releases-pager"></div>
-    </div>
+      </div>
 
     <!-- İNDİRME TALEPLERİ -->
     
@@ -1858,9 +1859,18 @@
     <div class="tab-content" id="tab-announcements">
       <div class="users-toolbar" style="margin-bottom:14px;">
         <input type="text" id="ann-search-input" class="form-control" placeholder="🔍 Ara…" oninput="filterAnnouncements()" style="max-width:360px;" />
-      </div>
+          </div>
       <div id="announcements-table-container"><div class="empty-state">Yükleniyor…</div></div>
       <div class="pager" id="announcements-pager"></div>
+          </div>
+
+    <!-- HABERLER -->
+    <div class="tab-content" id="tab-news">
+      <div class="users-toolbar" style="margin-bottom:14px;">
+        <input type="text" id="news-search-input" class="form-control" placeholder="🔍 Ara…" oninput="filterNews()" style="max-width:360px;" />
+      </div>
+      <div id="news-table-container"><div class="empty-state">Yükleniyor…</div></div>
+      <div class="pager" id="news-pager"></div>
     </div>
 
 
@@ -1874,12 +1884,12 @@
               <svg viewBox="0 0 24 24" fill="none"><path d="M10 17l-1 1H6a2 2 0 01-2-2V8a2 2 0 012-2h3l1 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 12H8M15 12l3-3M15 12l3 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <div class="card-title">Hesap</div>
-          </div>
+        </div>
           <div class="settings-account">
             <div>
               <div class="settings-account-label">Aktif Oturum</div>
               <div class="settings-account-mail" id="settings-active-email">—</div>
-            </div>
+          </div>
             <button type="button" class="btn btn-danger" onclick="doSignOut()">Çıkış Yap</button>
           </div>
         </div>
@@ -1903,13 +1913,13 @@
               <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 12a7.5 7.5 0 0113.2-4.8M19.5 12a7.5 7.5 0 01-13.2 4.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17.5 3.5v4h-4M6.5 20.5v-4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
             <div class="card-title">Anlık Senkron</div>
-          </div>
+        </div>
           <div class="seg-ctrl">
             <button type="button" class="seg-btn sync-btn" id="live-sync-on" onclick="setLiveSync(true)">Açık</button>
             <button type="button" class="seg-btn sync-btn active" id="live-sync-off" onclick="setLiveSync(false)">Kapalı</button>
-          </div>
-        </div>
       </div>
+      </div>
+    </div>
 
       <div class="card settings-card settings-card-admins">
         <div class="card-header">
@@ -1920,22 +1930,22 @@
         </div>
         <div id="superadmin-list" style="margin-bottom:16px;"></div>
         <div class="grid-2">
-          <div class="form-group" style="margin-bottom:0;">
+        <div class="form-group" style="margin-bottom:0;">
             <label class="form-label">Yeni SuperAdmin e-posta</label>
             <input type="email" id="new-superadmin-email" class="form-control" placeholder="admin@firma.com" />
           </div>
           <div class="form-group" style="margin-bottom:0;">
             <label class="form-label">Geçici şifre</label>
             <input type="password" id="new-superadmin-password" class="form-control" placeholder="En az 8 karakter" autocomplete="new-password" />
-          </div>
         </div>
+      </div>
         <button class="btn btn-primary" style="margin-top:14px;" onclick="addSuperAdmin()">+ SuperAdmin Ekle</button>
       </div>
 
-    </div>
+      </div>
 
   </main>
-</div>
+    </div>
 
 <!-- Genel onay / uyarı diyaloğu -->
 <div class="modal-bg" id="ui-dialog" style="z-index:2000;">
@@ -1955,7 +1965,7 @@
   <div class="ui-dialog kind-lock" id="ui-pwd-card">
     <button type="button" class="modal-x" id="ui-pwd-close" aria-label="Kapat">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-    </button>
+        </button>
     <div class="ui-dialog-visual" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none"><path d="M8 11V8a4 4 0 118 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="5" y="11" width="14" height="10" rx="2.5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
     </div>
@@ -1968,7 +1978,7 @@
     <div id="ui-pwd-err" class="form-hint" style="color:var(--danger);margin:-4px 0 12px;"></div>
     <div class="ui-dialog-actions" id="ui-pwd-actions"></div>
   </div>
-</div>
+      </div>
 
 <!-- USER MODAL -->
 <div class="modal-bg" id="user-modal" data-dirty-form="1">
@@ -1979,7 +1989,7 @@
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" stroke="currentColor" stroke-width="1.8"/><path d="M4 20.5c1.8-3.4 4.6-5 8-5s6.2 1.6 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </span>
         <span id="user-modal-title-text">Müşteri Tanımla</span>
-      </div>
+            </div>
       <div class="modal-head-actions">
         <button type="button" class="modal-save" onclick="saveUser()" title="Kaydet" aria-label="Kaydet">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1987,50 +1997,50 @@
         <button type="button" class="modal-x" onclick="closeModal('user-modal')" title="Kapat" aria-label="Kapat">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
-      </div>
-    </div>
+          </div>
+          </div>
     <div class="modal-body">
-      <div class="form-group">
+          <div class="form-group">
         <label class="form-label"><span class="lbl-ico">📧</span>E-posta Adresi <span style="color:var(--danger)">*</span></label>
         <input type="email" class="form-control" id="user-email-input" placeholder="uzman@firma.com" />
-      </div>
+          </div>
       <div class="form-group" id="user-pwd-new-wrap" style="display:none;" aria-hidden="true">
         <input type="hidden" id="user-password-input" value="12345678" />
-      </div>
+          </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">👤</span>Ad Soyad</label>
           <input type="text" class="form-control" id="user-adsoyad" placeholder="Ahmet Yılmaz" />
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">⚧</span>Cinsiyet <span style="color:var(--danger)">*</span></label>
           <select class="form-control" id="user-cinsiyet">
             <option value="">Seçin…</option>
             <option value="erkek">Erkek</option>
             <option value="kadin">Kadın</option>
           </select>
-        </div>
+          </div>
       </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📍</span>İl</label>
           <select class="form-control" id="user-sehir" onchange="onUserCityChange()"></select>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🗺️</span>İlçe</label>
           <select class="form-control" id="user-ilce"></select>
-        </div>
-      </div>
+          </div>
+          </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🪪</span>TC Kimlik No</label>
           <input type="text" class="form-control" id="user-tc" placeholder="11 haneli TC" maxlength="11" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" />
-        </div>
+          </div>
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📞</span>Telefon</label>
           <input type="text" class="form-control" id="user-telefon" placeholder="05xx xxx xx xx" maxlength="15" inputmode="tel" oninput="this.value=this.value.replace(/[^0-9+\s]/g,'')" />
-        </div>
-      </div>
+            </div>
+          </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🏢</span>Firma</label>
@@ -2043,19 +2053,19 @@
             <option value="kurumsal">Kurumsal</option>
             <option value="deneme">Deneme</option>
           </select>
-        </div>
       </div>
+            </div>
       <div class="form-group" id="user-deneme-bitis-wrap" style="display:none;">
         <label class="form-label"><span class="lbl-ico">📅</span>Deneme Bitiş Tarihi <span style="color:var(--danger)">*</span></label>
         <input type="date" class="form-control" id="user-lisansBitis" />
         <div class="form-hint">Deneme paketi için bitiş tarihi seçin.</div>
-      </div>
+          </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📬</span>Yedek E-posta</label>
           <input type="email" class="form-control" id="user-yedekEmail" placeholder="yedek@email.com" />
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">💼</span>Meslek / Unvan</label>
           <select class="form-control" id="user-meslek">
             <option value="A Sınıfı İSG Uzmanı">A Sınıfı İSG Uzmanı</option>
@@ -2065,23 +2075,23 @@
             <option value="Diğer Sağlık Personeli">Diğer Sağlık Personeli</option>
             <option value="Saha İSG Yöneticisi">Saha İSG Yöneticisi</option>
           </select>
-        </div>
-      </div>
-      <div class="form-group">
+          </div>
+          </div>
+          <div class="form-group">
         <label class="form-label"><span class="lbl-ico">🏠</span>Adres</label>
         <input type="text" class="form-control" id="user-adres" placeholder="Açık adres…" />
-      </div>
-      <div class="form-group">
+          </div>
+          <div class="form-group">
         <label class="form-label"><span class="lbl-ico">🏦</span>IBAN</label>
         <input type="text" class="form-control" id="user-iban" placeholder="TR00 0000 0000 0000 0000 0000 00" maxlength="32" oninput="this.value=this.value.toUpperCase()" />
-      </div>
+          </div>
       <div class="form-group" id="user-pwd-reset-wrap" style="display:none;margin-top:8px;">
         <button type="button" class="btn btn-ghost" id="user-pwd-reset-btn" style="width:100%;" onclick="resetUserTempPassword()">🔑 Şifre Sıfırla</button>
         <div class="form-hint" id="user-pwd-reset-hint" style="display:none;">Kullanıcı şifresini değiştirene kadar tekrar sıfırlanamaz.</div>
-      </div>
-    </div>
-  </div>
-</div>
+          </div>
+          </div>
+          </div>
+            </div>
 
 <!-- FIRMA MODAL -->
 <div class="modal-bg" id="firma-modal" data-dirty-form="1">
@@ -2092,7 +2102,7 @@
           <svg viewBox="0 0 24 24" fill="none"><path d="M4 20V8.5L12 4l8 4.5V20" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 20v-6h6v6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 10h.01M12 10h.01M15 10h.01M9 13h.01M12 13h.01M15 13h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </span>
         <span id="firma-modal-title-text">Firma Ekle</span>
-      </div>
+          </div>
       <div class="modal-head-actions">
         <button type="button" class="modal-save" onclick="saveFirma()" title="Kaydet" aria-label="Kaydet">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2100,63 +2110,63 @@
         <button type="button" class="modal-x" onclick="closeModal('firma-modal')" title="Kapat" aria-label="Kapat">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
         </button>
+        </div>
       </div>
-    </div>
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label"><span class="lbl-ico">🏢</span>Firma Adı <span style="color:var(--danger)">*</span></label>
         <input type="text" class="form-control" id="firma-ad-input" placeholder="Firma adı" />
-      </div>
+            </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🪪</span>Vergi No / T.C. <span style="color:var(--danger)">*</span></label>
           <input type="text" class="form-control" id="firma-vergi-no" placeholder="10–11 hane" maxlength="11" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" />
-        </div>
+          </div>
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🏛️</span>Vergi Dairesi <span style="color:var(--danger)">*</span></label>
           <input type="text" class="form-control" id="firma-vergi-dairesi" placeholder="Vergi dairesi" />
-        </div>
+          </div>
       </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📍</span>İl <span style="color:var(--danger)">*</span></label>
           <select class="form-control" id="firma-il" onchange="onFirmaCityChange()"></select>
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🗺️</span>İlçe <span style="color:var(--danger)">*</span></label>
           <select class="form-control" id="firma-ilce"></select>
-        </div>
+          </div>
       </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📞</span>Telefon</label>
           <input type="tel" class="form-control" id="firma-telefon" placeholder="05xxxxxxxxx" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" maxlength="15" />
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📧</span>E-posta</label>
           <input type="email" class="form-control" id="firma-email" placeholder="info@firma.com" />
-        </div>
+          </div>
       </div>
       <div class="grid-2">
-        <div class="form-group">
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🌐</span>Website</label>
           <input type="url" class="form-control" id="firma-website" placeholder="https://www.firma.com" />
-        </div>
-        <div class="form-group">
+          </div>
+          <div class="form-group">
           <label class="form-label"><span class="lbl-ico">👥</span>Çalışan Sayısı</label>
           <input type="number" class="form-control" id="firma-calisan" placeholder="Opsiyonel · min 5" min="5" step="1" />
-        </div>
-      </div>
+          </div>
+          </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🧑‍💼</span>Yetkili Ad Soyad</label>
           <input type="text" class="form-control" id="firma-yetkili-ad" placeholder="Firma yetkilisi" />
-        </div>
+          </div>
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">📱</span>Yetkili Telefon</label>
           <input type="tel" class="form-control" id="firma-yetkili-tel" placeholder="05xxxxxxxxx" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'')" maxlength="15" />
-        </div>
-      </div>
+            </div>
+          </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">🔢</span>MERSİS</label>
@@ -2165,15 +2175,15 @@
         <div class="form-group">
           <label class="form-label"><span class="lbl-ico">✉️</span>KEP</label>
           <input type="email" class="form-control" id="firma-kep" placeholder="firma@hs01.kep.tr" />
-        </div>
       </div>
+    </div>
       <div class="form-group">
         <label class="form-label"><span class="lbl-ico">🏠</span>Adres</label>
         <textarea class="form-control" id="firma-adres" rows="2" placeholder="Açık adres…"></textarea>
       </div>
-    </div>
+      </div>
   </div>
-</div>
+    </div>
 
 <!-- CUSTOMER DEVICES MODAL -->
 <div class="modal-bg" id="custpc-modal">
@@ -2181,13 +2191,13 @@
     <div class="modal-head">
       <div class="modal-title" id="custpc-modal-title">Cihazlar</div>
       <button type="button" class="modal-x" onclick="closeModal('custpc-modal')" title="Kapat" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-    </div>
+      </div>
     <div class="modal-body" style="max-height:min(70vh,560px);overflow:auto;display:flex;flex-direction:column;gap:10px;">
       <div id="custpc-modal-list"></div>
       <div class="pager" id="custpc-modal-pager"></div>
-    </div>
+      </div>
   </div>
-</div>
+    </div>
 
 <!-- SÜRÜM YAYIN MODAL -->
 <div class="modal-bg" id="upd-modal" data-dirty-form="1">
@@ -2216,8 +2226,8 @@
           <label class="form-label">Version Name</label>
           <input type="text" class="form-control" id="upd-name" placeholder="1.0.0" />
         </div>
-      </div>
-      <div class="form-group">
+        </div>
+        <div class="form-group">
         <label class="form-label"><span id="upd-file-label-title">Paket</span> <span id="upd-file-optional" style="font-weight:500;color:var(--text2);display:none;">(Opsiyonel)</span></label>
         <label class="file-drop" id="upd-file-drop">
           <input type="file" id="upd-file" onchange="onFileDropChange('upd')" />
@@ -2225,11 +2235,11 @@
           <div class="file-drop-title" id="upd-file-pick-title">Dosya Seç</div>
           <div class="file-drop-sub" id="upd-file-label">Paket seçin</div>
         </label>
-      </div>
-      <div class="form-group">
+        </div>
+        <div class="form-group">
         <label class="form-label">Notlar</label>
         <textarea class="form-control" id="upd-notes" rows="2" placeholder="Changelog…"></textarea>
-      </div>
+        </div>
       <div class="grid-2">
         <div class="form-group">
           <label class="form-label">OS Ailesi</label>
@@ -2238,22 +2248,22 @@
         <div class="form-group">
           <label class="form-label">Min OS</label>
           <input type="text" class="form-control" id="upd-min-os" placeholder="" />
-        </div>
       </div>
+    </div>
       <div class="grid-2">
         <div class="toggle-row" style="margin-bottom:0;">
           <div><span class="toggle-label">Zorunlu</span></div>
           <div class="toggle" id="upd-force" onclick="this.classList.toggle('on')"></div>
-        </div>
+      </div>
         <div class="toggle-row" style="margin-bottom:0;">
           <div><span class="toggle-label">Aktif</span></div>
           <div class="toggle on" id="upd-active" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+      <div id="upd-status" class="form-hint" style="margin-top:10px;"></div>
+          </div>
         </div>
       </div>
-      <div id="upd-status" class="form-hint" style="margin-top:10px;"></div>
-    </div>
-  </div>
-</div>
 
 <!-- MÜŞTERİ BİLGİ KARTI -->
 <div class="modal-bg" id="musteri-info-modal" data-dismiss-any="1" title="Kapatmak İçin Herhangi Bir Yere Tıklayın">
@@ -2264,13 +2274,13 @@
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9z" stroke="currentColor" stroke-width="1.8"/><path d="M4 20.5c1.8-3.4 4.6-5 8-5s6.2 1.6 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </span>
         <span id="musteri-info-title">Müşteri Bilgisi</span>
+        </div>
       </div>
-    </div>
     <div class="modal-body">
       <div class="info-kv" id="musteri-info-body"></div>
-    </div>
-  </div>
-</div>
+          </div>
+          </div>
+      </div>
 
 <!-- ÜYELİK BAŞVURU DETAY -->
 <div class="modal-bg" id="basvuru-info-modal" data-dismiss-any="1" title="Kapatmak İçin Herhangi Bir Yere Tıklayın">
@@ -2284,13 +2294,13 @@
       </div>
       <div class="modal-head-actions">
         <button type="button" class="modal-save" id="basvuru-pdf-btn" title="Pdf Çıktı" aria-label="Pdf Çıktı" onclick="event.stopPropagation(); printBasvuruPdf()">📄</button>
-      </div>
     </div>
+</div>
     <div class="modal-body">
       <div class="info-kv" id="basvuru-info-body"></div>
-    </div>
   </div>
 </div>
+    </div>
 
 <!-- MUHASEBE KALEM -->
 <div class="modal-bg" id="muh-kalem-modal" data-dirty-form="1">
@@ -2303,19 +2313,19 @@
       <div class="modal-head-actions">
         <button type="button" class="modal-save" onclick="saveMuhasebeKalem()" title="Kaydet" aria-label="Kaydet">💾</button>
         <button type="button" class="modal-x" onclick="closeModal('muh-kalem-modal')" title="Kapat" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-      </div>
+    </div>
     </div>
     <div class="modal-body">
       <input type="hidden" id="muh-kalem-id" value="" />
-      <div class="grid-2">
-        <div class="form-group">
+    <div class="grid-2">
+      <div class="form-group">
           <label class="form-label">Tip</label>
           <select class="form-control" id="muh-kalem-tip">
             <option value="gider">Gider</option>
             <option value="gelir">Ek Gelir</option>
           </select>
-        </div>
-        <div class="form-group">
+      </div>
+      <div class="form-group">
           <label class="form-label">Kategori</label>
           <select class="form-control" id="muh-kalem-kategori">
             <option value="cloud">Cloud</option>
@@ -2327,30 +2337,30 @@
             <option value="vergi">Vergi / Harç</option>
             <option value="diger">Diğer</option>
             <option value="ekstra_gelir">Ekstra Gelir</option>
-          </select>
-        </div>
+        </select>
       </div>
+    </div>
       <div class="form-group">
         <label class="form-label">Başlık</label>
         <input type="text" class="form-control" id="muh-kalem-baslik" placeholder="Örn. Firebase Bu Ay" />
       </div>
-      <div class="grid-2">
-        <div class="form-group">
+    <div class="grid-2">
+      <div class="form-group">
           <label class="form-label">Tutar (Tl)</label>
           <input type="number" class="form-control" id="muh-kalem-tutar" min="0" step="0.01" placeholder="0" />
-        </div>
-        <div class="form-group">
+      </div>
+      <div class="form-group">
           <label class="form-label">Tarih</label>
           <input type="date" class="form-control" id="muh-kalem-tarih" />
-        </div>
       </div>
+    </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Not</label>
         <textarea class="form-control" id="muh-kalem-aciklama" rows="2" placeholder="Opsiyonel"></textarea>
       </div>
+      </div>
     </div>
-  </div>
-</div>
+    </div>
 
 <!-- MUHASEBE ÖDEME -->
 <div class="modal-bg" id="muh-odeme-modal" data-dirty-form="1">
@@ -2359,11 +2369,11 @@
       <div class="modal-title">
         <span class="modal-title-icon">💳</span>
         <span id="muh-odeme-modal-title">Ödeme</span>
-      </div>
+    </div>
       <div class="modal-head-actions">
         <button type="button" class="modal-save" onclick="saveMuhasebeOdeme()" title="Kaydet" aria-label="Kaydet">💾</button>
         <button type="button" class="modal-x" onclick="closeModal('muh-odeme-modal')" title="Kapat" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
-      </div>
+    </div>
     </div>
     <div class="modal-body">
       <input type="hidden" id="muh-odeme-kalem-id" value="" />
@@ -2376,15 +2386,15 @@
           <label class="form-label">Ödeme Tarihi</label>
           <input type="date" class="form-control" id="muh-odeme-tarih" />
         </div>
-      </div>
+        </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Not</label>
         <input type="text" class="form-control" id="muh-odeme-not" placeholder="Opsiyonel" />
       </div>
       <div id="muh-odeme-list" style="margin-top:14px;"></div>
     </div>
-  </div>
-</div>
+        </div>
+      </div>
 
 <!-- DUYURU MODAL -->
 <div class="modal-bg" id="ann-modal" data-dirty-form="1">
@@ -2395,7 +2405,7 @@
         <button type="button" class="modal-save" id="ann-modal-save" onclick="createAnnouncement()" title="Yayınla" aria-label="Yayınla">💾</button>
         <button type="button" class="modal-x" onclick="closeModal('ann-modal')" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       </div>
-    </div>
+      </div>
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Başlık</label>
@@ -2404,16 +2414,43 @@
       <div class="form-group">
         <label class="form-label">Metin</label>
         <textarea class="form-control" id="ann-body" rows="4" placeholder="Duyuru metni"></textarea>
-      </div>
+    </div>
       <div class="grid-2">
-        <div class="form-group">
+    <div class="form-group">
           <label class="form-label">Görsel URL</label>
           <input type="url" class="form-control" id="ann-image" placeholder="https://…" />
-        </div>
+    </div>
         <div class="form-group">
           <label class="form-label">Link URL</label>
           <input type="url" class="form-control" id="ann-link" placeholder="https://…" />
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HABER MODAL -->
+<div class="modal-bg" id="news-modal" data-dirty-form="1">
+  <div class="modal form-sheet">
+    <div class="modal-head">
+      <div class="modal-title"><span class="modal-title-icon">📰</span><span>Yeni Haber</span></div>
+      <div class="modal-head-actions">
+        <button type="button" class="modal-save" id="news-modal-save" onclick="createNews()" title="Yayınla" aria-label="Yayınla">💾</button>
+        <button type="button" class="modal-x" onclick="closeModal('news-modal')" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Başlık</label>
+        <input type="text" class="form-control" id="news-title" placeholder="Haber başlığı" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Metin</label>
+        <textarea class="form-control" id="news-body" rows="4" placeholder="Haber metni"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link URL</label>
+        <input type="url" class="form-control" id="news-link" placeholder="https://…" />
       </div>
     </div>
   </div>
@@ -2435,35 +2472,35 @@
         <button type="button" class="btn btn-ghost btn-sm btn-ico" title="Teyit Sor" aria-label="Teyit Sor" onclick="fillRuleTemplate('teyit')">❓</button>
         <button type="button" class="btn btn-ghost btn-sm btn-ico" title="Mevzuat Yanıtı" aria-label="Mevzuat Yanıtı" onclick="fillRuleTemplate('mevzuat')">📚</button>
       </div>
-      <div class="form-group">
+    <div class="form-group">
         <label class="form-label">Başlık</label>
         <input type="text" class="form-control" id="rule-name" placeholder="Baret Eksikliği Denetim Kaydı" />
-      </div>
-      <div class="form-group">
+    </div>
+    <div class="form-group">
         <label class="form-label">Anahtar Kelimeler</label>
         <input type="text" class="form-control" id="rule-keywords" placeholder="baret yok, kkd eksik, ihlal var" />
-      </div>
-      <div class="grid-2">
-        <div class="form-group">
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
           <label class="form-label">Aksiyon</label>
-          <select class="form-control" id="rule-action-type">
+        <select class="form-control" id="rule-action-type">
             <option value="otomatik_kaydet">Oto Saha Kaydı</option>
             <option value="teyit_sor">Önce Teyit Sor</option>
             <option value="ozel_yanit">Özel Yanıt</option>
-          </select>
-        </div>
-        <div class="form-group">
+        </select>
+      </div>
+      <div class="form-group">
           <label class="form-label">Görsel</label>
-          <select class="form-control" id="rule-image-req">
+        <select class="form-control" id="rule-image-req">
             <option value="farketsmez">Fark Etmez</option>
             <option value="resim_zorunlu">Fotoğraf Zorunlu</option>
-          </select>
-        </div>
+        </select>
       </div>
+    </div>
       <div class="form-group" style="margin-bottom:0;">
         <label class="form-label">Yanıt Metni</label>
         <textarea class="form-control" id="rule-response" rows="4" placeholder="{firma} otomatik firma adı ile değiştirilir."></textarea>
-      </div>
+    </div>
     </div>
   </div>
 </div>
@@ -2479,7 +2516,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.7.8";
+const ADMIN_VERSION = "4.8.0";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -2742,6 +2779,8 @@ let blockedSort = { key: "email", dir: "asc" };
 let unauthSection = "attempts";
 let allAnnouncementsList = [];
 let filteredAnnouncementsList = [];
+let allNewsList = [];
+let filteredNewsList = [];
 let allFeedbackList = [];
 let filteredFeedbackList = [];
 let feedbackPage = 0;
@@ -2750,6 +2789,8 @@ let feedbackSort = { key: "created", dir: "desc" };
 let feedbackStatusFilter = "unread"; // unread | read | all
 let currentAnnouncementsPage = 0;
 let annSort = { key: "created_at", dir: "desc" };
+let currentNewsPage = 0;
+let newsSort = { key: "created_at", dir: "desc" };
 
 let currentUpdPlat = "windows";
 let allReleasesList = [];
@@ -2860,6 +2901,8 @@ async function loadTabContent(tab, opts = {}) {
     await loadFeedback();
   } else if (tab === "announcements") {
     await loadAnnouncements(undefined, force);
+  } else if (tab === "news") {
+    await loadNews(undefined, force);
   } else if (tab === "pricing") {
     await loadPricingPackagesAdmin();
   } else if (tab === "analytics") {
@@ -3463,6 +3506,7 @@ const TAB_META = {
   feedback: { icon: "💬", label: "Geri Bildirimler" },
   muhasebe: { icon: "📒", label: "Muhasebe" },
   announcements: { icon: "📢", label: "Duyurular" },
+  news: { icon: "📰", label: "Haberler" },
   updates: { icon: "🚀", label: "Sürüm & Güncelleme" },
   settings: { icon: "⚙️", label: "Ayarlar" }
 };
@@ -3477,6 +3521,7 @@ const TAB_CACHE_KEYS = {
   muhasebe: "muhasebe",
   updates: "releases",
   announcements: "announcements",
+  news: "news",
   pricing: "pricing",
   rules: "ai-settings",
   dashboard: "dashboard"
@@ -3511,10 +3556,11 @@ function updateTopHeader(tab) {
   document.getElementById("top-unauth-seg")?.classList.toggle("show", tab === "unauthorized");
   const addBtn = document.getElementById("top-add-btn");
   if (addBtn) {
-    const canAdd = tab === "users" || tab === "firmalar" || tab === "announcements" || tab === "rules" || tab === "updates" || (tab === "muhasebe" && muhasebeSec === "kalemler");
+    const canAdd = tab === "users" || tab === "firmalar" || tab === "announcements" || tab === "news" || tab === "rules" || tab === "updates" || (tab === "muhasebe" && muhasebeSec === "kalemler");
     addBtn.classList.toggle("show", canAdd);
     if (tab === "firmalar") { addBtn.title = "Firma Ekle"; addBtn.textContent = "＋"; }
     else if (tab === "announcements") { addBtn.title = "Yeni Duyuru"; addBtn.textContent = "📢"; }
+    else if (tab === "news") { addBtn.title = "Yeni Haber"; addBtn.textContent = "📰"; }
     else if (tab === "rules") { addBtn.title = "Özel Kural"; addBtn.textContent = "＋"; }
     else if (tab === "updates") {
       addBtn.title = "Sürüm Yayınla";
@@ -3542,6 +3588,7 @@ window.onTopAddClick = () => {
   if (tab === "firmalar") openFirmaModal();
   else if (tab === "users") openUserModal();
   else if (tab === "announcements") openAnnouncementModal();
+  else if (tab === "news") openNewsModal();
   else if (tab === "rules") openRuleModal();
   else if (tab === "updates") openUpdModal();
   else if (tab === "muhasebe") openMuhasebeKalemModal();
@@ -3754,10 +3801,10 @@ window.loadFeedback = async () => {
     let total = 0;
     do {
       const resp = await fetch(`${API_BASE}/v1/admin/feedback?page=${page}&page_size=100`, {
-        headers: { "Authorization": "Bearer " + apiJwt }
-      });
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.error || "list_failed");
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
       total = data.total || 0;
       const batch = data.items || [];
       items.push(...batch);
@@ -3833,10 +3880,10 @@ window.loadAnnouncements = async (page, force) => {
       allAnnouncementsList = cached.data;
     } else {
       const resp = await fetch(API_BASE + "/v1/admin/announcements", {
-        headers: { "Authorization": "Bearer " + apiJwt }
-      });
-      const data = await resp.json();
-      if (!resp.ok) throw new Error(data.error || "list_failed");
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "list_failed");
       allAnnouncementsList = data.items || [];
       listCache.set("announcements", allAnnouncementsList);
     }
@@ -3903,7 +3950,7 @@ function renderAnnouncements() {
     <th>İşlem</th>
   </tr></thead><tbody>
   ${page.map(it => {
-    const id = esc(it.id || "");
+      const id = esc(it.id || "");
     const live = it.active !== false;
     const body = String(it.body || "").slice(0, 80);
     const durum = live
@@ -4015,6 +4062,210 @@ window.deleteAnnouncement = async (id) => {
     listCache.clear("announcements");
     toast("Duyuru Silindi");
     await loadAnnouncements(currentAnnouncementsPage);
+  } catch (e) { toast(e.message, "error"); }
+};
+
+/* ── HABERLER ── */
+window.openNewsModal = () => {
+  const t = document.getElementById("news-title");
+  const b = document.getElementById("news-body");
+  const link = document.getElementById("news-link");
+  if (t) t.value = "";
+  if (b) b.value = "";
+  if (link) link.value = "";
+  modalDirty = false;
+  document.getElementById("news-modal")?.classList.add("open");
+  setTimeout(() => t?.focus(), 40);
+};
+
+window.loadNews = async (page, force) => {
+  if (typeof page === "number") currentNewsPage = page;
+  const container = document.getElementById("news-table-container");
+  const pager = document.getElementById("news-pager");
+  if (!container) return;
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    if (force) listCache.clear("news");
+    const cached = listCache.get("news");
+    if (cached?.data && !force) {
+      allNewsList = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/news", {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allNewsList = data.items || [];
+      listCache.set("news", allNewsList);
+    }
+    filterNews(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleNewsSort = (key) => {
+  toggleSortState(newsSort, key);
+  filterNews(true);
+};
+
+window.filterNews = (keepPage) => {
+  const q = (document.getElementById("news-search-input")?.value || "").trim().toLocaleLowerCase("tr-TR");
+  filteredNewsList = (allNewsList || []).filter(it => {
+    if (!q) return true;
+    return String(it.title || "").toLocaleLowerCase("tr-TR").includes(q)
+      || String(it.body || "").toLocaleLowerCase("tr-TR").includes(q)
+      || String(it.link_url || "").toLocaleLowerCase("tr-TR").includes(q);
+  });
+  filteredNewsList.sort((a, b) => {
+    const k = newsSort.key;
+    let va, vb;
+    if (k === "title") { va = a.title || ""; vb = b.title || ""; }
+    else if (k === "body") { va = a.body || ""; vb = b.body || ""; }
+    else if (k === "active") { va = a.active === false ? 0 : 1; vb = b.active === false ? 0 : 1; }
+    else if (k === "link") { va = a.link_url || ""; vb = b.link_url || ""; }
+    else if (k === "created_at") {
+      va = a.created_at ? new Date(a.created_at).getTime() : 0;
+      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
+    } else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, newsSort.dir);
+  });
+  if (!keepPage) currentNewsPage = 0;
+  renderNews();
+};
+
+function renderNews() {
+  const container = document.getElementById("news-table-container");
+  const pager = document.getElementById("news-pager");
+  if (!container) return;
+  const total = filteredNewsList.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentNewsPage >= totalPages) currentNewsPage = Math.max(0, totalPages - 1);
+  const page = filteredNewsList.slice(currentNewsPage * PAGE_SIZE, (currentNewsPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Henüz haber yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  const trashIco = "🗑️";
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Başlık", "title", newsSort, "toggleNewsSort")}
+    ${thSort("Metin", "body", newsSort, "toggleNewsSort")}
+    ${thSort("Durum", "active", newsSort, "toggleNewsSort")}
+    ${thSort("Link", "link", newsSort, "toggleNewsSort")}
+    ${thSort("Tarih", "created_at", newsSort, "toggleNewsSort")}
+    <th>İşlem</th>
+  </tr></thead><tbody>
+  ${page.map(it => {
+    const id = esc(it.id || "");
+    const live = it.active !== false;
+    const body = String(it.body || "").slice(0, 80);
+    const durum = live
+      ? `<span class="badge badge-success">Yayında</span>`
+      : `<span class="badge badge-gray">Arşiv</span>`;
+    const islem = live
+      ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Yayından Kaldır" aria-label="Yayından Kaldır" onclick="archiveNews('${id}')">📦</button>`
+      : `<button type="button" class="btn btn-danger btn-sm btn-ico" title="Sil" aria-label="Sil" onclick="deleteNews('${id}')">${trashIco}</button>`;
+    const linkCell = it.link_url
+      ? `<a href="${esc(it.link_url)}" target="_blank" rel="noopener">${esc(String(it.link_url).slice(0, 40))}${String(it.link_url).length > 40 ? "…" : ""}</a>`
+      : "—";
+    return `<tr>
+      <td><b>${esc(it.title || "")}</b></td>
+      <td class="user-meta-text">${esc(body)}${(it.body || "").length > 80 ? "…" : ""}</td>
+      <td>${durum}</td>
+      <td>${linkCell}</td>
+      <td>${esc(fmtDate(it.created_at))}</td>
+      <td class="td-actions">${islem}</td>
+    </tr>`;
+  }).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentNewsPage, total, "loadNewsPage");
+}
+
+window.loadNewsPage = (page) => {
+  currentNewsPage = Number(page) || 0;
+  renderNews();
+};
+
+window.createNews = async () => {
+  const title = (document.getElementById("news-title")?.value || "").trim();
+  const body = (document.getElementById("news-body")?.value || "").trim();
+  const link_url = (document.getElementById("news-link")?.value || "").trim();
+  const saveBtn = document.getElementById("news-modal-save");
+  if (!title) { toast("Başlık gerekli", "error"); return; }
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (saveBtn) saveBtn.disabled = true;
+    const resp = await fetch(API_BASE + "/v1/admin/news", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ title, body, link_url })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "create_failed");
+    modalDirty = false;
+    closeModal("news-modal");
+    listCache.clear("news");
+    toast("Haber Yayınlandı");
+    await loadNews(0);
+  } catch (e) {
+    toast(e.message, "error");
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
+};
+
+window.archiveNews = async (id) => {
+  const ok = await uiConfirm("Yayından kalkacak; arşive gider.", {
+    title: "Yayından Kaldır",
+    danger: true,
+    confirmText: "Yayından Kaldır",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/news/" + encodeURIComponent(id), {
+      method: "PATCH",
+      headers: { "Authorization": "Bearer " + apiJwt, "Content-Type": "application/json" },
+      body: JSON.stringify({ active: false })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "archive_failed");
+    listCache.clear("news");
+    toast("Arşive Alındı");
+    await loadNews(currentNewsPage);
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.deleteNews = async (id) => {
+  const row = (allNewsList || []).find(x => String(x.id) === String(id));
+  if (row && row.active !== false) {
+    await uiAlert("Yayındaki haber silinemez. Önce yayından kaldırın.", { title: "Silinemez", kind: "warn" });
+    return;
+  }
+  const label = String(row?.title || "").trim() || "Bu haber";
+  const ok = await uiConfirm(`“${label}” kalıcı olarak silinecek. Bu işlem geri alınamaz.`, {
+    title: "Haberi Sil",
+    danger: true,
+    confirmText: "Sil",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/news/" + encodeURIComponent(id), {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || "delete_failed");
+    listCache.clear("news");
+    toast("Haber Silindi");
+    await loadNews(currentNewsPage);
   } catch (e) { toast(e.message, "error"); }
 };
 
@@ -4148,7 +4399,7 @@ window.loadApplications = async (force) => {
 function renderApplications() {
   const box = document.getElementById("applications-list");
   const pager = document.getElementById("applications-pager");
-  if (!box) return;
+    if (!box) return;
   const total = applicationsTotal;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
   if (currentApplicationsPage >= totalPages) currentApplicationsPage = Math.max(0, totalPages - 1);
@@ -4156,8 +4407,8 @@ function renderApplications() {
   if (!total) {
     box.innerHTML = `<div class="empty-state">Bu filtrede başvuru yok.</div>`;
     if (pager) pager.innerHTML = "";
-    return;
-  }
+      return;
+    }
   const userPlusIco = UI_BTN_ICONS.userPlus || "＋";
   const banIco = UI_BTN_ICONS.ban || "✕";
   const undoIco = UI_BTN_ICONS.undo || "↩";
@@ -4853,7 +5104,7 @@ window.printMuhasebePdf = async () => {
       <div class="bp-brand">
         <div class="bp-logo">İA</div>
         <div><div class="bp-brand-name">İSG Atlası</div><div class="bp-brand-sub">Muhasebe Raporu</div></div>
-      </div>
+        </div>
       <div class="bp-hero-right">
         <span class="bp-badge bp-badge-blue">${esc(from)} → ${esc(to)}</span>
         <span class="bp-badge bp-badge-green">Net ${esc(muhFmtTl(sec.net || 0))}</span>
@@ -4885,7 +5136,7 @@ window.printMuhasebePdf = async () => {
       <tbody>${gelirler.map(g => `<tr><td style="padding:7px;border-bottom:1px solid #e2e8f0;">${esc(g.baslik)}</td><td style="padding:7px;border-bottom:1px solid #e2e8f0;text-align:right;">${esc(muhFmtTl(g.tutarTl))}</td></tr>`).join("") || `<tr><td colspan="2" style="padding:8px;">—</td></tr>`}</tbody>
     </table>
     <div class="bp-foot"><span>İSG Atlası Muhasebe</span><span>${esc(formatBasvuruWhen(new Date().toISOString()))}</span></div>
-  </div>`;
+    </div>`;
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;left:-12000px;top:0;width:740px;pointer-events:none;z-index:-1;";
   const style = document.createElement("style");
@@ -5007,7 +5258,7 @@ function renderPricingAdminForm(packages, corp) {
       <div class="pricing-panel-head">
         <div class="pricing-panel-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
+      </div>
         <div class="pricing-panel-title">Bireysel</div>
       </div>
       <div class="pricing-panel-body">
@@ -5016,13 +5267,13 @@ function renderPricingAdminForm(packages, corp) {
           <div class="pricing-money">
             <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" class="form-control" id="pricing-inc-max" value="${p.priceIncVat}" oninput="pricingSyncExVat('max')" />
             <span class="pricing-money-suffix">TL</span>
-          </div>
-        </div>
+    </div>
+      </div>
         <div class="pricing-stats">
           <div class="pricing-stat">
             <span class="pricing-stat-label">Kdv Hariç</span>
             <div id="pricing-ex-max" class="pricing-stat-value">${pricingFmtTl(p.priceExVat)} TL</div>
-          </div>
+      </div>
           <div class="pricing-stat">
             <span class="pricing-stat-label">Kdv (%20)</span>
             <div id="pricing-vat-max" class="pricing-stat-value">${pricingFmtTl(vatMax)} TL</div>
@@ -5045,7 +5296,7 @@ function renderPricingAdminForm(packages, corp) {
         <div class="pricing-panel-title">Kurumsal</div>
       </div>
       <div class="pricing-panel-body">
-        <div class="form-group" style="margin-bottom:0;">
+      <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Kişi Başı Yıllık</label>
           <div class="pricing-money">
             <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" class="form-control" id="pricing-inc-kurumsal" value="${c.unitPriceIncVat}" oninput="pricingSyncExVat('kurumsal')" />
@@ -5508,7 +5759,7 @@ function renderReleasesPage(platform) {
           <button type="button" class="btn btn-ghost btn-sm btn-ico" title="Düzenle" onclick="editRelease('${idAttr}')">${editIco}</button>
           <button type="button" class="btn btn-ghost btn-sm btn-ico" title="${inactive ? "Yayına Al" : "Yayından Kaldır"}" onclick="toggleReleaseActive('${idAttr}')">${inactive ? publishIco : archiveIco}</button>
           <button type="button" class="btn btn-danger btn-sm btn-ico" title="Sil" onclick="deleteRelease('${idAttr}')">${trashIco}</button>
-        </div>
+              </div>
       </td>
     </tr>`;
   }).join("") + `</tbody></table>`;
@@ -6017,7 +6268,7 @@ window.goUsersPage = (page) => {
 window.filterUsers = () => {
   clearTimeout(userSearchTimer);
   userSearchTimer = setTimeout(() => {
-    currentUsersPage = 0;
+  currentUsersPage = 0;
     loadUsers(true);
   }, 280);
 };
@@ -6303,7 +6554,7 @@ window.filterUnauthorized = () => {
     if (x.blocked === true) return false;
     if (!q) return true;
     return (x.email || "").toLowerCase().includes(q) ||
-      (x.machineId || "").toLowerCase().includes(q) ||
+    (x.machineId || "").toLowerCase().includes(q) ||
       (x.platform || "").toLowerCase().includes(q);
   });
   filteredUnauthorizedList.sort((a, b) => {
@@ -6826,8 +7077,8 @@ window.saveUser = async () => {
         await adminSetPassword(email, password);
       } catch (e) {
         toast(e.message || "Şifre ayarlanamadı", "error");
-        return;
-      }
+          return;
+        }
     }
 
     if (data.aktif === false) {
@@ -7176,8 +7427,8 @@ async function fillFirmaSelect(selectedId) {
     try {
       const data = await apiJSON("/v1/admin/musteri-firmalar");
       firmaSelectList = data.items || [];
-    } catch (_) {}
-  }
+      } catch (_) {}
+    }
   el.innerHTML = (firmaSelectList || []).map(f =>
     `<option value="${esc(f.id)}" ${String(f.id) === String(selectedId || "") ? "selected" : ""}>${esc(f.ad)}</option>`
   ).join("") || `<option value="">Firma Yok</option>`;
@@ -7288,14 +7539,14 @@ function showUiDialog({ title, message, kind = "info", confirmText = "Tamam", ca
       actions.appendChild(cancelBtn);
     }
     if (!isSoft) {
-      const okBtn = document.createElement("button");
+    const okBtn = document.createElement("button");
       okBtn.className = danger || tone === "danger" || tone === "logout" ? "btn btn-danger-solid" : (tone === "ok" ? "btn btn-ok-solid" : "btn btn-primary");
       const okIcon = (danger || tone === "danger") ? UI_BTN_ICONS.trash : (tone === "logout" ? UI_BTN_ICONS.logout : UI_BTN_ICONS.check);
       okBtn.innerHTML = `${okIcon}<span>${esc(confirmText)}</span>`;
-      okBtn.onclick = () => finish(true);
-      actions.appendChild(okBtn);
-      bg.classList.add("open");
-      okBtn.focus();
+    okBtn.onclick = () => finish(true);
+    actions.appendChild(okBtn);
+    bg.classList.add("open");
+    okBtn.focus();
     } else {
       bg.addEventListener("click", onSoftDismiss);
       bg.classList.add("open");
