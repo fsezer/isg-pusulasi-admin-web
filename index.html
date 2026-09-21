@@ -1617,6 +1617,8 @@
         <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span><span class="nav-item-label">Analiz</span></div>
         <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span><span class="nav-item-label">Duyurular</span></div>
         <div class="nav-item" onclick="showTab('news')" id="nav-news"><span class="icon">📰</span><span class="nav-item-label">Haberler</span></div>
+        <div class="nav-item" onclick="showTab('challenge')" id="nav-challenge"><span class="icon">🎯</span><span class="nav-item-label">Atlas Challenge</span></div>
+        <div class="nav-item" onclick="showTab('birlik')" id="nav-birlik"><span class="icon">🤝</span><span class="nav-item-label">Atlas Birlik</span></div>
         <div class="nav-item" onclick="showTab('firmalar')" id="nav-firmalar"><span class="icon">🏢</span><span class="nav-item-label">Firmalar</span></div>
         <div class="nav-item" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span><span class="nav-item-label">Fiyatlandırma</span></div>
         <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span><span class="nav-item-label">Geri Bildirimler</span></div>
@@ -1922,7 +1924,45 @@
       <div class="pager" id="news-pager"></div>
     </div>
 
+    <!-- ATLAS CHALLENGE -->
+    <div class="tab-content" id="tab-challenge">
+      <div class="filter-chips" id="challenge-sec-chips" style="margin-bottom:14px;">
+        <button type="button" class="filter-chip active" data-sec="packs" onclick="setChallengeSec('packs')">Paketler</button>
+        <button type="button" class="filter-chip" data-sec="scores" onclick="setChallengeSec('scores')">Skorlar</button>
+      </div>
+      <div id="challenge-packs-panel">
+        <div id="challenge-packs-table"><div class="empty-state">Yükleniyor…</div></div>
+        <div class="pager" id="challenge-packs-pager"></div>
+      </div>
+      <div id="challenge-scores-panel" style="display:none;">
+        <div class="users-toolbar" style="margin-bottom:14px;">
+          <input type="date" id="challenge-score-date" class="form-control" style="max-width:160px;" onchange="loadChallengeScores(0, true)" />
+        </div>
+        <div id="challenge-scores-table"><div class="empty-state">Yükleniyor…</div></div>
+        <div class="pager" id="challenge-scores-pager"></div>
+      </div>
+    </div>
 
+    <!-- ATLAS BİRLİK -->
+    <div class="tab-content" id="tab-birlik">
+      <div class="filter-chips" id="birlik-sec-chips" style="margin-bottom:14px;">
+        <button type="button" class="filter-chip active" data-sec="posts" onclick="setBirlikSec('posts')">Gönderiler</button>
+        <button type="button" class="filter-chip" data-sec="reports" onclick="setBirlikSec('reports')">Şikayetler</button>
+        <button type="button" class="filter-chip" data-sec="blocks" onclick="setBirlikSec('blocks')">Engeller</button>
+      </div>
+      <div id="birlik-posts-panel">
+        <div id="birlik-posts-table"><div class="empty-state">Yükleniyor…</div></div>
+        <div class="pager" id="birlik-posts-pager"></div>
+      </div>
+      <div id="birlik-reports-panel" style="display:none;">
+        <div id="birlik-reports-table"><div class="empty-state">Yükleniyor…</div></div>
+        <div class="pager" id="birlik-reports-pager"></div>
+      </div>
+      <div id="birlik-blocks-panel" style="display:none;">
+        <div id="birlik-blocks-table"><div class="empty-state">Yükleniyor…</div></div>
+        <div class="pager" id="birlik-blocks-pager"></div>
+      </div>
+    </div>
 
     <!-- SİSTEM AKIŞI -->
     <div class="tab-content" id="tab-sistem-akis">
@@ -2769,6 +2809,23 @@
   </div>
 </div>
 
+<!-- CHALLENGE PACK DETAIL -->
+<div class="modal-bg" id="challenge-pack-modal" data-dirty-form="1">
+  <div class="modal form-sheet modal-wide">
+    <div class="modal-head">
+      <div class="modal-title"><span class="modal-title-icon">🎯</span><span id="challenge-pack-modal-title">Paket Detay</span></div>
+      <div class="modal-head-actions">
+        <button type="button" class="modal-save" id="challenge-pack-modal-save" onclick="saveChallengePack()" title="Kaydet" aria-label="Kaydet">💾</button>
+        <button type="button" class="modal-x" onclick="closeModal('challenge-pack-modal')" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="challenge-pack-edit-date" />
+      <div id="challenge-pack-questions"></div>
+    </div>
+  </div>
+</div>
+
 <!-- RULE MODAL -->
 <div class="modal-bg" id="rule-modal" data-dirty-form="1">
   <div class="modal form-sheet">
@@ -2829,7 +2886,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.8.2";
+const ADMIN_VERSION = "4.8.3";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -3105,6 +3162,31 @@ let annSort = { key: "created_at", dir: "desc" };
 let currentNewsPage = 0;
 let newsSort = { key: "created_at", dir: "desc" };
 
+let challengeSec = "packs";
+let allChallengePacks = [];
+let filteredChallengePacks = [];
+let currentChallengePacksPage = 0;
+let challengePacksSort = { key: "pack_date", dir: "desc" };
+let allChallengeScores = [];
+let filteredChallengeScores = [];
+let currentChallengeScoresPage = 0;
+let challengeScoresSort = { key: "score", dir: "desc" };
+let challengePackEditDate = "";
+
+let birlikSec = "posts";
+let allBirlikPosts = [];
+let filteredBirlikPosts = [];
+let currentBirlikPostsPage = 0;
+let birlikPostsSort = { key: "created_at", dir: "desc" };
+let allBirlikReports = [];
+let filteredBirlikReports = [];
+let currentBirlikReportsPage = 0;
+let birlikReportsSort = { key: "created_at", dir: "desc" };
+let allBirlikBlocks = [];
+let filteredBirlikBlocks = [];
+let currentBirlikBlocksPage = 0;
+let birlikBlocksSort = { key: "created_at", dir: "desc" };
+
 let currentUpdPlat = "windows";
 let allReleasesList = [];
 let currentReleasesPage = { windows: 0, android: 0 };
@@ -3197,6 +3279,16 @@ function clearTabCaches(tab) {
     listCache.clear("blocked");
   }
   if (tab === "users") listCache.clear("device-slots");
+  if (tab === "birlik") {
+    listCache.clear("birlik-posts");
+    listCache.clear("birlik-reports");
+    listCache.clear("birlik-blocks");
+  }
+  if (tab === "challenge") {
+    listCache.clear("challenge-packs");
+    const date = (document.getElementById("challenge-score-date")?.value || "").trim();
+    if (date) listCache.clear("challenge-scores:" + date);
+  }
 }
 
 async function loadTabContent(tab, opts = {}) {
@@ -3216,6 +3308,10 @@ async function loadTabContent(tab, opts = {}) {
     await loadAnnouncements(undefined, force);
   } else if (tab === "news") {
     await loadNews(undefined, force);
+  } else if (tab === "challenge") {
+    await loadChallengeTab(force);
+  } else if (tab === "birlik") {
+    await loadBirlikTab(force);
   } else if (tab === "pricing") {
     await loadPricingPackagesAdmin();
   } else if (tab === "analytics") {
@@ -3822,6 +3918,8 @@ const TAB_META = {
   muhasebe: { icon: "📒", label: "Muhasebe" },
   announcements: { icon: "📢", label: "Duyurular" },
   news: { icon: "📰", label: "Haberler" },
+  challenge: { icon: "🎯", label: "Atlas Challenge" },
+  birlik: { icon: "🤝", label: "Atlas Birlik" },
   updates: { icon: "🚀", label: "Sürüm & Güncelleme" },
   "sistem-akis": { icon: "🔀", label: "Sistem Akışı" },
   settings: { icon: "⚙️", label: "Ayarlar" }
@@ -3838,6 +3936,8 @@ const TAB_CACHE_KEYS = {
   updates: "releases",
   announcements: "announcements",
   news: "news",
+  challenge: "challenge-packs",
+  birlik: "birlik-posts",
   pricing: "pricing",
   rules: "ai-settings",
   dashboard: "dashboard"
@@ -3872,11 +3972,12 @@ function updateTopHeader(tab) {
   document.getElementById("top-unauth-seg")?.classList.toggle("show", tab === "unauthorized");
   const addBtn = document.getElementById("top-add-btn");
   if (addBtn) {
-    const canAdd = tab === "users" || tab === "firmalar" || tab === "announcements" || tab === "news" || tab === "rules" || tab === "updates" || (tab === "muhasebe" && muhasebeSec === "kalemler");
+    const canAdd = tab === "users" || tab === "firmalar" || tab === "announcements" || tab === "news" || tab === "rules" || tab === "updates" || (tab === "muhasebe" && muhasebeSec === "kalemler") || (tab === "challenge" && challengeSec === "packs");
     addBtn.classList.toggle("show", canAdd);
     if (tab === "firmalar") { addBtn.title = "Firma Ekle"; addBtn.textContent = "＋"; }
     else if (tab === "announcements") { addBtn.title = "Yeni Duyuru"; addBtn.textContent = "📢"; }
     else if (tab === "news") { addBtn.title = "Yeni Haber"; addBtn.textContent = "📰"; }
+    else if (tab === "challenge") { addBtn.title = "Bugünü Üret"; addBtn.textContent = "⚡"; }
     else if (tab === "rules") { addBtn.title = "Özel Kural"; addBtn.textContent = "＋"; }
     else if (tab === "updates") {
       addBtn.title = "Sürüm Yayınla";
@@ -3905,6 +4006,7 @@ window.onTopAddClick = () => {
   else if (tab === "users") openUserModal();
   else if (tab === "announcements") openAnnouncementModal();
   else if (tab === "news") openNewsModal();
+  else if (tab === "challenge") generateChallengePack();
   else if (tab === "rules") openRuleModal();
   else if (tab === "updates") openUpdModal();
   else if (tab === "muhasebe") openMuhasebeKalemModal();
@@ -4599,6 +4701,796 @@ function fmtDate(val) {
   if (!val) return "—";
   try { return new Date(val).toLocaleString("tr-TR", { dateStyle: "short", timeStyle: "short" }); } catch { return String(val); }
 }
+
+function fmtDateOnly(val) {
+  if (!val) return "—";
+  const ymd = packDateYmd(val);
+  if (!ymd) return "—";
+  try {
+    const [y, m, d] = ymd.split("-");
+    return `${d}.${m}.${y}`;
+  } catch { return ymd; }
+}
+
+function packDateYmd(v) {
+  if (!v) return "";
+  const s = String(v);
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(s));
+  } catch {
+    try { return new Date(s).toISOString().slice(0, 10); } catch { return ""; }
+  }
+}
+
+function istanbulTodayYmd() {
+  try {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Istanbul", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+}
+
+function answerToEdit(ans) {
+  if (ans == null) return "";
+  if (typeof ans === "string") return ans;
+  try { return JSON.stringify(ans); } catch { return String(ans); }
+}
+
+function parseAnswerInput(raw) {
+  const s = String(raw ?? "").trim();
+  if (!s) return "";
+  try { return JSON.parse(s); } catch { return s; }
+}
+
+/* ── ATLAS CHALLENGE ── */
+window.setChallengeSec = (sec) => {
+  challengeSec = sec === "scores" ? "scores" : "packs";
+  document.querySelectorAll("#challenge-sec-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.dataset.sec === challengeSec);
+  });
+  const packs = document.getElementById("challenge-packs-panel");
+  const scores = document.getElementById("challenge-scores-panel");
+  if (packs) packs.style.display = challengeSec === "packs" ? "" : "none";
+  if (scores) scores.style.display = challengeSec === "scores" ? "" : "none";
+  updateTopHeader("challenge");
+  if (challengeSec === "packs") {
+    if (allChallengePacks.length) renderChallengePacks();
+    else void loadChallengePacks(undefined, false);
+  } else {
+    const dateEl = document.getElementById("challenge-score-date");
+    if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
+    if (allChallengeScores.length) renderChallengeScores();
+    else void loadChallengeScores(undefined, false);
+  }
+};
+
+async function loadChallengeTab(force) {
+  document.querySelectorAll("#challenge-sec-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.dataset.sec === challengeSec);
+  });
+  const packs = document.getElementById("challenge-packs-panel");
+  const scores = document.getElementById("challenge-scores-panel");
+  if (packs) packs.style.display = challengeSec === "packs" ? "" : "none";
+  if (scores) scores.style.display = challengeSec === "scores" ? "" : "none";
+  updateTopHeader("challenge");
+  if (challengeSec === "packs") await loadChallengePacks(undefined, force);
+  else {
+    const dateEl = document.getElementById("challenge-score-date");
+    if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
+    await loadChallengeScores(undefined, force);
+  }
+}
+
+window.loadChallengePacks = async (page, force) => {
+  if (typeof page === "number") currentChallengePacksPage = page;
+  const container = document.getElementById("challenge-packs-table");
+  const pager = document.getElementById("challenge-packs-pager");
+  if (!container) return;
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    if (force) listCache.clear("challenge-packs");
+    const cached = listCache.get("challenge-packs");
+    if (cached?.data && !force) {
+      allChallengePacks = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/challenge/packs", {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allChallengePacks = data.items || [];
+      listCache.set("challenge-packs", allChallengePacks);
+    }
+    filterChallengePacks(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleChallengePacksSort = (key) => {
+  toggleSortState(challengePacksSort, key);
+  filterChallengePacks(true);
+};
+
+window.filterChallengePacks = (keepPage) => {
+  filteredChallengePacks = (allChallengePacks || []).slice();
+  filteredChallengePacks.sort((a, b) => {
+    const k = challengePacksSort.key;
+    let va, vb;
+    if (k === "pack_date") {
+      va = packDateYmd(a.pack_date) || "";
+      vb = packDateYmd(b.pack_date) || "";
+    } else if (k === "qcount") {
+      va = Array.isArray(a.questions) ? a.questions.length : 0;
+      vb = Array.isArray(b.questions) ? b.questions.length : 0;
+    } else if (k === "source") { va = a.source || ""; vb = b.source || ""; }
+    else if (k === "status") { va = a.status || ""; vb = b.status || ""; }
+    else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, challengePacksSort.dir);
+  });
+  if (!keepPage) currentChallengePacksPage = 0;
+  renderChallengePacks();
+};
+
+function renderChallengePacks() {
+  const container = document.getElementById("challenge-packs-table");
+  const pager = document.getElementById("challenge-packs-pager");
+  if (!container) return;
+  const total = filteredChallengePacks.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentChallengePacksPage >= totalPages) currentChallengePacksPage = Math.max(0, totalPages - 1);
+  const page = filteredChallengePacks.slice(currentChallengePacksPage * PAGE_SIZE, (currentChallengePacksPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Henüz paket yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  const today = istanbulTodayYmd();
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Tarih", "pack_date", challengePacksSort, "toggleChallengePacksSort")}
+    ${thSort("Kaynak", "source", challengePacksSort, "toggleChallengePacksSort")}
+    ${thSort("Durum", "status", challengePacksSort, "toggleChallengePacksSort")}
+    ${thSort("Soru", "qcount", challengePacksSort, "toggleChallengePacksSort")}
+    <th>İşlem</th>
+  </tr></thead><tbody>
+  ${page.map(it => {
+    const ymd = packDateYmd(it.pack_date);
+    const qn = Array.isArray(it.questions) ? it.questions.length : 0;
+    const src = String(it.source || "—");
+    const st = String(it.status || "");
+    const durum = st === "published"
+      ? `<span class="badge badge-success">Yayında</span>`
+      : st === "archived"
+        ? `<span class="badge badge-gray">Arşiv</span>`
+        : `<span class="badge badge-gray">${esc(st || "—")}</span>`;
+    const isToday = ymd === today;
+    const archiveBtn = st === "published"
+      ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Arşivle" aria-label="Arşivle" onclick="archiveChallengePack('${esc(ymd)}')">📦</button>`
+      : "";
+    const regenBtn = isToday
+      ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Yeniden Üret" aria-label="Yeniden Üret" onclick="generateChallengePack()">⚡</button>`
+      : "";
+    return `<tr>
+      <td><b>${esc(fmtDateOnly(it.pack_date))}</b></td>
+      <td>${esc(src)}</td>
+      <td>${durum}</td>
+      <td>${qn}</td>
+      <td class="td-actions">
+        <button type="button" class="btn btn-ghost btn-sm btn-ico" title="Görüntüle" aria-label="Görüntüle" onclick="openChallengePack('${esc(ymd)}')">👁</button>
+        ${archiveBtn}
+        ${regenBtn}
+      </td>
+    </tr>`;
+  }).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentChallengePacksPage, total, "loadChallengePacksPage");
+}
+
+window.loadChallengePacksPage = (page) => {
+  currentChallengePacksPage = Number(page) || 0;
+  renderChallengePacks();
+};
+
+window.openChallengePack = async (dateYmd) => {
+  const ymd = String(dateYmd || "").trim();
+  if (!ymd) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { await uiAlert("API oturumu yok", { title: "Hata", kind: "error" }); return; }
+    const resp = await fetch(API_BASE + "/v1/admin/challenge/packs/" + encodeURIComponent(ymd), {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "get_failed");
+    challengePackEditDate = ymd;
+    document.getElementById("challenge-pack-edit-date").value = ymd;
+    const title = document.getElementById("challenge-pack-modal-title");
+    if (title) title.textContent = `Paket · ${fmtDateOnly(ymd)}`;
+    const questions = Array.isArray(data.questions) ? data.questions : [];
+    const wrap = document.getElementById("challenge-pack-questions");
+    if (wrap) {
+      wrap.innerHTML = questions.length
+        ? questions.map((q, i) => {
+          const opts = Array.isArray(q.options) ? q.options.join("\n") : "";
+          return `<div class="form-group" style="border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--surface2);">
+            <div style="font-weight:700;margin-bottom:8px;">Soru ${i + 1} <span class="user-meta-text">(${esc(q.id || "")})</span></div>
+            <label class="form-label">Mod</label>
+            <input type="text" class="form-control ch-q-mode" data-i="${i}" value="${esc(q.mode || "")}" />
+            <label class="form-label" style="margin-top:8px;">Soru</label>
+            <textarea class="form-control ch-q-prompt" data-i="${i}" rows="2">${esc(q.prompt || "")}</textarea>
+            <label class="form-label" style="margin-top:8px;">Şıklar (satır satır)</label>
+            <textarea class="form-control ch-q-options" data-i="${i}" rows="4">${esc(opts)}</textarea>
+            <label class="form-label" style="margin-top:8px;">Cevap</label>
+            <input type="text" class="form-control ch-q-answer" data-i="${i}" value="${esc(answerToEdit(q.answer))}" />
+            <input type="hidden" class="ch-q-id" data-i="${i}" value="${esc(q.id || "")}" />
+            <input type="hidden" class="ch-q-expl" data-i="${i}" value="${esc(q.explanation || "")}" />
+          </div>`;
+        }).join("")
+        : `<div class="empty-state">Bu pakette soru yok</div>`;
+    }
+    modalDirty = false;
+    document.getElementById("challenge-pack-modal")?.classList.add("open");
+  } catch (e) {
+    await uiAlert(e.message || "Yüklenemedi", { title: "Hata", kind: "error" });
+  }
+};
+
+window.saveChallengePack = async () => {
+  const ymd = (document.getElementById("challenge-pack-edit-date")?.value || challengePackEditDate || "").trim();
+  if (!ymd) return;
+  const modes = [...document.querySelectorAll(".ch-q-mode")];
+  const questions = modes.map((el) => {
+    const i = el.getAttribute("data-i");
+    const prompt = document.querySelector(`.ch-q-prompt[data-i="${i}"]`)?.value || "";
+    const optsRaw = document.querySelector(`.ch-q-options[data-i="${i}"]`)?.value || "";
+    const options = optsRaw.split("\n").map(s => s.trim()).filter(Boolean);
+    const answer = parseAnswerInput(document.querySelector(`.ch-q-answer[data-i="${i}"]`)?.value);
+    const id = document.querySelector(`.ch-q-id[data-i="${i}"]`)?.value || "";
+    const explanation = document.querySelector(`.ch-q-expl[data-i="${i}"]`)?.value || "";
+    return { id, mode: (el.value || "").trim(), prompt: prompt.trim(), options, answer, explanation };
+  });
+  const saveBtn = document.getElementById("challenge-pack-modal-save");
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (saveBtn) saveBtn.disabled = true;
+    const resp = await fetch(API_BASE + "/v1/admin/challenge/packs/" + encodeURIComponent(ymd), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ questions })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || data.detail || "update_failed");
+    modalDirty = false;
+    closeModal("challenge-pack-modal");
+    listCache.clear("challenge-packs");
+    toast("Paket Kaydedildi");
+    await loadChallengePacks(currentChallengePacksPage, true);
+  } catch (e) {
+    toast(e.message, "error");
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
+};
+
+window.archiveChallengePack = async (dateYmd) => {
+  const ymd = String(dateYmd || "").trim();
+  if (!ymd) return;
+  const ok = await uiConfirm(`${fmtDateOnly(ymd)} paketi arşive alınacak.`, {
+    title: "Arşivle",
+    danger: true,
+    confirmText: "Arşivle",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/challenge/packs/" + encodeURIComponent(ymd), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ status: "archived" })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "archive_failed");
+    listCache.clear("challenge-packs");
+    toast("Arşive Alındı");
+    await loadChallengePacks(currentChallengePacksPage, true);
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.generateChallengePack = async () => {
+  const ok = await uiConfirm("Bugünün paketi yeniden üretilecek. Mevcut sorular değişebilir.", {
+    title: "Bugünü Üret",
+    confirmText: "Üret",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/challenge/packs/generate", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || data.detail || "generate_failed");
+    listCache.clear("challenge-packs");
+    toast("Paket Üretildi");
+    challengeSec = "packs";
+    setChallengeSec("packs");
+    await loadChallengePacks(0, true);
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.loadChallengeScores = async (page, force) => {
+  if (typeof page === "number") currentChallengeScoresPage = page;
+  const container = document.getElementById("challenge-scores-table");
+  const pager = document.getElementById("challenge-scores-pager");
+  if (!container) return;
+  const dateEl = document.getElementById("challenge-score-date");
+  if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
+  const date = (dateEl?.value || istanbulTodayYmd()).trim();
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    const cacheKey = "challenge-scores:" + date;
+    if (force) listCache.clear(cacheKey);
+    const cached = listCache.get(cacheKey);
+    if (cached?.data && !force) {
+      allChallengeScores = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/challenge/scores?date=" + encodeURIComponent(date), {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allChallengeScores = data.items || [];
+      listCache.set(cacheKey, allChallengeScores);
+    }
+    filterChallengeScores(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleChallengeScoresSort = (key) => {
+  toggleSortState(challengeScoresSort, key);
+  filterChallengeScores(true);
+};
+
+window.filterChallengeScores = (keepPage) => {
+  filteredChallengeScores = (allChallengeScores || []).slice();
+  filteredChallengeScores.sort((a, b) => {
+    const k = challengeScoresSort.key;
+    let va, vb;
+    if (k === "display_name") { va = a.display_name || ""; vb = b.display_name || ""; }
+    else if (k === "city") { va = a.city_code || ""; vb = b.city_code || ""; }
+    else if (k === "score") { va = Number(a.score) || 0; vb = Number(b.score) || 0; }
+    else if (k === "email") { va = a.user_email || ""; vb = b.user_email || ""; }
+    else if (k === "created") {
+      va = a.created_at ? new Date(a.created_at).getTime() : 0;
+      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
+    } else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, challengeScoresSort.dir);
+  });
+  if (!keepPage) currentChallengeScoresPage = 0;
+  renderChallengeScores();
+};
+
+function renderChallengeScores() {
+  const container = document.getElementById("challenge-scores-table");
+  const pager = document.getElementById("challenge-scores-pager");
+  if (!container) return;
+  const total = filteredChallengeScores.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentChallengeScoresPage >= totalPages) currentChallengeScoresPage = Math.max(0, totalPages - 1);
+  const page = filteredChallengeScores.slice(currentChallengeScoresPage * PAGE_SIZE, (currentChallengeScoresPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Bu tarihte skor yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Ad", "display_name", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Şehir", "city", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Skor", "score", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("E-posta", "email", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Tarih", "created", challengeScoresSort, "toggleChallengeScoresSort")}
+  </tr></thead><tbody>
+  ${page.map(it => {
+    const score = `${it.score ?? 0}${it.max_score != null ? " / " + it.max_score : ""}`;
+    return `<tr>
+      <td><b>${esc(it.display_name || "—")}</b></td>
+      <td>${esc(it.city_code || "—")}</td>
+      <td>${esc(score)}</td>
+      <td>${esc(it.user_email || "—")}</td>
+      <td>${esc(fmtDate(it.created_at))}</td>
+    </tr>`;
+  }).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentChallengeScoresPage, total, "loadChallengeScoresPage");
+}
+
+window.loadChallengeScoresPage = (page) => {
+  currentChallengeScoresPage = Number(page) || 0;
+  renderChallengeScores();
+};
+
+/* ── ATLAS BİRLİK ── */
+window.setBirlikSec = (sec) => {
+  birlikSec = (sec === "reports" || sec === "blocks") ? sec : "posts";
+  document.querySelectorAll("#birlik-sec-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.dataset.sec === birlikSec);
+  });
+  document.getElementById("birlik-posts-panel").style.display = birlikSec === "posts" ? "" : "none";
+  document.getElementById("birlik-reports-panel").style.display = birlikSec === "reports" ? "" : "none";
+  document.getElementById("birlik-blocks-panel").style.display = birlikSec === "blocks" ? "" : "none";
+  if (birlikSec === "posts") {
+    if (allBirlikPosts.length) renderBirlikPosts();
+    else void loadBirlikPosts(undefined, false);
+  } else if (birlikSec === "reports") {
+    if (allBirlikReports.length) renderBirlikReports();
+    else void loadBirlikReports(undefined, false);
+  } else {
+    if (allBirlikBlocks.length) renderBirlikBlocks();
+    else void loadBirlikBlocks(undefined, false);
+  }
+};
+
+async function loadBirlikTab(force) {
+  document.querySelectorAll("#birlik-sec-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.dataset.sec === birlikSec);
+  });
+  document.getElementById("birlik-posts-panel").style.display = birlikSec === "posts" ? "" : "none";
+  document.getElementById("birlik-reports-panel").style.display = birlikSec === "reports" ? "" : "none";
+  document.getElementById("birlik-blocks-panel").style.display = birlikSec === "blocks" ? "" : "none";
+  if (birlikSec === "posts") await loadBirlikPosts(undefined, force);
+  else if (birlikSec === "reports") await loadBirlikReports(undefined, force);
+  else await loadBirlikBlocks(undefined, force);
+}
+
+window.loadBirlikPosts = async (page, force) => {
+  if (typeof page === "number") currentBirlikPostsPage = page;
+  const container = document.getElementById("birlik-posts-table");
+  const pager = document.getElementById("birlik-posts-pager");
+  if (!container) return;
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    if (force) listCache.clear("birlik-posts");
+    const cached = listCache.get("birlik-posts");
+    if (cached?.data && !force) {
+      allBirlikPosts = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/birlik/posts?limit=200", {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allBirlikPosts = data.items || [];
+      listCache.set("birlik-posts", allBirlikPosts);
+    }
+    filterBirlikPosts(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleBirlikPostsSort = (key) => {
+  toggleSortState(birlikPostsSort, key);
+  filterBirlikPosts(true);
+};
+
+window.filterBirlikPosts = (keepPage) => {
+  filteredBirlikPosts = (allBirlikPosts || []).slice();
+  filteredBirlikPosts.sort((a, b) => {
+    const k = birlikPostsSort.key;
+    let va, vb;
+    if (k === "kind") { va = a.kind || ""; vb = b.kind || ""; }
+    else if (k === "title") { va = a.title || ""; vb = b.title || ""; }
+    else if (k === "author") { va = a.author_display || a.author_email || ""; vb = b.author_display || b.author_email || ""; }
+    else if (k === "city") { va = a.city || ""; vb = b.city || ""; }
+    else if (k === "status") { va = a.status || ""; vb = b.status || ""; }
+    else if (k === "expires") {
+      va = a.expires_at ? new Date(a.expires_at).getTime() : 0;
+      vb = b.expires_at ? new Date(b.expires_at).getTime() : 0;
+    } else if (k === "created_at") {
+      va = a.created_at ? new Date(a.created_at).getTime() : 0;
+      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
+    } else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, birlikPostsSort.dir);
+  });
+  if (!keepPage) currentBirlikPostsPage = 0;
+  renderBirlikPosts();
+};
+
+function renderBirlikPosts() {
+  const container = document.getElementById("birlik-posts-table");
+  const pager = document.getElementById("birlik-posts-pager");
+  if (!container) return;
+  const total = filteredBirlikPosts.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentBirlikPostsPage >= totalPages) currentBirlikPostsPage = Math.max(0, totalPages - 1);
+  const page = filteredBirlikPosts.slice(currentBirlikPostsPage * PAGE_SIZE, (currentBirlikPostsPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Henüz gönderi yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Tür", "kind", birlikPostsSort, "toggleBirlikPostsSort")}
+    ${thSort("Başlık", "title", birlikPostsSort, "toggleBirlikPostsSort")}
+    ${thSort("Yazar", "author", birlikPostsSort, "toggleBirlikPostsSort")}
+    ${thSort("Şehir", "city", birlikPostsSort, "toggleBirlikPostsSort")}
+    ${thSort("Durum", "status", birlikPostsSort, "toggleBirlikPostsSort")}
+    ${thSort("Bitiş", "expires", birlikPostsSort, "toggleBirlikPostsSort")}
+    <th>İşlem</th>
+  </tr></thead><tbody>
+  ${page.map(it => {
+    const id = esc(it.id || "");
+    const st = String(it.status || "");
+    const durum = st === "open"
+      ? `<span class="badge badge-success">Açık</span>`
+      : st === "hidden"
+        ? `<span class="badge badge-gray">Gizli</span>`
+        : st === "closed"
+          ? `<span class="badge badge-gray">Kapalı</span>`
+          : `<span class="badge badge-gray">${esc(st || "—")}</span>`;
+    const author = it.author_display || it.author_email || "—";
+    const hideBtn = st !== "hidden"
+      ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Gizle" aria-label="Gizle" onclick="patchBirlikPost('${id}','hidden')">🙈</button>`
+      : "";
+    const closeBtn = st === "open"
+      ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Kapat" aria-label="Kapat" onclick="patchBirlikPost('${id}','closed')">🔒</button>`
+      : "";
+    return `<tr>
+      <td>${esc(it.kind || "—")}</td>
+      <td><b>${esc(it.title || "—")}</b></td>
+      <td>${esc(author)}</td>
+      <td>${esc(it.city || "—")}</td>
+      <td>${durum}</td>
+      <td>${esc(fmtDate(it.expires_at))}</td>
+      <td class="td-actions">${hideBtn}${closeBtn}</td>
+    </tr>`;
+  }).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentBirlikPostsPage, total, "loadBirlikPostsPage");
+}
+
+window.loadBirlikPostsPage = (page) => {
+  currentBirlikPostsPage = Number(page) || 0;
+  renderBirlikPosts();
+};
+
+window.patchBirlikPost = async (id, status) => {
+  const label = status === "hidden" ? "gizlenecek" : "kapatılacak";
+  const ok = await uiConfirm(`Gönderi ${label}.`, {
+    title: status === "hidden" ? "Gizle" : "Kapat",
+    danger: true,
+    confirmText: status === "hidden" ? "Gizle" : "Kapat",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/birlik/posts/" + encodeURIComponent(id), {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ status })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || "update_failed");
+    listCache.clear("birlik-posts");
+    toast(status === "hidden" ? "Gizlendi" : "Kapatıldı");
+    await loadBirlikPosts(currentBirlikPostsPage, true);
+  } catch (e) { toast(e.message, "error"); }
+};
+
+window.loadBirlikReports = async (page, force) => {
+  if (typeof page === "number") currentBirlikReportsPage = page;
+  const container = document.getElementById("birlik-reports-table");
+  const pager = document.getElementById("birlik-reports-pager");
+  if (!container) return;
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    if (force) listCache.clear("birlik-reports");
+    const cached = listCache.get("birlik-reports");
+    if (cached?.data && !force) {
+      allBirlikReports = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/birlik/reports", {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allBirlikReports = data.items || [];
+      listCache.set("birlik-reports", allBirlikReports);
+    }
+    filterBirlikReports(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleBirlikReportsSort = (key) => {
+  toggleSortState(birlikReportsSort, key);
+  filterBirlikReports(true);
+};
+
+window.filterBirlikReports = (keepPage) => {
+  filteredBirlikReports = (allBirlikReports || []).slice();
+  filteredBirlikReports.sort((a, b) => {
+    const k = birlikReportsSort.key;
+    let va, vb;
+    if (k === "post_id") { va = a.post_id || ""; vb = b.post_id || ""; }
+    else if (k === "reporter") { va = a.reporter_email || ""; vb = b.reporter_email || ""; }
+    else if (k === "reason") { va = a.reason || ""; vb = b.reason || ""; }
+    else if (k === "created_at") {
+      va = a.created_at ? new Date(a.created_at).getTime() : 0;
+      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
+    } else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, birlikReportsSort.dir);
+  });
+  if (!keepPage) currentBirlikReportsPage = 0;
+  renderBirlikReports();
+};
+
+function renderBirlikReports() {
+  const container = document.getElementById("birlik-reports-table");
+  const pager = document.getElementById("birlik-reports-pager");
+  if (!container) return;
+  const total = filteredBirlikReports.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentBirlikReportsPage >= totalPages) currentBirlikReportsPage = Math.max(0, totalPages - 1);
+  const page = filteredBirlikReports.slice(currentBirlikReportsPage * PAGE_SIZE, (currentBirlikReportsPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Şikayet yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Gönderi", "post_id", birlikReportsSort, "toggleBirlikReportsSort")}
+    ${thSort("Bildiren", "reporter", birlikReportsSort, "toggleBirlikReportsSort")}
+    ${thSort("Sebep", "reason", birlikReportsSort, "toggleBirlikReportsSort")}
+    ${thSort("Tarih", "created_at", birlikReportsSort, "toggleBirlikReportsSort")}
+  </tr></thead><tbody>
+  ${page.map(it => `<tr>
+    <td><code>${esc(String(it.post_id || "").slice(0, 8))}</code></td>
+    <td>${esc(it.reporter_email || "—")}</td>
+    <td>${esc(it.reason || "—")}</td>
+    <td>${esc(fmtDate(it.created_at))}</td>
+  </tr>`).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentBirlikReportsPage, total, "loadBirlikReportsPage");
+}
+
+window.loadBirlikReportsPage = (page) => {
+  currentBirlikReportsPage = Number(page) || 0;
+  renderBirlikReports();
+};
+
+window.loadBirlikBlocks = async (page, force) => {
+  if (typeof page === "number") currentBirlikBlocksPage = page;
+  const container = document.getElementById("birlik-blocks-table");
+  const pager = document.getElementById("birlik-blocks-pager");
+  if (!container) return;
+  container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
+    if (force) listCache.clear("birlik-blocks");
+    const cached = listCache.get("birlik-blocks");
+    if (cached?.data && !force) {
+      allBirlikBlocks = cached.data;
+    } else {
+      const resp = await fetch(API_BASE + "/v1/admin/birlik/blocks", {
+        headers: { "Authorization": "Bearer " + apiJwt }
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error || "list_failed");
+      allBirlikBlocks = data.items || [];
+      listCache.set("birlik-blocks", allBirlikBlocks);
+    }
+    filterBirlikBlocks(true);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+    if (pager) pager.innerHTML = "";
+  }
+};
+
+window.toggleBirlikBlocksSort = (key) => {
+  toggleSortState(birlikBlocksSort, key);
+  filterBirlikBlocks(true);
+};
+
+window.filterBirlikBlocks = (keepPage) => {
+  filteredBirlikBlocks = (allBirlikBlocks || []).slice();
+  filteredBirlikBlocks.sort((a, b) => {
+    const k = birlikBlocksSort.key;
+    let va, vb;
+    if (k === "blocker") { va = a.blocker_email || ""; vb = b.blocker_email || ""; }
+    else if (k === "blocked") { va = a.blocked_email || ""; vb = b.blocked_email || ""; }
+    else if (k === "created_at") {
+      va = a.created_at ? new Date(a.created_at).getTime() : 0;
+      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
+    } else { va = a[k]; vb = b[k]; }
+    return cmpValues(va, vb, birlikBlocksSort.dir);
+  });
+  if (!keepPage) currentBirlikBlocksPage = 0;
+  renderBirlikBlocks();
+};
+
+function renderBirlikBlocks() {
+  const container = document.getElementById("birlik-blocks-table");
+  const pager = document.getElementById("birlik-blocks-pager");
+  if (!container) return;
+  const total = filteredBirlikBlocks.length;
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE) || 1);
+  if (currentBirlikBlocksPage >= totalPages) currentBirlikBlocksPage = Math.max(0, totalPages - 1);
+  const page = filteredBirlikBlocks.slice(currentBirlikBlocksPage * PAGE_SIZE, (currentBirlikBlocksPage + 1) * PAGE_SIZE);
+  if (!total) {
+    container.innerHTML = `<div class="empty-state">Engel yok</div>`;
+    if (pager) pager.innerHTML = "";
+    return;
+  }
+  container.innerHTML = `<table class="admin-table"><thead><tr>
+    ${thSort("Engelleyen", "blocker", birlikBlocksSort, "toggleBirlikBlocksSort")}
+    ${thSort("Engellenen", "blocked", birlikBlocksSort, "toggleBirlikBlocksSort")}
+    ${thSort("Tarih", "created_at", birlikBlocksSort, "toggleBirlikBlocksSort")}
+    <th>İşlem</th>
+  </tr></thead><tbody>
+  ${page.map(it => {
+    const blocker = esc(it.blocker_email || "");
+    const blocked = esc(it.blocked_email || "");
+    return `<tr>
+      <td>${blocker}</td>
+      <td>${blocked}</td>
+      <td>${esc(fmtDate(it.created_at))}</td>
+      <td class="td-actions">
+        <button type="button" class="btn btn-danger btn-sm btn-ico" title="Engeli Kaldır" aria-label="Engeli Kaldır" onclick="deleteBirlikBlock('${blocker}','${blocked}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join("")}
+  </tbody></table>`;
+  if (pager) fillTablePager(pager, currentBirlikBlocksPage, total, "loadBirlikBlocksPage");
+}
+
+window.loadBirlikBlocksPage = (page) => {
+  currentBirlikBlocksPage = Number(page) || 0;
+  renderBirlikBlocks();
+};
+
+window.deleteBirlikBlock = async (blockerEmail, blockedEmail) => {
+  const ok = await uiConfirm(`${blockerEmail} → ${blockedEmail} engeli kaldırılacak.`, {
+    title: "Engeli Kaldır",
+    danger: true,
+    confirmText: "Kaldır",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/birlik/blocks", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+      body: JSON.stringify({ blocker_email: blockerEmail, blocked_email: blockedEmail })
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || "delete_failed");
+    listCache.clear("birlik-blocks");
+    toast("Engel Kaldırıldı");
+    await loadBirlikBlocks(currentBirlikBlocksPage, true);
+  } catch (e) { toast(e.message, "error"); }
+};
 
 /* ── ÜYELİK BAŞVURULARI (SQL API — Firestore kullanılmaz / silinmez) ── */
 const APPLY_PLATFORM_LABELS = {
