@@ -1179,6 +1179,54 @@
     .tbl-ico.danger:hover { background: rgba(239,68,68,0.18); border-color: rgba(239,68,68,0.45); }
     .tbl-ico svg { width: 16px; height: 16px; display: block; }
 
+
+    /* Sistem Akışı */
+    .flow-wrap { display:flex; flex-direction:column; gap:14px; }
+    .flow-panel { display:none; }
+    .flow-panel.on { display:block; }
+    .flow-card {
+      border:1px solid var(--border); border-radius:16px; padding:18px 18px 16px;
+      background: linear-gradient(145deg, rgba(245,158,11,0.08), rgba(59,130,246,0.06));
+    }
+    [data-theme="light"] .flow-card {
+      background: linear-gradient(145deg, rgba(245,158,11,0.1), rgba(59,130,246,0.05));
+    }
+    .flow-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .flow-icon {
+      width:40px; height:40px; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;
+      font-size:20px; background:rgba(245,158,11,0.18); flex-shrink:0;
+    }
+    .flow-title { font-size:16px; font-weight:800; letter-spacing:-0.3px; }
+    .flow-sub { font-size:12.5px; color:var(--text2); margin-top:2px; line-height:1.45; }
+    .flow-badges { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; }
+    .flow-badge {
+      font-size:11px; font-weight:700; padding:4px 10px; border-radius:999px;
+      border:1px solid var(--border); background:var(--surface2); color:var(--text2);
+    }
+    .flow-badge.on { border-color:rgba(16,185,129,0.4); color:#10b981; background:rgba(16,185,129,0.12); }
+    .flow-badge.off { opacity:0.55; }
+    .flow-diagram {
+      display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:14px 0 12px;
+      padding:14px; border-radius:14px; background:var(--surface2); border:1px solid var(--border);
+    }
+    .flow-node {
+      padding:10px 14px; border-radius:12px; font-size:12.5px; font-weight:700;
+      background:var(--surface); border:1px solid var(--border); color:var(--text);
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .flow-node.api { border-color:rgba(59,130,246,0.45); background:rgba(59,130,246,0.12); }
+    .flow-node.agent { border-color:rgba(245,158,11,0.45); background:rgba(245,158,11,0.12); }
+    .flow-node.mobil { border-color:rgba(16,185,129,0.45); background:rgba(16,185,129,0.12); }
+    .flow-node.fcm { border-color:rgba(168,85,247,0.45); background:rgba(168,85,247,0.12); }
+    .flow-arrow { color:var(--accent); font-weight:800; font-size:14px; }
+    .flow-steps { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; }
+    .flow-steps li { font-size:13px; color:var(--text); line-height:1.45; }
+    .flow-note {
+      margin-top:12px; font-size:12.5px; color:var(--text2); padding:10px 12px;
+      border-radius:10px; border:1px dashed var(--border); background:rgba(0,0,0,0.12);
+    }
+    [data-theme="light"] .flow-note { background:rgba(0,0,0,0.03); }
+
     .filter-chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
     .filter-chip { border:1px solid var(--border); background:var(--surface2); color:var(--text2); padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; transition: all 0.15s; }
     .filter-chip.active { background:var(--accent-glow); color:var(--accent); border-color:rgba(245,158,11,0.35); font-weight: 700; }
@@ -1577,6 +1625,7 @@
         <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span><span class="nav-item-label">Sürüm & Güncelleme</span></div>
         <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span><span class="nav-item-label">Üyelik Başvuruları</span></div>
         <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span><span class="nav-item-label">Yapay Zeka</span></div>
+        <div class="nav-item" onclick="showTab('sistem-akis')" id="nav-sistem-akis"><span class="icon">🔀</span><span class="nav-item-label">Sistem Akışı</span></div>
         <div class="nav-item" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span><span class="nav-item-label">Yetkisiz Girişler</span></div>
       </div>
     </div>
@@ -1873,6 +1922,270 @@
       <div class="pager" id="news-pager"></div>
     </div>
 
+
+
+    <!-- SİSTEM AKIŞI -->
+    <div class="tab-content" id="tab-sistem-akis">
+      <div class="filter-chips" id="flow-sec-chips" style="margin-bottom:14px;">
+        <button type="button" class="filter-chip active" data-flow="giris" onclick="showFlowSec('giris')">İlk Giriş</button>
+        <button type="button" class="filter-chip" data-flow="fcm" onclick="showFlowSec('fcm')">Sessiz FCM</button>
+        <button type="button" class="filter-chip" data-flow="poll" onclick="showFlowSec('poll')">Poll</button>
+        <button type="button" class="filter-chip" data-flow="sync" onclick="showFlowSec('sync')">Sync</button>
+        <button type="button" class="filter-chip" data-flow="duyuru" onclick="showFlowSec('duyuru')">Duyuru</button>
+        <button type="button" class="filter-chip" data-flow="surum" onclick="showFlowSec('surum')">Sürüm</button>
+        <button type="button" class="filter-chip" data-flow="offline" onclick="showFlowSec('offline')">Offline Health</button>
+        <button type="button" class="filter-chip" data-flow="lisans" onclick="showFlowSec('lisans')">Lisans / Pasif</button>
+      </div>
+      <div class="flow-wrap" id="flow-panels">
+
+        <div class="flow-panel on" data-flow="giris">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">🔑</span>
+              <div>
+                <div class="flow-title">İlk Giriş</div>
+                <div class="flow-sub">Google / e-posta → API oturum → yerel DB hazır</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">API</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node agent">Giriş Ekranı</span><span class="flow-arrow">→</span>
+              <span class="flow-node fcm">Firebase Auth</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">API openSession</span><span class="flow-arrow">→</span>
+              <span class="flow-node">JWT + Profil</span><span class="flow-arrow">→</span>
+              <span class="flow-node mobil">Yerel SQLite</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">İlk Sync</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Kullanıcı Google veya e-posta ile giriş yapar (Firebase).</li>
+              <li>Uygulama API’ye oturum açar; JWT alınır.</li>
+              <li>Profil / lisans / makine kaydı API’den gelir.</li>
+              <li>Yerel SQLite şeması hazırlanır; ilk pull sync çalışır.</li>
+              <li>Başarısızsa çevrimdışı moda düşülür (JWT varsa lokal devam).</li>
+            </ol>
+            <div class="flow-note">Firebase yalnız Auth (+ FCM sinyal). İş verisi Cloud SQL üzerinden API sync.</div>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="fcm">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">📡</span>
+              <div>
+                <div class="flow-title">Sessiz FCM</div>
+                <div class="flow-sub">Bildirim kutusu açmadan arka planda “bir şey oldu” sinyali</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge off">Agent (yok)</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">API</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node api">Admin / API olay</span><span class="flow-arrow">→</span>
+              <span class="flow-node fcm">FCM data</span><span class="flow-arrow">→</span>
+              <span class="flow-node mobil">Telefon dinler</span><span class="flow-arrow">→</span>
+              <span class="flow-node">İşlem (çıkış / LED / key)</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Pasif / hesap sil / forceLogout → telefon sessiz çıkışa gider.</li>
+              <li>dataVersion → sync LED yanar; kullanıcı onaylı sync yapar.</li>
+              <li>Duyuru / sürüm sinyali → ilgili ekran veya uyarı.</li>
+              <li>AI key değişince (type=ai) → key cache yenilenir (poll yok).</li>
+            </ol>
+            <div class="flow-note">Windows Agent FCM almaz; aynı işleri poll ile yapar (~20 sn).</div>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="poll">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">⏱️</span>
+              <div>
+                <div class="flow-title">Poll (Oturum)</div>
+                <div class="flow-sub">FCM kaçarsa yedek — uygulama açıkken arka planda sessiz sorgu</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent ~20 sn</span>
+                <span class="flow-badge on">Mobil ~45 sn</span>
+                <span class="flow-badge on">API /me/signals</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node agent">Agent / Mobil</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">GET /v1/me/signals</span><span class="flow-arrow">→</span>
+              <span class="flow-node">forceLogout?</span><span class="flow-arrow">→</span>
+              <span class="flow-node">dataVersion?</span><span class="flow-arrow">→</span>
+              <span class="flow-node">Makine engeli</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Girişten sonra sürekli akar (ekrana tıklayınca başlamaz).</li>
+              <li>Hesap pasif / silindi → çıkış.</li>
+              <li>Uzak dataVersion yükseldi → sync LED.</li>
+              <li>Makine engelli mi diye ayrı kontrol.</li>
+              <li>Mobilde duyuru da poll turunda bakılır.</li>
+            </ol>
+            <div class="flow-note">Bunu Offline Health ile karıştırma — o yalnız çevrimdışıyken /health bakar.</div>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="sync">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">🔄</span>
+              <div>
+                <div class="flow-title">Sync</div>
+                <div class="flow-sub">Yerel SQLite ↔ API ↔ Cloud SQL — iki taraf aynı iş</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">API</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node mobil">Yerel değişiklik</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">Push / Pull</span><span class="flow-arrow">→</span>
+              <span class="flow-node">Cloud SQL</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">Diğer cihaz</span><span class="flow-arrow">→</span>
+              <span class="flow-node">LED / onay</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Kayıt yerelde yazılır; kuyruk dolarsa push edilir.</li>
+              <li>Karşı taraf poll/FCM ile dataVersion görür → LED.</li>
+              <li>Kullanıcı Senkronize Et / onay → pull alır.</li>
+              <li>Çatışma varsa çatışma diyaloğu.</li>
+            </ol>
+            <div class="flow-note">Tek taraflı özellik yok: mobilde eklenen Agent’ta da aynı sırayla görünür (ve tersi).</div>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="duyuru">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">📢</span>
+              <div>
+                <div class="flow-title">Duyuru</div>
+                <div class="flow-sub">Admin yayınlar → istemci gösterir</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">Admin</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node api">Admin Duyurular</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">API kayıt</span><span class="flow-arrow">→</span>
+              <span class="flow-node fcm">FCM / poll</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">Açılış / poll modal</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Admin’de duyuru kaydedilir.</li>
+              <li>Mobil: FCM veya poll turunda yeni duyuru çekilir.</li>
+              <li>Agent: açılış + poll ile gösterir.</li>
+              <li>Okundu / kapatıldı yerel tutulur; tekrar spam yok.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="surum">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">🚀</span>
+              <div>
+                <div class="flow-title">Sürüm / Güncelleme</div>
+                <div class="flow-sub">Windows zip ve Android apk ayrı kanallar</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">Admin</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node api">Admin yayın (code↑)</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">app_releases</span><span class="flow-arrow">→</span>
+              <span class="flow-node">Poll / sinyal</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">Uyarı</span><span class="flow-arrow">→</span>
+              <span class="flow-node">İndir / kur</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Uzak versionCode &gt; kullanıcının son uyguladığı kod → uyarı çıkar.</li>
+              <li>Aynı paket kalsa bile code artınca yine sorulur.</li>
+              <li>Windows code Android’i etkilemez (tersi de).</li>
+              <li>Yükledikten sonra kod kaydedilir; aynı code tekrar sorulmaz.</li>
+            </ol>
+            <div class="flow-note">Anlamlı işte iki paketi de yayınla — tek kanal yarım iş.</div>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="offline">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">📴</span>
+              <div>
+                <div class="flow-title">Offline Health</div>
+                <div class="flow-sub">Online = bizim API /health ayakta (Chrome yetmez)</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent 12 sn</span>
+                <span class="flow-badge on">Mobil 12 sn</span>
+                <span class="flow-badge on">API /health</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node">Çevrimdışı</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">/health poll</span><span class="flow-arrow">→</span>
+              <span class="flow-node">API ayakta</span><span class="flow-arrow">→</span>
+              <span class="flow-node">Banner kalkar</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">Sync dene</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Sunucuya ulaşılamayınca çevrimdışı banner.</li>
+              <li>Yalnız offline iken ~12 sn /health poll.</li>
+              <li>API gelince poll durur; otomatik senkron denenir.</li>
+              <li>Online iken bu poll yok.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="flow-panel" data-flow="lisans">
+          <div class="flow-card">
+            <div class="flow-head">
+              <span class="flow-icon">🛡️</span>
+              <div>
+                <div class="flow-title">Lisans / Pasif / Engel</div>
+                <div class="flow-sub">Admin kararı → cihazlar çıkar</div>
+              </div>
+              <div class="flow-badges">
+                <span class="flow-badge on">Agent</span>
+                <span class="flow-badge on">Mobil</span>
+                <span class="flow-badge on">API</span>
+              </div>
+            </div>
+            <div class="flow-diagram">
+              <span class="flow-node api">Admin: pasif / sil / engel</span><span class="flow-arrow">→</span>
+              <span class="flow-node api">Sinyal yaz</span><span class="flow-arrow">→</span>
+              <span class="flow-node fcm">FCM (mobil)</span><span class="flow-arrow">+</span>
+              <span class="flow-node">Poll</span><span class="flow-arrow">→</span>
+              <span class="flow-node agent">Zorla çıkış</span>
+            </div>
+            <ol class="flow-steps">
+              <li>Pasife alınca telefon ve Agent oturumu kapanır.</li>
+              <li>Makine engeli → o cihaz tekrar giremez.</li>
+              <li>Lisans bitiş (grace sonrası) → expire + çıkış.</li>
+              <li>Hesap silme isteği Ayarlar’dan (mobil / Agent).</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <!-- AYARLAR -->
     <div class="tab-content" id="tab-settings">
@@ -2516,7 +2829,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.8.0";
+const ADMIN_VERSION = "4.8.1";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -2927,6 +3240,8 @@ async function loadTabContent(tab, opts = {}) {
     await loadUsers(true);
   } else if (tab === "rules") {
     await Promise.all([loadAiSettings(), loadRules()]);
+  } else if (tab === "sistem-akis") {
+    /* statik rehber */
   } else if (tab === "settings") {
     applyLiveSyncUi();
     renderSuperAdminList();
@@ -3508,6 +3823,7 @@ const TAB_META = {
   announcements: { icon: "📢", label: "Duyurular" },
   news: { icon: "📰", label: "Haberler" },
   updates: { icon: "🚀", label: "Sürüm & Güncelleme" },
+  "sistem-akis": { icon: "🔀", label: "Sistem Akışı" },
   settings: { icon: "⚙️", label: "Ayarlar" }
 };
 
@@ -3677,7 +3993,7 @@ async function loadAll() {
     loadApplications(), loadPricingPackagesAdmin(), loadTheme(),
     loadUnauthorized(), loadBlockedMachines(), loadCustomerPcs(), refreshFeedbackUnread(), refreshUnauthorizedStat()
   ]);
-  ["users", "firmalar", "rules", "analytics", "applications", "pricing", "unauthorized", "dashboard", "settings"].forEach(t => tabsFetched.add(t));
+  ["users", "firmalar", "rules", "analytics", "applications", "pricing", "unauthorized", "dashboard", "settings", "sistem-akis"].forEach(t => tabsFetched.add(t));
   applyLiveSyncUi();
   restartLiveSyncPoll();
 }
