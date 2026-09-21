@@ -2829,7 +2829,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.8.1";
+const ADMIN_VERSION = "4.8.2";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -3970,6 +3970,16 @@ window.showTab = async (tab, opts = {}) => {
   }
 
   restartLiveSyncPoll();
+};
+
+window.showFlowSec = (sec) => {
+  const id = sec || "giris";
+  document.querySelectorAll("#flow-sec-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", el.getAttribute("data-flow") === id);
+  });
+  document.querySelectorAll("#flow-panels .flow-panel").forEach(el => {
+    el.classList.toggle("on", el.getAttribute("data-flow") === id);
+  });
 };
 
 window.showUpdPlat = (plat) => {
