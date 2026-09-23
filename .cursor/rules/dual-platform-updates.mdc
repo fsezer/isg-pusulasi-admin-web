@@ -1,33 +1,23 @@
 ---
-description: Windows ve Android uzaktan güncelleme — ayrı kanal, ikisi de zorunlu
+description: Windows/Android sürüm ayrı; Admin kanalları ayrı
 alwaysApply: true
 ---
 
-# Uzaktan güncelleme — çift kanal (KESİN)
+# Platform sürümleri + Admin kanalları (KESİN)
 
-Windows Agent ve Android Mobil **aynı ürün ailesi** ama **ayrı güncelleme kanallarıdır**. Karıştırma.
-
-Admin paneli kendi sürümü (`ADMIN_VERSION` / sidebar `vol`) ayrıdır — admin revizesinde `version-bump.mdc` uygula.
+Windows Agent ve Android Mobil **ayrı sürüm numarası** taşır — eşitleme yok.
 
 ## Admin UI
 
-- **Sürüm & Güncelleme** menüsünde iki panel: **Windows (.zip)** | **Android (.apk)**
-- Tek dropdown / tek karışık geçmiş YOK
-- Her kartta **indirme linki** (kopyala / indir)
-- `platform=windows` ve `platform=android` API’de ayrı kayıt
+- **Sürüm & Güncelleme**: **Windows (.zip)** | **Android (.apk)** ayrı paneller
+- `platform=windows` / `platform=android` API’de ayrı
 
-## Uyarı nasıl çalışır?
+## Yayın
 
-- Uzak **versionCode** > kullanıcının son uyguladığı kod → güncelleme çıkar
-- Admin’de **sadece versionCode artırıp kaydet** (aynı zip/apk kalsa bile) → kullanıcıya **yine** çıkar
-- Kullanıcı yükledikten sonra kod kaydedilir → **aynı code tekrar sorulmaz**
-- Windows code ile Android code birbirini etkilemez
+- Hangi platform değiştiyse **yalnız onu** yayınla
+- Windows code ↔ Android code birbirini etkilemez
 
-## Kodda sürüm artırınca (zorunlu)
+## Yapma
 
-Anlamlı özellik / uzaktan yayın işinde **ikisini de gerçekten güncelle**:
-
-1. **Windows** — zip → Admin Windows paneli  
-2. **Android** — apk → Admin Android paneli  
-
-Birini unutmak = yarım iş.
+- Mobil patch’te Windows `Version` artırma (tersi de)
+- Tek karışık sürüm geçmişi
