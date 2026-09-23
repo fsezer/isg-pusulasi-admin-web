@@ -1499,6 +1499,26 @@
     .admin-table th.col-left,
     .admin-table td.col-left { text-align: left; }
     .admin-table th.col-left .th-btn { justify-content: flex-start; }
+    .admin-table .title-edit {
+      display: inline; background: none; border: 0; padding: 0; margin: 0;
+      font: inherit; font-weight: 700; color: var(--accent, #38bdf8);
+      cursor: pointer; text-align: inherit; text-decoration: none;
+      border-bottom: 1px dashed rgba(56, 189, 248, 0.45);
+      transition: color .15s, border-color .15s;
+    }
+    .admin-table .title-edit:hover {
+      color: #7dd3fc;
+      border-bottom-color: #7dd3fc;
+    }
+    [data-theme="light"] .admin-table .title-edit { color: #0369a1; border-bottom-color: rgba(3, 105, 161, 0.35); }
+    [data-theme="light"] .admin-table .title-edit:hover { color: #0284c7; border-bottom-color: #0284c7; }
+    .edit-hint {
+      display: none; margin: -4px 0 14px; padding: 8px 12px; border-radius: 10px;
+      font-size: 12px; font-weight: 600; line-height: 1.35;
+      background: linear-gradient(135deg, rgba(56,189,248,.14), rgba(99,102,241,.1));
+      color: var(--text2); border: 1px solid rgba(56,189,248,.22);
+    }
+    .edit-hint.show { display: block; }
     .modal-head {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       margin: 0 0 14px; padding: 0;
@@ -2753,20 +2773,22 @@
 <div class="modal-bg" id="ann-modal" data-dirty-form="1">
   <div class="modal form-sheet">
     <div class="modal-head">
-      <div class="modal-title"><span class="modal-title-icon">📢</span><span>Yeni Duyuru</span></div>
+      <div class="modal-title"><span class="modal-title-icon">📢</span><span id="ann-modal-title-text">Yeni Duyuru</span></div>
       <div class="modal-head-actions">
-        <button type="button" class="modal-save" id="ann-modal-save" onclick="createAnnouncement()" title="Yayınla" aria-label="Yayınla">💾</button>
+        <button type="button" class="modal-save" id="ann-modal-save" onclick="saveAnnouncement()" title="Kaydet" aria-label="Kaydet">💾</button>
         <button type="button" class="modal-x" onclick="closeModal('ann-modal')" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       </div>
       </div>
     <div class="modal-body">
+      <input type="hidden" id="ann-edit-id" value="" />
+      <div class="edit-hint" id="ann-edit-hint">Mevcut duyuruyu düzenliyorsun. Kaydet deyince güncellenir.</div>
       <div class="form-group">
         <label class="form-label">Başlık</label>
         <input type="text" class="form-control" id="ann-title" placeholder="Duyuru başlığı" />
       </div>
       <div class="form-group">
         <label class="form-label">Metin</label>
-        <textarea class="form-control" id="ann-body" rows="4" placeholder="Duyuru metni"></textarea>
+        <textarea class="form-control" id="ann-body" rows="5" placeholder="Duyuru metni"></textarea>
     </div>
       <div class="grid-2">
     <div class="form-group">
@@ -2786,20 +2808,22 @@
 <div class="modal-bg" id="news-modal" data-dirty-form="1">
   <div class="modal form-sheet">
     <div class="modal-head">
-      <div class="modal-title"><span class="modal-title-icon">📰</span><span>Yeni Haber</span></div>
+      <div class="modal-title"><span class="modal-title-icon">📰</span><span id="news-modal-title-text">Yeni Haber</span></div>
       <div class="modal-head-actions">
-        <button type="button" class="modal-save" id="news-modal-save" onclick="createNews()" title="Yayınla" aria-label="Yayınla">💾</button>
+        <button type="button" class="modal-save" id="news-modal-save" onclick="saveNews()" title="Kaydet" aria-label="Kaydet">💾</button>
         <button type="button" class="modal-x" onclick="closeModal('news-modal')" aria-label="Kapat"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       </div>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="news-edit-id" value="" />
+      <div class="edit-hint" id="news-edit-hint">Mevcut haberi düzenliyorsun. Kaydet deyince güncellenir.</div>
       <div class="form-group">
         <label class="form-label">Başlık</label>
         <input type="text" class="form-control" id="news-title" placeholder="Haber başlığı" />
       </div>
       <div class="form-group">
         <label class="form-label">Metin</label>
-        <textarea class="form-control" id="news-body" rows="4" placeholder="Haber metni"></textarea>
+        <textarea class="form-control" id="news-body" rows="5" placeholder="Haber metni"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Link URL</label>
@@ -2886,7 +2910,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.8.3";
+const ADMIN_VERSION = "4.8.4";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -4279,15 +4303,29 @@ window.setFeedbackStatus = async (id, status, silent) => {
 };
 
 /* ── DUYURULAR ── */
-window.openAnnouncementModal = () => {
+window.openAnnouncementModal = (id) => {
+  const editId = id ? String(id) : "";
+  const row = editId ? (allAnnouncementsList || []).find(x => String(x.id) === editId) : null;
+  if (editId && !row) { toast("Duyuru bulunamadı", "error"); return; }
   const t = document.getElementById("ann-title");
   const b = document.getElementById("ann-body");
   const img = document.getElementById("ann-image");
   const link = document.getElementById("ann-link");
-  if (t) t.value = "";
-  if (b) b.value = "";
-  if (img) img.value = "";
-  if (link) link.value = "";
+  const hid = document.getElementById("ann-edit-id");
+  const titleEl = document.getElementById("ann-modal-title-text");
+  const hint = document.getElementById("ann-edit-hint");
+  const saveBtn = document.getElementById("ann-modal-save");
+  if (hid) hid.value = editId;
+  if (t) t.value = row ? String(row.title || "") : "";
+  if (b) b.value = row ? String(row.body || "") : "";
+  if (img) img.value = row ? String(row.image_url || "") : "";
+  if (link) link.value = row ? String(row.link_url || "") : "";
+  if (titleEl) titleEl.textContent = row ? "Duyuruyu Düzenle" : "Yeni Duyuru";
+  if (hint) hint.classList.toggle("show", !!row);
+  if (saveBtn) {
+    saveBtn.title = row ? "Kaydet" : "Yayınla";
+    saveBtn.setAttribute("aria-label", row ? "Kaydet" : "Yayınla");
+  }
   modalDirty = false;
   document.getElementById("ann-modal")?.classList.add("open");
   setTimeout(() => t?.focus(), 40);
@@ -4388,7 +4426,7 @@ function renderAnnouncements() {
       ? `<button type="button" class="btn btn-ghost btn-sm btn-ico" title="Yayından Kaldır" aria-label="Yayından Kaldır" onclick="archiveAnnouncement('${id}')">📦</button>`
       : `<button type="button" class="btn btn-danger btn-sm btn-ico" title="Sil" aria-label="Sil" onclick="deleteAnnouncement('${id}')">${trashIco}</button>`;
     return `<tr>
-      <td><b>${esc(it.title || "")}</b></td>
+      <td><button type="button" class="title-edit" title="Düzenle" onclick="openAnnouncementModal('${id}')">${esc(it.title || "")}</button></td>
       <td class="user-meta-text">${esc(body)}${(it.body || "").length > 80 ? "…" : ""}</td>
       <td>${durum}</td>
       <td>${Number(it.ok_count || 0)}</td>
@@ -4407,7 +4445,8 @@ window.loadAnnouncementsPage = (page) => {
   renderAnnouncements();
 };
 
-window.createAnnouncement = async () => {
+window.saveAnnouncement = async () => {
+  const editId = (document.getElementById("ann-edit-id")?.value || "").trim();
   const title = (document.getElementById("ann-title")?.value || "").trim();
   const body = (document.getElementById("ann-body")?.value || "").trim();
   const image_url = (document.getElementById("ann-image")?.value || "").trim();
@@ -4417,24 +4456,29 @@ window.createAnnouncement = async () => {
   try {
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
     if (saveBtn) saveBtn.disabled = true;
-    const resp = await fetch(API_BASE + "/v1/admin/announcements", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
-      body: JSON.stringify({ title, body, image_url, link_url })
-    });
+    const isEdit = !!editId;
+    const resp = await fetch(
+      API_BASE + "/v1/admin/announcements" + (isEdit ? "/" + encodeURIComponent(editId) : ""),
+      {
+        method: isEdit ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+        body: JSON.stringify({ title, body, image_url, link_url })
+      }
+    );
     const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || "create_failed");
+    if (!resp.ok) throw new Error(data.error || (isEdit ? "update_failed" : "create_failed"));
     modalDirty = false;
     closeModal("ann-modal");
     listCache.clear("announcements");
-    toast("Duyuru Yayınlandı");
-    await loadAnnouncements(0);
+    toast(isEdit ? "Duyuru Güncellendi" : "Duyuru Yayınlandı");
+    await loadAnnouncements(isEdit ? currentAnnouncementsPage : 0);
   } catch (e) {
     toast(e.message, "error");
   } finally {
     if (saveBtn) saveBtn.disabled = false;
   }
 };
+window.createAnnouncement = window.saveAnnouncement;
 
 window.archiveAnnouncement = async (id) => {
   const ok = await uiConfirm("Yayından kalkacak; arşive gider, tekrar yayınlanmaz.", {
@@ -4494,13 +4538,27 @@ window.deleteAnnouncement = async (id) => {
 };
 
 /* ── HABERLER ── */
-window.openNewsModal = () => {
+window.openNewsModal = (id) => {
+  const editId = id ? String(id) : "";
+  const row = editId ? (allNewsList || []).find(x => String(x.id) === editId) : null;
+  if (editId && !row) { toast("Haber bulunamadı", "error"); return; }
   const t = document.getElementById("news-title");
   const b = document.getElementById("news-body");
   const link = document.getElementById("news-link");
-  if (t) t.value = "";
-  if (b) b.value = "";
-  if (link) link.value = "";
+  const hid = document.getElementById("news-edit-id");
+  const titleEl = document.getElementById("news-modal-title-text");
+  const hint = document.getElementById("news-edit-hint");
+  const saveBtn = document.getElementById("news-modal-save");
+  if (hid) hid.value = editId;
+  if (t) t.value = row ? String(row.title || "") : "";
+  if (b) b.value = row ? String(row.body || "") : "";
+  if (link) link.value = row ? String(row.link_url || "") : "";
+  if (titleEl) titleEl.textContent = row ? "Haberi Düzenle" : "Yeni Haber";
+  if (hint) hint.classList.toggle("show", !!row);
+  if (saveBtn) {
+    saveBtn.title = row ? "Kaydet" : "Yayınla";
+    saveBtn.setAttribute("aria-label", row ? "Kaydet" : "Yayınla");
+  }
   modalDirty = false;
   document.getElementById("news-modal")?.classList.add("open");
   setTimeout(() => t?.focus(), 40);
@@ -4601,7 +4659,7 @@ function renderNews() {
       ? `<a href="${esc(it.link_url)}" target="_blank" rel="noopener">${esc(String(it.link_url).slice(0, 40))}${String(it.link_url).length > 40 ? "…" : ""}</a>`
       : "—";
     return `<tr>
-      <td><b>${esc(it.title || "")}</b></td>
+      <td><button type="button" class="title-edit" title="Düzenle" onclick="openNewsModal('${id}')">${esc(it.title || "")}</button></td>
       <td class="user-meta-text">${esc(body)}${(it.body || "").length > 80 ? "…" : ""}</td>
       <td>${durum}</td>
       <td>${linkCell}</td>
@@ -4618,7 +4676,8 @@ window.loadNewsPage = (page) => {
   renderNews();
 };
 
-window.createNews = async () => {
+window.saveNews = async () => {
+  const editId = (document.getElementById("news-edit-id")?.value || "").trim();
   const title = (document.getElementById("news-title")?.value || "").trim();
   const body = (document.getElementById("news-body")?.value || "").trim();
   const link_url = (document.getElementById("news-link")?.value || "").trim();
@@ -4627,24 +4686,29 @@ window.createNews = async () => {
   try {
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
     if (saveBtn) saveBtn.disabled = true;
-    const resp = await fetch(API_BASE + "/v1/admin/news", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
-      body: JSON.stringify({ title, body, link_url })
-    });
+    const isEdit = !!editId;
+    const resp = await fetch(
+      API_BASE + "/v1/admin/news" + (isEdit ? "/" + encodeURIComponent(editId) : ""),
+      {
+        method: isEdit ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiJwt },
+        body: JSON.stringify({ title, body, link_url })
+      }
+    );
     const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error || "create_failed");
+    if (!resp.ok) throw new Error(data.error || (isEdit ? "update_failed" : "create_failed"));
     modalDirty = false;
     closeModal("news-modal");
     listCache.clear("news");
-    toast("Haber Yayınlandı");
-    await loadNews(0);
+    toast(isEdit ? "Haber Güncellendi" : "Haber Yayınlandı");
+    await loadNews(isEdit ? currentNewsPage : 0);
   } catch (e) {
     toast(e.message, "error");
   } finally {
     if (saveBtn) saveBtn.disabled = false;
   }
 };
+window.createNews = window.saveNews;
 
 window.archiveNews = async (id) => {
   const ok = await uiConfirm("Yayından kalkacak; arşive gider.", {
@@ -8585,6 +8649,16 @@ window.closeModal = async (id) => {
   }
   modalDirty = false;
   if (id === "user-modal") pendingBasvuruId = "";
+  if (id === "ann-modal") {
+    const hid = document.getElementById("ann-edit-id");
+    if (hid) hid.value = "";
+    document.getElementById("ann-edit-hint")?.classList.remove("show");
+  }
+  if (id === "news-modal") {
+    const hid = document.getElementById("news-edit-id");
+    if (hid) hid.value = "";
+    document.getElementById("news-edit-hint")?.classList.remove("show");
+  }
   bg.classList.remove("open");
 };
 // Dirty form: backdrop kapatmaz. data-dismiss-any: herhangi bir yere tıklayınca kapanır.
