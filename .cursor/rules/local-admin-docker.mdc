@@ -1,0 +1,34 @@
+---
+description: Lokal admin Docker (isgatlasi) — admin değişince sormadan rebuild
+alwaysApply: true
+---
+
+# Lokal Admin = Docker (KESİN)
+
+Admin paneli lokalde **python `serve.sh` değil** — `isgatlasi` compose içindeki `admin` servisi.
+
+| Servis | Link |
+|--------|------|
+| Admin | `http://127.0.0.1:3010` |
+| API | `http://127.0.0.1:8081` |
+
+```bash
+cd "/Users/fatihmac/Desktop/PROJECT/İsg Pusulası/api"
+docker compose up --build -d admin
+```
+
+## Admin kod değişince (sormadan)
+
+`admin_web` içinde anlamlı UI / `index.html` / assets değişikliğinden sonra **kullanıcıya sormadan**:
+
+```bash
+cd "/Users/fatihmac/Desktop/PROJECT/İsg Pusulası/api"
+docker compose up --build -d admin
+```
+
+Sonra kısa doğrula: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3010/` → `200`.
+
+## Yapma
+
+- `python3 -m http.server` / `./serve.sh` ile lokal admin açma (Cursor arka planında düşer)
+- Ayrı admin-only compose / ikinci Postgres
