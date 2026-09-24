@@ -257,6 +257,8 @@
     .top-icon-btn:disabled { opacity: .45; cursor: default; pointer-events: none; }
     .top-icon-btn.top-add-btn { display: none; }
     .top-icon-btn.top-add-btn.show { display: inline-flex; }
+    .top-icon-btn.top-news-gen { display: none; }
+    .top-icon-btn.top-news-gen.show { display: inline-flex; }
     .top-unauth-seg { display: none; align-items: center; gap: 8px; }
     .top-unauth-seg.show { display: inline-flex; }
     .top-unauth-seg .top-icon-btn.active { color: var(--accent); border-color: rgba(245,158,11,0.4); background: var(--accent-glow); }
@@ -1438,6 +1440,9 @@
       border-top: 1px solid var(--border);
     }
     .spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+    .news-gen-card { text-align: center; }
+    .news-gen-card .spinner { width: 36px; height: 36px; margin: 4px auto 16px; display: block; }
+    .news-gen-card .ui-dialog-msg { margin-bottom: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .empty-state { text-align: center; padding: 40px 20px; color: var(--text2); }
@@ -1501,17 +1506,10 @@
     .admin-table th.col-left .th-btn { justify-content: flex-start; }
     .admin-table .title-edit {
       display: inline; background: none; border: 0; padding: 0; margin: 0;
-      font: inherit; font-weight: 700; color: var(--accent, #38bdf8);
+      font: inherit; font-weight: 700; color: var(--text);
       cursor: pointer; text-align: inherit; text-decoration: none;
-      border-bottom: 1px dashed rgba(56, 189, 248, 0.45);
-      transition: color .15s, border-color .15s;
     }
-    .admin-table .title-edit:hover {
-      color: #7dd3fc;
-      border-bottom-color: #7dd3fc;
-    }
-    [data-theme="light"] .admin-table .title-edit { color: #0369a1; border-bottom-color: rgba(3, 105, 161, 0.35); }
-    [data-theme="light"] .admin-table .title-edit:hover { color: #0284c7; border-bottom-color: #0284c7; }
+    .admin-table .title-edit:hover { color: var(--text); }
     .edit-hint {
       display: none; margin: -4px 0 14px; padding: 8px 12px; border-radius: 10px;
       font-size: 12px; font-weight: 600; line-height: 1.35;
@@ -1519,6 +1517,22 @@
       color: var(--text2); border: 1px solid rgba(56,189,248,.22);
     }
     .edit-hint.show { display: block; }
+    .news-thumb-btn { padding: 0; border: 0; background: none; cursor: pointer; line-height: 0; }
+    .news-thumb-btn img, .news-form-photo { width: 72px; height: 72px; object-fit: cover; border-radius: 10px; display: block; }
+    .news-table-photo { width: 36px; height: 36px; object-fit: cover; border-radius: 8px; display: block; }
+    .news-image-row { display: none; margin-top: 10px; }
+    .news-image-row.show { display: block; }
+    .news-photo-wrap, .news-photo-stage { position: relative; display: inline-block; }
+    .news-photo-stage { max-width: min(920px, 92vw); }
+    .news-photo-x {
+      position: absolute; top: 8px; right: 8px; z-index: 2;
+      width: 32px; height: 32px; border: 0; border-radius: 16px; padding: 0;
+      background: rgba(11, 31, 51, 0.8); color: #fff; cursor: pointer;
+      font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .news-photo-wrap .news-photo-x { width: 22px; height: 22px; top: 4px; right: 4px; font-size: 12px; }
+    #news-photo-modal { z-index: 2200; background: rgba(15, 23, 42, 0.88); }
+    #news-photo-full { max-width: 100%; max-height: 88vh; object-fit: contain; border-radius: 16px; background: #cbd5e1; display: block; }
     .modal-head {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
       margin: 0 0 14px; padding: 0;
@@ -1635,19 +1649,19 @@
       <div class="nav-group">
         <div class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard"><span class="icon">📊</span><span class="nav-item-label">Dashboard</span></div>
         <div class="nav-item" onclick="showTab('analytics')" id="nav-analytics"><span class="icon">📈</span><span class="nav-item-label">Analiz</span></div>
-        <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span><span class="nav-item-label">Duyurular</span></div>
-        <div class="nav-item" onclick="showTab('news')" id="nav-news"><span class="icon">📰</span><span class="nav-item-label">Haberler</span></div>
-        <div class="nav-item" onclick="showTab('challenge')" id="nav-challenge"><span class="icon">🎯</span><span class="nav-item-label">Atlas Challenge</span></div>
         <div class="nav-item" onclick="showTab('birlik')" id="nav-birlik"><span class="icon">🤝</span><span class="nav-item-label">Atlas Birlik</span></div>
+        <div class="nav-item" onclick="showTab('challenge')" id="nav-challenge"><span class="icon">🎯</span><span class="nav-item-label">Atlas Challenge</span></div>
+        <div class="nav-item" onclick="showTab('announcements')" id="nav-announcements"><span class="icon">📢</span><span class="nav-item-label">Duyurular</span></div>
         <div class="nav-item" onclick="showTab('firmalar')" id="nav-firmalar"><span class="icon">🏢</span><span class="nav-item-label">Firmalar</span></div>
         <div class="nav-item" onclick="showTab('pricing')" id="nav-pricing"><span class="icon">💰</span><span class="nav-item-label">Fiyatlandırma</span></div>
         <div class="nav-item" onclick="showTab('feedback')" id="nav-feedback"><span class="icon">💬</span><span class="nav-item-label">Geri Bildirimler</span></div>
+        <div class="nav-item" onclick="showTab('news')" id="nav-news"><span class="icon">📰</span><span class="nav-item-label">Haberler</span></div>
         <div class="nav-item" onclick="showTab('muhasebe')" id="nav-muhasebe"><span class="icon">📒</span><span class="nav-item-label">Muhasebe</span></div>
         <div class="nav-item" onclick="showTab('users')" id="nav-users"><span class="icon">👤</span><span class="nav-item-label">Müşteriler</span></div>
+        <div class="nav-item" onclick="showTab('sistem-akis')" id="nav-sistem-akis"><span class="icon">🔀</span><span class="nav-item-label">Sistem Akışı</span></div>
         <div class="nav-item" onclick="showTab('updates')" id="nav-updates"><span class="icon">🚀</span><span class="nav-item-label">Sürüm & Güncelleme</span></div>
         <div class="nav-item" onclick="showTab('applications')" id="nav-applications"><span class="icon">📥</span><span class="nav-item-label">Üyelik Başvuruları</span></div>
         <div class="nav-item" onclick="showTab('rules')" id="nav-rules"><span class="icon">🤖</span><span class="nav-item-label">Yapay Zeka</span></div>
-        <div class="nav-item" onclick="showTab('sistem-akis')" id="nav-sistem-akis"><span class="icon">🔀</span><span class="nav-item-label">Sistem Akışı</span></div>
         <div class="nav-item" onclick="showTab('unauthorized')" id="nav-unauthorized"><span class="icon">🚫</span><span class="nav-item-label">Yetkisiz Girişler</span></div>
       </div>
     </div>
@@ -1660,6 +1674,7 @@
       <span class="top-header-label" id="top-header-label">Dashboard</span>
     </div>
     <div class="top-header-right">
+      <button type="button" class="top-icon-btn top-news-gen" id="top-news-gen" title="Bugünün Haberlerini Üret" aria-label="Bugünün Haberlerini Üret" onclick="generateDailyNews()">⚡</button>
       <button type="button" class="top-icon-btn top-add-btn" id="top-add-btn" title="Ekle" aria-label="Ekle" onclick="onTopAddClick()">＋</button>
       <button type="button" class="top-icon-btn save" id="top-save-btn" onclick="onTopSaveClick()" title="Kaydet" aria-label="Kaydet">💾</button>
       <div class="top-unauth-seg" id="top-unauth-seg" role="tablist" aria-label="Yetkisiz Bölüm">
@@ -1955,9 +1970,6 @@
         <div class="pager" id="challenge-packs-pager"></div>
       </div>
       <div id="challenge-scores-panel" style="display:none;">
-        <div class="users-toolbar" style="margin-bottom:14px;">
-          <input type="date" id="challenge-score-date" class="form-control" style="max-width:160px;" onchange="loadChallengeScores(0, true)" />
-        </div>
         <div id="challenge-scores-table"><div class="empty-state">Yükleniyor…</div></div>
         <div class="pager" id="challenge-scores-pager"></div>
       </div>
@@ -1971,6 +1983,12 @@
         <button type="button" class="filter-chip" data-sec="blocks" onclick="setBirlikSec('blocks')">Engeller</button>
       </div>
       <div id="birlik-posts-panel">
+        <div class="filter-chips" id="birlik-kind-chips" style="margin-bottom:12px;">
+          <button type="button" class="filter-chip active" data-kind="" onclick="setBirlikKind('')">Tümü</button>
+          <button type="button" class="filter-chip" data-kind="ilan" onclick="setBirlikKind('ilan')">İlan</button>
+          <button type="button" class="filter-chip" data-kind="dayanisma" onclick="setBirlikKind('dayanisma')">Dayanışma</button>
+          <button type="button" class="filter-chip" data-kind="soru" onclick="setBirlikKind('soru')">Soru</button>
+        </div>
         <div id="birlik-posts-table"><div class="empty-state">Yükleniyor…</div></div>
         <div class="pager" id="birlik-posts-pager"></div>
       </div>
@@ -2320,6 +2338,14 @@
   </main>
     </div>
 
+<div class="modal-bg" id="news-gen-wait" style="z-index:2300;">
+  <div class="ui-dialog kind-info news-gen-card" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="ui-dialog-title">Üretiliyor</div>
+    <div class="ui-dialog-msg">Bitene Kadar Bekleyin.</div>
+  </div>
+</div>
+
 <!-- Genel onay / uyarı diyaloğu -->
 <div class="modal-bg" id="ui-dialog" style="z-index:2000;">
   <div class="ui-dialog kind-info" id="ui-dialog-card">
@@ -2638,6 +2664,19 @@
         </div>
       </div>
 
+<div class="modal-bg" id="birlik-post-modal" data-dismiss-any="1" title="Kapatmak İçin Herhangi Bir Yere Tıklayın">
+  <div class="modal form-sheet modal-wide">
+    <div class="modal-head">
+      <div class="modal-title"><span id="birlik-post-title">Gönderi</span></div>
+    </div>
+    <div class="modal-body">
+      <div id="birlik-post-body" style="white-space:pre-wrap;margin-bottom:12px;"></div>
+      <hr>
+      <div id="birlik-post-comments"></div>
+    </div>
+  </div>
+</div>
+
 <!-- MÜŞTERİ BİLGİ KARTI -->
 <div class="modal-bg" id="musteri-info-modal" data-dismiss-any="1" title="Kapatmak İçin Herhangi Bir Yere Tıklayın">
   <div class="modal form-sheet">
@@ -2829,7 +2868,26 @@
         <label class="form-label">Link URL</label>
         <input type="url" class="form-control" id="news-link" placeholder="https://…" />
       </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Görsel</label>
+        <input type="file" class="form-control" id="news-image-file" accept="image/jpeg,image/png,image/webp,image/gif" onchange="onNewsImagePicked(this)" />
+        <div class="news-image-row" id="news-image-box">
+          <div class="news-photo-wrap">
+            <button type="button" class="news-thumb-btn" title="Görseli Aç" aria-label="Görseli Aç" onclick="openNewsPhotoFromForm()">
+              <img id="news-image-preview" class="news-form-photo" alt="" />
+            </button>
+            <button type="button" class="news-photo-x" title="Görseli Sil" aria-label="Görseli Sil" onclick="removeNewsImage()">✕</button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="news-photo-modal" data-dismiss-any="1" title="Kapatmak İçin Herhangi Bir Yere Tıklayın">
+  <div class="news-photo-stage">
+    <img id="news-photo-full" alt="Haber Görseli" />
+    <button type="button" class="news-photo-x" title="Görseli Sil" aria-label="Görseli Sil" onclick="event.stopPropagation(); removeNewsImage()">✕</button>
   </div>
 </div>
 
@@ -2910,7 +2968,7 @@ import { getAuth, signInWithEmailAndPassword, updatePassword, signOut as fbSignO
 })();
 
 /** Admin panel sürümü — her anlamlı admin revizede artır (version-bump.mdc). */
-const ADMIN_VERSION = "4.8.7";
+const ADMIN_VERSION = "4.9.9";
 (() => {
   const el = document.getElementById("sidebar-admin-vol");
   if (el) el.textContent = ADMIN_VERSION;
@@ -3198,6 +3256,7 @@ let challengeScoresSort = { key: "score", dir: "desc" };
 let challengePackEditDate = "";
 
 let birlikSec = "posts";
+let birlikKindFilter = "";
 let allBirlikPosts = [];
 let filteredBirlikPosts = [];
 let currentBirlikPostsPage = 0;
@@ -3310,8 +3369,7 @@ function clearTabCaches(tab) {
   }
   if (tab === "challenge") {
     listCache.clear("challenge-packs");
-    const date = (document.getElementById("challenge-score-date")?.value || "").trim();
-    if (date) listCache.clear("challenge-scores:" + date);
+    listCache.clear("challenge-scores");
   }
 }
 
@@ -3993,6 +4051,7 @@ function updateTopHeader(tab) {
   if (labelEl) labelEl.textContent = meta.label;
   document.getElementById("top-settings-btn")?.classList.toggle("active", tab === "settings");
   document.getElementById("top-save-btn")?.classList.toggle("show", tab === "pricing" || tab === "rules" || tab === "muhasebe");
+  document.getElementById("top-news-gen")?.classList.toggle("show", tab === "news");
   document.getElementById("top-unauth-seg")?.classList.toggle("show", tab === "unauthorized");
   const addBtn = document.getElementById("top-add-btn");
   if (addBtn) {
@@ -4538,6 +4597,80 @@ window.deleteAnnouncement = async (id) => {
 };
 
 /* ── HABERLER ── */
+let newsPendingFile = null;
+
+function setNewsImagePreview(url) {
+  const box = document.getElementById("news-image-box");
+  const img = document.getElementById("news-image-preview");
+  if (!box || !img) return;
+  if (!url) {
+    box.classList.remove("show");
+    img.removeAttribute("src");
+    return;
+  }
+  img.src = url;
+  box.classList.add("show");
+}
+
+window.openNewsPhoto = (url) => {
+  const src = String(url || "").trim();
+  if (!src) return;
+  const img = document.getElementById("news-photo-full");
+  if (img) img.src = src;
+  document.getElementById("news-photo-modal")?.classList.add("open");
+};
+
+window.openNewsPhotoFromForm = () => {
+  const src = document.getElementById("news-image-preview")?.getAttribute("src") || "";
+  if (src) openNewsPhoto(src);
+};
+
+window.onNewsImagePicked = (input) => {
+  const file = input?.files && input.files[0];
+  newsPendingFile = file || null;
+  if (!file) return;
+  setNewsImagePreview(URL.createObjectURL(file));
+};
+
+window.removeNewsImage = async () => {
+  const ok = await uiConfirm("Bu görsel silinecek.", {
+    title: "Görseli Sil",
+    danger: true,
+    confirmText: "Sil",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  document.getElementById("news-photo-modal")?.classList.remove("open");
+  const editId = (document.getElementById("news-edit-id")?.value || "").trim();
+  const fileEl = document.getElementById("news-image-file");
+  if (newsPendingFile) {
+    newsPendingFile = null;
+    if (fileEl) fileEl.value = "";
+    const row = editId ? (allNewsList || []).find(x => String(x.id) === editId) : null;
+    setNewsImagePreview(row?.image_url || "");
+    return;
+  }
+  if (!editId) {
+    setNewsImagePreview("");
+    return;
+  }
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/admin/news/" + encodeURIComponent(editId) + "/image", {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.error || "delete_failed");
+    const row = (allNewsList || []).find(x => String(x.id) === editId);
+    if (row) { row.image_url = ""; row.image_object = ""; }
+    setNewsImagePreview("");
+    listCache.set("news", allNewsList);
+    renderNews();
+    toast("Görsel Silindi");
+  } catch (e) { toast(e.message, "error"); }
+};
+
 window.openNewsModal = (id) => {
   const editId = id ? String(id) : "";
   const row = editId ? (allNewsList || []).find(x => String(x.id) === editId) : null;
@@ -4553,6 +4686,10 @@ window.openNewsModal = (id) => {
   if (t) t.value = row ? String(row.title || "") : "";
   if (b) b.value = row ? String(row.body || "") : "";
   if (link) link.value = row ? String(row.link_url || "") : "";
+  newsPendingFile = null;
+  const fileEl = document.getElementById("news-image-file");
+  if (fileEl) fileEl.value = "";
+  setNewsImagePreview(row && row.image_url ? String(row.image_url) : "");
   if (titleEl) titleEl.textContent = row ? "Haberi Düzenle" : "Yeni Haber";
   if (hint) hint.classList.toggle("show", !!row);
   if (saveBtn) {
@@ -4638,6 +4775,7 @@ function renderNews() {
   }
   const trashIco = "🗑️";
   container.innerHTML = `<table class="admin-table"><thead><tr>
+    <th>Görsel</th>
     ${thSort("Başlık", "title", newsSort, "toggleNewsSort")}
     ${thSort("Metin", "body", newsSort, "toggleNewsSort")}
     ${thSort("Durum", "active", newsSort, "toggleNewsSort")}
@@ -4658,7 +4796,11 @@ function renderNews() {
     const linkCell = it.link_url
       ? `<a href="${esc(it.link_url)}" target="_blank" rel="noopener">${esc(String(it.link_url).slice(0, 40))}${String(it.link_url).length > 40 ? "…" : ""}</a>`
       : "—";
+    const imgCell = it.image_url
+      ? `<button type="button" class="news-thumb-btn" title="Görseli Aç" aria-label="Görseli Aç" onclick="openNewsPhoto('${esc(it.image_url)}')"><img class="news-table-photo" src="${esc(it.image_url)}" alt="" /></button>`
+      : "—";
     return `<tr>
+      <td>${imgCell}</td>
       <td><button type="button" class="title-edit" title="Düzenle" onclick="openNewsModal('${id}')">${esc(it.title || "")}</button></td>
       <td class="user-meta-text">${esc(body)}${(it.body || "").length > 80 ? "…" : ""}</td>
       <td>${durum}</td>
@@ -4674,6 +4816,35 @@ function renderNews() {
 window.loadNewsPage = (page) => {
   currentNewsPage = Number(page) || 0;
   renderNews();
+};
+
+window.generateDailyNews = async () => {
+  const ok = await uiConfirm("Bugün için 2 gerçek İSG haberi aranacak. Varsa bugünün otomatik haberleri yenilenir.", {
+    title: "Bugünün Haberlerini Üret",
+    confirmText: "Üret",
+    cancelText: "Vazgeç"
+  });
+  if (!ok) return;
+  const btn = document.getElementById("top-news-gen");
+  const wait = document.getElementById("news-gen-wait");
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (btn) btn.disabled = true;
+    if (wait) wait.classList.add("open");
+    const resp = await fetch(API_BASE + "/v1/admin/news/generate", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) throw new Error(data.detail || data.error || "generate_failed");
+    listCache.clear("news");
+    toast("Haberler Hazır");
+    await loadNews(0, true);
+  } catch (e) { toast(e.message, "error"); }
+  finally {
+    if (wait) wait.classList.remove("open");
+    if (btn) btn.disabled = false;
+  }
 };
 
 window.saveNews = async () => {
@@ -4697,6 +4868,19 @@ window.saveNews = async () => {
     );
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || (isEdit ? "update_failed" : "create_failed"));
+    const savedId = String((data.item && data.item.id) || editId || "");
+    if (newsPendingFile && savedId) {
+      const fd = new FormData();
+      fd.append("file", newsPendingFile);
+      const up = await fetch(API_BASE + "/v1/admin/news/" + encodeURIComponent(savedId) + "/image", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + apiJwt },
+        body: fd
+      });
+      const upData = await up.json().catch(() => ({}));
+      if (!up.ok) throw new Error(upData.error || "upload_failed");
+    }
+    newsPendingFile = null;
     modalDirty = false;
     closeModal("news-modal");
     listCache.clear("news");
@@ -4822,8 +5006,6 @@ window.setChallengeSec = (sec) => {
     if (allChallengePacks.length) renderChallengePacks();
     else void loadChallengePacks(undefined, false);
   } else {
-    const dateEl = document.getElementById("challenge-score-date");
-    if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
     if (allChallengeScores.length) renderChallengeScores();
     else void loadChallengeScores(undefined, false);
   }
@@ -4839,11 +5021,7 @@ async function loadChallengeTab(force) {
   if (scores) scores.style.display = challengeSec === "scores" ? "" : "none";
   updateTopHeader("challenge");
   if (challengeSec === "packs") await loadChallengePacks(undefined, force);
-  else {
-    const dateEl = document.getElementById("challenge-score-date");
-    if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
-    await loadChallengeScores(undefined, force);
-  }
+  else await loadChallengeScores(undefined, force);
 }
 
 window.loadChallengePacks = async (page, force) => {
@@ -5066,14 +5244,16 @@ window.archiveChallengePack = async (dateYmd) => {
 };
 
 window.generateChallengePack = async () => {
-  const ok = await uiConfirm("Bugünün paketi yeniden üretilecek. Mevcut sorular değişebilir.", {
+  const ok = await uiConfirm("Bugünün paketi yeniden üretilecek. Bugün oynayanların skorları silinir, yeniden oynayabilirler.", {
     title: "Bugünü Üret",
     confirmText: "Üret",
     cancelText: "Vazgeç"
   });
   if (!ok) return;
+  const wait = document.getElementById("news-gen-wait");
   try {
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    if (wait) wait.classList.add("open");
     const resp = await fetch(API_BASE + "/v1/admin/challenge/packs/generate", {
       method: "POST",
       headers: { "Authorization": "Bearer " + apiJwt }
@@ -5081,11 +5261,13 @@ window.generateChallengePack = async () => {
     const data = await resp.json();
     if (!resp.ok) throw new Error(data.error || data.detail || "generate_failed");
     listCache.clear("challenge-packs");
+    listCache.clear("challenge-scores");
     toast("Paket Üretildi");
     challengeSec = "packs";
     setChallengeSec("packs");
     await loadChallengePacks(0, true);
   } catch (e) { toast(e.message, "error"); }
+  finally { if (wait) wait.classList.remove("open"); }
 };
 
 window.loadChallengeScores = async (page, force) => {
@@ -5093,20 +5275,17 @@ window.loadChallengeScores = async (page, force) => {
   const container = document.getElementById("challenge-scores-table");
   const pager = document.getElementById("challenge-scores-pager");
   if (!container) return;
-  const dateEl = document.getElementById("challenge-score-date");
-  if (dateEl && !dateEl.value) dateEl.value = istanbulTodayYmd();
-  const date = (dateEl?.value || istanbulTodayYmd()).trim();
   container.innerHTML = "<div class='empty-state'>Yükleniyor…</div>";
   try {
     if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
     if (!apiJwt) { container.innerHTML = "<div class='empty-state'>API oturumu yok</div>"; if (pager) pager.innerHTML = ""; return; }
-    const cacheKey = "challenge-scores:" + date;
+    const cacheKey = "challenge-scores";
     if (force) listCache.clear(cacheKey);
     const cached = listCache.get(cacheKey);
     if (cached?.data && !force) {
       allChallengeScores = cached.data;
     } else {
-      const resp = await fetch(API_BASE + "/v1/admin/challenge/scores?date=" + encodeURIComponent(date), {
+      const resp = await fetch(API_BASE + "/v1/admin/challenge/scores", {
         headers: { "Authorization": "Bearer " + apiJwt }
       });
       const data = await resp.json();
@@ -5127,18 +5306,20 @@ window.toggleChallengeScoresSort = (key) => {
 };
 
 window.filterChallengeScores = (keepPage) => {
-  filteredChallengeScores = (allChallengeScores || []).slice();
+  const ranked = (allChallengeScores || []).slice().sort((a, b) => {
+    const ds = (Number(b.score) || 0) - (Number(a.score) || 0);
+    if (ds) return ds;
+    return String(a.display_name || "").localeCompare(String(b.display_name || ""), "tr");
+  });
+  ranked.forEach((it, i) => { it.rank = i + 1; });
+  filteredChallengeScores = ranked;
   filteredChallengeScores.sort((a, b) => {
     const k = challengeScoresSort.key;
     let va, vb;
-    if (k === "display_name") { va = a.display_name || ""; vb = b.display_name || ""; }
-    else if (k === "city") { va = a.city_code || ""; vb = b.city_code || ""; }
+    if (k === "rank") { va = a.rank || 0; vb = b.rank || 0; }
+    else if (k === "display_name") { va = a.display_name || ""; vb = b.display_name || ""; }
     else if (k === "score") { va = Number(a.score) || 0; vb = Number(b.score) || 0; }
-    else if (k === "email") { va = a.user_email || ""; vb = b.user_email || ""; }
-    else if (k === "created") {
-      va = a.created_at ? new Date(a.created_at).getTime() : 0;
-      vb = b.created_at ? new Date(b.created_at).getTime() : 0;
-    } else { va = a[k]; vb = b[k]; }
+    else { va = a[k]; vb = b[k]; }
     return cmpValues(va, vb, challengeScoresSort.dir);
   });
   if (!keepPage) currentChallengeScoresPage = 0;
@@ -5154,27 +5335,20 @@ function renderChallengeScores() {
   if (currentChallengeScoresPage >= totalPages) currentChallengeScoresPage = Math.max(0, totalPages - 1);
   const page = filteredChallengeScores.slice(currentChallengeScoresPage * PAGE_SIZE, (currentChallengeScoresPage + 1) * PAGE_SIZE);
   if (!total) {
-    container.innerHTML = `<div class="empty-state">Bu tarihte skor yok</div>`;
+    container.innerHTML = `<div class="empty-state">Skor yok</div>`;
     if (pager) pager.innerHTML = "";
     return;
   }
   container.innerHTML = `<table class="admin-table"><thead><tr>
-    ${thSort("Ad", "display_name", challengeScoresSort, "toggleChallengeScoresSort")}
-    ${thSort("Şehir", "city", challengeScoresSort, "toggleChallengeScoresSort")}
-    ${thSort("Skor", "score", challengeScoresSort, "toggleChallengeScoresSort")}
-    ${thSort("E-posta", "email", challengeScoresSort, "toggleChallengeScoresSort")}
-    ${thSort("Tarih", "created", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Sıra", "rank", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Oyuncu", "display_name", challengeScoresSort, "toggleChallengeScoresSort")}
+    ${thSort("Puan", "score", challengeScoresSort, "toggleChallengeScoresSort")}
   </tr></thead><tbody>
-  ${page.map(it => {
-    const score = `${it.score ?? 0}${it.max_score != null ? " / " + it.max_score : ""}`;
-    return `<tr>
-      <td><b>${esc(it.display_name || "—")}</b></td>
-      <td>${esc(it.city_code || "—")}</td>
-      <td>${esc(score)}</td>
-      <td>${esc(it.user_email || "—")}</td>
-      <td>${esc(fmtDate(it.created_at))}</td>
-    </tr>`;
-  }).join("")}
+  ${page.map(it => `<tr>
+      <td><b>#${it.rank || "—"}</b></td>
+      <td>${esc(it.display_name || "Oyuncu")}</td>
+      <td><b>${Number(it.score) || 0}</b></td>
+    </tr>`).join("")}
   </tbody></table>`;
   if (pager) fillTablePager(pager, currentChallengeScoresPage, total, "loadChallengeScoresPage");
 }
@@ -5251,8 +5425,47 @@ window.toggleBirlikPostsSort = (key) => {
   filterBirlikPosts(true);
 };
 
+window.setBirlikKind = (kind) => {
+  birlikKindFilter = kind || "";
+  document.querySelectorAll("#birlik-kind-chips .filter-chip").forEach(el => {
+    el.classList.toggle("active", (el.dataset.kind || "") === birlikKindFilter);
+  });
+  filterBirlikPosts(false);
+};
+
+window.openBirlikPost = async (id) => {
+  const post = (allBirlikPosts || []).find(p => String(p.id) === String(id));
+  if (!post) return;
+  const titleEl = document.getElementById("birlik-post-title");
+  const bodyEl = document.getElementById("birlik-post-body");
+  const commentsEl = document.getElementById("birlik-post-comments");
+  if (titleEl) titleEl.textContent = post.kind === "soru" ? "Soru" : (post.title || "Gönderi");
+  if (bodyEl) bodyEl.textContent = post.body || "";
+  if (commentsEl) commentsEl.innerHTML = "<div class='empty-state'>Yorumlar Yükleniyor…</div>";
+  document.getElementById("birlik-post-modal")?.classList.add("open");
+  try {
+    if (!apiJwt && auth.currentUser) await ensureApiSession(auth.currentUser);
+    const resp = await fetch(API_BASE + "/v1/birlik/posts/" + encodeURIComponent(id) + "/comments?limit=50", {
+      headers: { "Authorization": "Bearer " + apiJwt }
+    });
+    const data = await resp.json();
+    const items = data.items || [];
+    if (!commentsEl) return;
+    if (!items.length) {
+      commentsEl.innerHTML = "<div class='empty-state'>Yorum Yok</div>";
+      return;
+    }
+    commentsEl.innerHTML = items.map(c => `<div style="padding:8px 0;border-bottom:1px solid rgba(148,163,184,.25);"><b>${esc(c.author_display || "Üye")}</b><div>${esc(c.body || "")}</div></div>`).join("");
+  } catch (e) {
+    if (commentsEl) commentsEl.innerHTML = `<div class="empty-state">Hata: ${esc(e.message)}</div>`;
+  }
+};
+
 window.filterBirlikPosts = (keepPage) => {
   filteredBirlikPosts = (allBirlikPosts || []).slice();
+  if (birlikKindFilter) {
+    filteredBirlikPosts = filteredBirlikPosts.filter(p => (p.kind || "") === birlikKindFilter);
+  }
   filteredBirlikPosts.sort((a, b) => {
     const k = birlikPostsSort.key;
     let va, vb;
@@ -5315,7 +5528,7 @@ function renderBirlikPosts() {
       : "";
     return `<tr>
       <td>${esc(it.kind || "—")}</td>
-      <td><b>${esc(it.title || "—")}</b></td>
+      <td><b style="cursor:pointer" onclick="openBirlikPost('${id}')">${esc(it.title || "—")}</b></td>
       <td>${esc(author)}</td>
       <td>${esc(it.city || "—")}</td>
       <td>${durum}</td>
@@ -7388,12 +7601,7 @@ async function loadUsers(force) {
     if (q) qs.set("q", q);
     const data = await apiJSON("/v1/admin/licenses?" + qs.toString());
     const items = data.items || [];
-    const adminSet = new Set(superAdminList.map(e => e.toLowerCase()));
-    allUsersList = [];
-    items.forEach(it => {
-      const mapped = mapLicenseItem(it);
-      if (!adminSet.has(mapped.id)) allUsersList.push(mapped);
-    });
+    allUsersList = items.map(it => mapLicenseItem(it));
     usersTotal = Number(data.total) || 0;
     usersAktifCount = Number(data.aktif_count) || 0;
     usersPasifCount = Number(data.pasif_count) || 0;
