@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="gBg" x1="20" y1="10" x2="110" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/><stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#gBg)" opacity="0.18"/>
+  <!-- left person -->
+  <circle cx="38" cy="42" r="14" fill="#7DD3FC"/>
+  <path d="M18 96c0-14.4 9-26 20-26s20 11.6 20 26" fill="#38BDF8"/>
+  <!-- right person -->
+  <circle cx="90" cy="42" r="14" fill="#93C5FD"/>
+  <path d="M70 96c0-14.4 9-26 20-26s20 11.6 20 26" fill="#60A5FA"/>
+  <!-- center person (front) -->
+  <circle cx="64" cy="48" r="16" fill="#E0F2FE"/>
+  <path d="M40 104c0-15.5 10.7-28 24-28s24 12.5 24 28" fill="#2563EB"/>
+  <!-- badge -->
+  <circle cx="96" cy="88" r="16" fill="#F59E0B"/>
+  <path d="M90 88h12M96 82v12" stroke="#0F172A" stroke-width="3" stroke-linecap="round"/>
+</svg>

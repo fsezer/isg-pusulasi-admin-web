@@ -1,0 +1,46 @@
+---
+description: Admin panel UI tasarım kuralları (kart, üst title, tablo, modal)
+alwaysApply: true
+---
+
+# Admin UI tasarım (KESİN — söyletme)
+
+Liste / form / menü revizesinde bu kalıp **varsayılan**. Tekrar sorma.
+
+## Üst title (Yenile + Ayarlar barı)
+
+- Sekme ikonu + yazı **aynı yükseklik, dikey ortalı**.
+- Kaydet / Yayınla / Ekle vb. **üst title sağında** gerçekçi emoji/ikon (`💾` `📢` `＋`); metin buton **yok**.
+- Menüye özel aksiyon → `top-add-btn` / `top-save-btn` (veya benzeri); sayfa içine ikinci Kaydet koyma.
+
+## Kartlar
+
+- Geçişli (gradient) arka plan.
+- Başlık: renkli ikon kutusu + yazı **yan yana** (`justify-content: flex-start`), sağa itme yok.
+- İlgili kısa kartlar yan yana grid (ör. Hesap | Tema).
+- Açıklama satırı / filler copy **yok**.
+
+## Tekrarlama yok
+
+- Aynı iş iki kontrol: Vazgeç varken üst X **yok**.
+- Soft başarı: buton yok; tıkla veya kısa süre sonra kapanır.
+- Onay: yalnız Vazgeç + onay; backdrop tıklayınca kapanmaz.
+
+## Tablolar (SQL dostu)
+
+- `admin-table` + satır listesi.
+- Her anlamlı sütun başlığı tıklanınca sırala (A–Z / Z–A, sayı büyük–küçük) — `thSort` / `cmpValues`.
+- Pager: `fillTablePager`, varsayılan **10** (10/20/50).
+- **İşlem sütunu:** metin buton yok; gerçekçi görsel ikon (`btn-sm btn-ico` + `title` / `aria-label`).
+- **Sil:** Müşteriler paneli kalıbı — `btn btn-danger btn-sm btn-ico` + `🗑️` (SVG / gri ghost çöp kullanma).
+
+## Form modalları
+
+- Şık gradient / form-sheet.
+- Sağ üst: **Kaydet (veya Yayınla) + Kapat** — ikonlu.
+- Altta ikinci Kaydet / Vazgeç **tekrarlama** (üstte varsa altta yok).
+- Backdrop tıklayınca kapanmaz (dirty form kuralı).
+
+## Uyarılar
+
+- `uiAlert` / `uiConfirm` — sağ alt toast yok (`ui-dialog-modal.mdc`).

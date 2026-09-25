@@ -1,0 +1,20 @@
+---
+description: Admin panel sürümü her anlamlı revizede artar
+alwaysApply: true
+---
+
+# Sürüm (İSG Atlası Admin Web)
+
+- **Güncel baseline:** `4.6.3` (sidebar sürüm metni — `vol` yok)
+- Dosya: `index.html` → `ADMIN_VERSION` sabiti + sidebar `.sidebar-version` (`#sidebar-admin-vol`)
+
+## Format (zorunlu)
+
+`Major.Minor.Patch` — Patch yalnız **0–9** (`2.0.9` → `2.1.0`, asla `2.0.10`).
+
+## Uygulama
+
+- Admin paneli ile ilgili **her anlamlı revizede** (UI, API bağlama, auth, yayın formu, SQL cutover vb.) patch +1.
+- Sidebar’da yalnız `X.Y.Z` göster (`ADMIN_VERSION`); başına `vol` yazma.
+- Bu sürüm **Windows/Android `app_releases` değil** — yalnız admin paneli kendisi.
+- Windows + Mobil uzaktan güncelleme paketleri ayrı (`dual-platform-updates.mdc`).

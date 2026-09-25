@@ -1,0 +1,23 @@
+---
+description: Windows/Android sürüm ayrı; Admin kanalları ayrı
+alwaysApply: true
+---
+
+# Platform sürümleri + Admin kanalları (KESİN)
+
+Windows Agent ve Android Mobil **ayrı sürüm numarası** taşır — eşitleme yok.
+
+## Admin UI
+
+- **Sürüm & Güncelleme**: **Windows (.zip)** | **Android (.apk)** ayrı paneller
+- `platform=windows` / `platform=android` API’de ayrı
+
+## Yayın
+
+- Hangi platform değiştiyse **yalnız onu** yayınla
+- Windows code ↔ Android code birbirini etkilemez
+
+## Yapma
+
+- Mobil patch’te Windows `Version` artırma (tersi de)
+- Tek karışık sürüm geçmişi
